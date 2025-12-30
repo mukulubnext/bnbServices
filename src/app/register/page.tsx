@@ -7,7 +7,7 @@ interface Props {}
 const Page: NextPage<Props> = ({}) => {
   return (
     <>
-      <section className="relative flex bg-dark items-center justify-center overflow-hidden">
+      <section className="relative flex md:h-[90vh] bg-dark items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-10 grayscale">
           <img
             src="https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&q=80&w=2074"
