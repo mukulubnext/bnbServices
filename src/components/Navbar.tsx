@@ -14,8 +14,8 @@ const Navbar: NextPage<Props> = ({}) => {
     { name: "Home", path: "/" },
     { name: "About", path: "/about" },
     { name: "Contact", path: "/contact" },
-    { name: "Solutions", path: "/solutions" },
-    { name: "Products", path: "/products" },
+    // { name: "Solutions", path: "/solutions" },
+    // { name: "Products", path: "/products" },
   ];
 
   useEffect(() => {

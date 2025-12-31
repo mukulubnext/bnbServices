@@ -12,7 +12,7 @@ interface Props {}
 
 const Page: NextPage<Props> = ({}) => {
   return (
-    <section className="relative min-h-screen pt-32 pb-20 flex items-center justify-center overflow-hidden bg-dark">
+    <section className="relative min-h-screen pt-24 pb-20 flex items-center justify-center overflow-hidden bg-dark">
       <div className="absolute inset-0 z-0 opacity-10 grayscale">
         <img
           src="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?auto=format&fit=crop&q=80&w=2074"
@@ -21,7 +21,7 @@ const Page: NextPage<Props> = ({}) => {
         />
       </div>
       <div className="relative z-10 max-w-6xl mx-auto px-6 w-full">
-        <div className="text-center mb-16">
+        <div className="text-center mb-8">
           <h2 className="text-4xl md:text-5xl font-bold mb-4 text-light">
             Get in Touch
           </h2>
