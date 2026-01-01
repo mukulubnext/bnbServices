@@ -1,12 +1,15 @@
+import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { ChevronRight, ShoppingBag, Store } from "lucide-react";
 import { NextPage } from "next";
+import Link from "next/link";
 
 interface Props {}
 
 const Page: NextPage<Props> = ({}) => {
   return (
     <>
+    <Navbar/>
       <section className="relative flex md:h-[90vh] bg-dark items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-10 grayscale">
           <img
@@ -48,7 +51,8 @@ const Page: NextPage<Props> = ({}) => {
                 />
               </div>
             </button>
-            <button
+            <Link
+              href={"/register/buyer"}
               className="group relative overflow-hidden border p-10 rounded-[2.5rem] transition-all duration-500 text-left"
               style={{
                 backgroundColor: "rgba(255,255,255,0.03)",
@@ -72,10 +76,11 @@ const Page: NextPage<Props> = ({}) => {
                   className="group-hover:translate-x-1 transition-transform"
                 />
               </div>
-            </button>
+            </Link>
           </div>
         </div>
       </section>
+      <Footer/>
     </>
   );
 };

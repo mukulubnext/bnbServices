@@ -10,6 +10,7 @@ interface Props {}
 const Navbar: NextPage<Props> = ({}) => {
   const [isScrolled, setScrolled] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
   const navlinks = [
     { name: "Home", path: "/" },
     { name: "About", path: "/about" },
