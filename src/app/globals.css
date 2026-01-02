@@ -6,3 +6,6 @@
   --color-light: #f5e9d6;
   --color-highlight: #ffeeca;
 }
+*{
+  scroll-behavior: smooth;
+}

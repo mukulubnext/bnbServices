@@ -6,12 +6,12 @@ import {
   EyeClosed,
   Link,
   Search,
-  ShoppingBag,
+  Store,
   Users,
   X,
 } from "lucide-react";
 import { NextPage } from "next";
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, use, useContext, useState } from "react";
 import RegisterStep from "../components/RegisterStep";
 
 interface Props {}
@@ -22,7 +22,7 @@ type StepContextType = {
 };
 
 const StepContext = createContext<StepContextType | null>(null);
-const Role = "buyer";
+const role = "seller";
 
 const Page: NextPage<Props> = ({}) => {
   const [stepNumber, setStepNumber] = useState(1);
@@ -30,12 +30,12 @@ const Page: NextPage<Props> = ({}) => {
     <StepContext.Provider value={{ stepNumber, setStepNumber }}>
       <div className="flex relative md:flex-row flex-col-reverse bg-light">
         <Breadcrumbs />
-        <div className="flex flex-col gap-4 px-[5%] py-[10%] relative md:py-[5%] md:w-[50vw] min-h-screen h-fit">
+        <div className="flex flex-col gap-4 px-[5%] py-[10%] md:py-[5%] md:w-[50vw] min-h-screen h-fit">
           {stepNumber === 1 && <Register />}
           {stepNumber === 2 && <Profile />}
           {stepNumber === 3 && <AdditionalInfo />}
           <div className="flex relative top-4 md:hidden justify-center items-center">
-            <RegisterStep active={stepNumber} invert={true}/>
+            <RegisterStep active={stepNumber} invert={true} />
           </div>
         </div>
         <div className="relative">
@@ -43,20 +43,20 @@ const Page: NextPage<Props> = ({}) => {
         </div>
         <div className="flex md:fixed right-0 justify-center md:flex-col py-6 gap-5 items-center bg-dark md:w-[50vw] md:h-screen">
           <div className="p-4 rounded-2xl bg-highlight/22">
-            <ShoppingBag className="text-highlight lg:w-15 lg:h-15 md:w-10 md:h-10 w-8 h-8" />
+            <Store className="text-highlight lg:w-15 lg:h-15 md:w-10 md:h-10 w-8 h-8" />
           </div>
           <div className="flex flex-col justify-center gap-2 items-center">
             <h1 className="text-highlight text-center font-semibold text-2xl md:text-4xl lg:text-[40px]">
-              Join as a Buyer
+              Join as a Seller
             </h1>
             <p className="lg:text-xl md:text-lg text-[8px] md:max-w-[80%] text-center text-highlight">
-              Browse tools, manage subscriptions, and enjoy exclusive
-              marketplace benefits.
+              Manage inventory, reach millions, and scale your storefront
+              globally.
             </p>
           </div>
-          <div className="hidden justify-center items-center md:flex">
-            <RegisterStep active={stepNumber} />
-          </div>
+        <div className="hidden justify-center items-center md:flex">
+          <RegisterStep active={stepNumber} />
+        </div>
         </div>
       </div>
     </StepContext.Provider>
@@ -76,20 +76,20 @@ function Register() {
   const [emailOTP, setEmailOTP] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [sentMailOTP, setSentMailOTP] = useState(false);
+  const [sentEmailOTP, setSentEmailOTP] = useState(false);
   const [sentPhoneOTP, setSentPhoneOTP] = useState(false);
-  const [confirmMailOTP, setConfirmMailOTP] = useState(false);
+  const [confirmEmailOTP, setConfirmEmailOTP] = useState(false);
   const [confirmPhoneOTP, setConfirmPhoneOTP] = useState(false);
   const { stepNumber, setStepNumber } = context;
 
-  const handleSendMailOTP = () => {
-    setSentMailOTP(true);
+  const handleSendEmailOTP = () => {
+    setSentEmailOTP(true);
   };
   const handleSendPhoneOTP = () => {
     setSentPhoneOTP(true);
   };
-  const handleConfirmMailOTP = () => {
-    setConfirmMailOTP(true);
+  const handleConfirmEmailOTP = () => {
+    setConfirmEmailOTP(true);
   };
   const handleConfirmPhoneOTP = () => {
     setConfirmPhoneOTP(true);
@@ -113,27 +113,27 @@ function Register() {
           <div className="flex justify-center relative items-center w-full">
             <input
               value={email}
-              onChange={(e)=>setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               type="email"
               id="email"
               className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
             />
-            {!sentMailOTP && (
+            {!sentEmailOTP && (
               <button
-                onClick={handleSendMailOTP}
+                onClick={handleSendEmailOTP}
                 className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-sm md:text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
               >
                 Send OTP
               </button>
             )}
-            {confirmMailOTP && (
+            {confirmEmailOTP && (
               <div className="p-2 text-white bg-dark/90 rounded-full absolute right-5">
                 <Check size={20} />
               </div>
             )}
           </div>
         </div>
-        {sentMailOTP && !confirmMailOTP && (
+        {sentEmailOTP && !confirmEmailOTP && (
           <div className="w-full flex justify-center flex-col">
             <label htmlFor="email" className="font-medium text-xl text-dark">
               Email OTP
@@ -141,13 +141,13 @@ function Register() {
             <div className="flex justify-center relative items-center w-full">
               <input
                 value={emailOTP}
-                onChange={(e)=>setEmailOTP(e.target.value)}
+                onChange={(e) => setEmailOTP(e.target.value)}
                 type="email"
                 id="email"
                 className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
               />
               <button
-                onClick={handleConfirmMailOTP}
+                onClick={handleConfirmEmailOTP}
                 className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
               >
                 <Check />
@@ -162,7 +162,7 @@ function Register() {
           <div className="flex justify-center relative items-center w-full">
             <input
               value={phone}
-              onChange={(e)=>setPhone(e.target.value)}
+              onChange={(e) => setPhone(e.target.value)}
               type="tel"
               id="phone"
               className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
@@ -190,7 +190,7 @@ function Register() {
             <div className="flex justify-center relative items-center w-full">
               <input
                 value={phoneOTP}
-                onChange={(e)=>setPhoneOTP(e.target.value)}
+                onChange={(e) => setPhoneOTP(e.target.value)}
                 type="email"
                 id="email"
                 className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
@@ -211,7 +211,7 @@ function Register() {
           <div className="flex justify-center relative items-center w-full">
             <input
               value={password}
-              onChange={(e)=>setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               type={showPass ? "text" : "password"}
               id="confirm"
               className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
@@ -231,7 +231,7 @@ function Register() {
           <div className="flex justify-center relative items-center w-full">
             <input
               value={confirmPassword}
-              onChange={(e)=>setConfirmPassword(e.target.value)}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               type={showConfirm ? "text" : "password"}
               id="password"
               className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
@@ -258,8 +258,10 @@ function Register() {
 function Profile() {
   const context = useContext(StepContext);
   if (!context) return null;
+
   const { stepNumber, setStepNumber } = context;
   const [companyName, setCompanyName] = useState("");
+  const [gstNumber, setGstNumber] = useState("");
   const [addressLine1, setAddressLine1] = useState("");
   const [addressLine2, setAddressLine2] = useState("");
   const [city, setCity] = useState("");
@@ -290,6 +292,19 @@ function Profile() {
               id="company"
               value={companyName}
               onChange={(e) => setCompanyName(e.target.value)}
+              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
+            />
+          </div>
+        </div>
+        <div className="w-full flex justify-center flex-col">
+          <label htmlFor="company" className="font-medium text-xl text-dark">
+            GST Number
+          </label>
+          <div className="flex justify-center relative items-center w-full">
+            <input
+              id="gst"
+              value={gstNumber}
+              onChange={(e) => setGstNumber(e.target.value)}
               className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
             />
           </div>

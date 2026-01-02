@@ -26,7 +26,8 @@ const Page: NextPage<Props> = ({}) => {
             Select how you would like to participate in the Solaris network.
           </p>
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <button
+            <Link
+              href={"/register/seller"}
               className="group relative overflow-hidden border p-10 rounded-[2.5rem] transition-all duration-500 text-left"
               style={{
                 backgroundColor: "rgba(255,255,255,0.03)",
@@ -50,7 +51,7 @@ const Page: NextPage<Props> = ({}) => {
                   className="group-hover:translate-x-1 transition-transform"
                 />
               </div>
-            </button>
+            </Link>
             <Link
               href={"/register/buyer"}
               className="group relative overflow-hidden border p-10 rounded-[2.5rem] transition-all duration-500 text-left"
