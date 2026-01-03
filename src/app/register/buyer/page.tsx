@@ -4,7 +4,7 @@ import {
   Check,
   Eye,
   EyeClosed,
-  Link,
+  LinkIcon,
   Search,
   ShoppingBag,
   Users,
@@ -13,6 +13,7 @@ import {
 import { NextPage } from "next";
 import React, { createContext, useContext, useState } from "react";
 import RegisterStep from "../components/RegisterStep";
+import Link from "next/link";
 
 interface Props {}
 
@@ -34,7 +35,7 @@ const Page: NextPage<Props> = ({}) => {
           {stepNumber === 1 && <Register />}
           {stepNumber === 2 && <Profile />}
           {stepNumber === 3 && <AdditionalInfo />}
-          <div className="flex relative top-4 md:hidden justify-center items-center">
+          <div className="flex relative top-8 md:hidden justify-center items-center">
             <RegisterStep active={stepNumber} invert={true}/>
           </div>
         </div>
@@ -250,6 +251,7 @@ function Register() {
         >
           Submit
         </button>
+        <Link href={"/signin"} className="text-dark underline hover:no-underline">Already Registered?</Link>
       </div>
     </>
   );
@@ -578,7 +580,7 @@ function AdditionalInfo() {
           </label>
           <div className="relative">
             <input className="border border-dark pl-12 text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full" />
-            <Link className="absolute text-dark left-3 top-1/2 -translate-y-1/2" />
+            <LinkIcon className="absolute text-dark left-3 top-1/2 -translate-y-1/2" />
           </div>
         </div>
 

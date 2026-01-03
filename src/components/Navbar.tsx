@@ -5,21 +5,24 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-interface Props {}
+interface Props {
+  solid ?: boolean;
+}
 
-const Navbar: NextPage<Props> = ({}) => {
+const Navbar: NextPage<Props> = ({solid}:Props) => {
   const [isScrolled, setScrolled] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
-  const pathname = usePathname();
   const navlinks = [
     { name: "Home", path: "/" },
     { name: "About", path: "/about" },
     { name: "Contact", path: "/contact" },
-    // { name: "Solutions", path: "/solutions" },
-    // { name: "Products", path: "/products" },
   ];
 
   useEffect(() => {
+    if(solid){
+      setScrolled(true);
+      return;
+    }
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
@@ -31,7 +34,7 @@ const Navbar: NextPage<Props> = ({}) => {
     <nav
       className={`w-screen z-100 fixed flex justify-between px-6 md:justify-around items-center transition-all duration-300 top-0 left-0 py-4 text-light ${
         isScrolled || isMenuOpen
-          ? "bg-dark shadow-2xl border-b border-white/5"
+          ? "bg-dark border-b border-white/5"
           : "bg-transparent"
       }`}
     >
