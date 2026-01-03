@@ -220,7 +220,7 @@ function Register() {
               onClick={() => setShowPass((e) => !e)}
               className="absolute cursor-pointer text-dark px-6 right-0"
             >
-              {showPass ? <EyeClosed size={32} /> : <Eye size={32} />}
+              {showPass ? <EyeClosed size={24} /> : <Eye size={24} />}
             </button>
           </div>
         </div>
@@ -240,7 +240,7 @@ function Register() {
               onClick={() => setShowConfirm((e) => !e)}
               className="absolute cursor-pointer text-dark px-6 right-0"
             >
-              {showConfirm ? <EyeClosed size={32} /> : <Eye size={32} />}
+              {showConfirm ? <EyeClosed size={24} /> : <Eye size={24} />}
             </button>
           </div>
         </div>
