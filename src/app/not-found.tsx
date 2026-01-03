@@ -9,13 +9,12 @@ const NotFound: NextPage<Props> = ({}) => {
   return (
     <>
     <Navbar/>
-    <div className="bg-dark flex-col pb-10 h-[90vh] text-9xl text-highlight font-extrabold flex justify-center items-center">
+    <div className="bg-dark flex-col pb-10 h-[90vh] text-3xl xs:text-5xl sm:text-6xl md:text-7xl lg:text-9xl text-highlight font-extrabold flex justify-center items-center">
       <div>
         <Construction size={128}/>
-
       </div>
       404 - Not Found
-      <p className="text-lg font-normal">This page doesn't exist</p>
+      <p className="md:text-lg text-sm font-normal">This page doesn't exist</p>
     </div>
     <Footer/>
     </>

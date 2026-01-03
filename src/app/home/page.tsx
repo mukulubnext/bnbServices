@@ -26,7 +26,7 @@ const Page: NextPage<Props> = ({}) => {
     <div className="flex flex-col px-[5%] pb-10 pt-30 gap-5 min-h-screen bg-light">
       <Navbar solid={true} />
       <div className="text-dark md:gap-4 font-bold flex-col flex text-3xl md:text-4xl lg:text-6xl md:flex-row">
-        <span>Good Evening,</span>
+        <span>{greeting},</span>
         <span>{username}...</span>
       </div>
       <Buyer />
