@@ -3,9 +3,8 @@ import Navbar from "@/components/Navbar";
 import { ArrowUpDown, Pencil, Search } from "lucide-react";
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
-import LiquidGlassMenu from "./components/LiquidGlassMenu";
+import LiquidGlassMenu from "../../components/LiquidGlassMenu";
 import EllipsisComp from "./components/Ellipsis";
-import Image from "next/image";
 
 interface Props {}
 
