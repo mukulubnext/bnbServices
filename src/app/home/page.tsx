@@ -5,6 +5,7 @@ import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import LiquidGlassMenu from "../../components/LiquidGlassMenu";
 import EllipsisComp from "./components/Ellipsis";
+import Link from "next/link";
 
 interface Props {}
 
@@ -129,10 +130,10 @@ function Buyer() {
         <p className="text-lg md:text-3xl text-dark">
           Need to buy something? Make a post!
         </p>
-        <button className="flex gap-4 justify-center items-center w-full bg-dark md:max-w-[40%] text-highlight font-bold py-2 md:text-2xl hover:bg-transparent border border-dark hover:text-dark transition-all duration-300 rounded-lg">
+        <Link href={"/post"} className="flex gap-4 justify-center items-center w-full bg-dark md:max-w-[40%] text-highlight font-bold py-2 md:text-2xl hover:bg-transparent border border-dark hover:text-dark transition-all duration-300 rounded-lg">
           <Pencil size={20} />
           Post
-        </button>
+        </Link>
       </div>
       <hr className="text-dark/22" />
       <div>
