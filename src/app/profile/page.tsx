@@ -67,7 +67,7 @@ const Pag: NextPage<Props> = ({}) => {
           <Navbar solid />
           <LiquidGlassMenu />
           <div className="flex flex-col">
-            <Sidebar selected={selected} setSelected={setSelected} />
+            <Sidebar selected={selected} setSelected={setSelected} role={user.role} />
             <div className="w-full bg-light px-[5%] md:pl-[30vw] lg:pl-[20vw]">
               <div className="md:mt-12 mt-4 relative bg-white p-6 border border-dark rounded-lg min-h-[80vh]">
                 {selected === 0 && (

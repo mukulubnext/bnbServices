@@ -1,25 +1,28 @@
 "use client";
-import { ChevronRight, Menu, Search, X } from "lucide-react";
+import axios from "axios";
+import { ChevronRight, Menu, Search, UserCircle2, X } from "lucide-react";
 import { NextPage } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import Spinner from "./Spinner";
 
 interface Props {
-  solid ?: boolean;
+  solid?: boolean;
 }
 
-const Navbar: NextPage<Props> = ({solid}:Props) => {
+const Navbar: NextPage<Props> = ({ solid }: Props) => {
   const [isScrolled, setScrolled] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  const [isLoading, setLoading] = useState(true);
   const navlinks = [
     { name: "Home", path: "/" },
     { name: "About", path: "/about" },
     { name: "Contact", path: "/contact" },
   ];
-
   useEffect(() => {
-    if(solid){
+    if (solid) {
       setScrolled(true);
       return;
     }
@@ -29,7 +32,22 @@ const Navbar: NextPage<Props> = ({solid}:Props) => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const res = await axios.post("/api/v1/auth/user");
+        if (res.data.status === "success") {
+          setLoggedIn(true);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+      finally{
+        setLoading(false);
+      }
+    };
+    getUser();
+  }, []);
   return (
     <nav
       className={`w-screen z-100 fixed flex justify-between px-6 md:justify-around items-center transition-all duration-300 top-0 left-0 py-4 text-light ${
@@ -56,12 +74,25 @@ const Navbar: NextPage<Props> = ({solid}:Props) => {
         <button className="p-2 hover:bg-highlight/10 transition-all duration-300 rounded-full ">
           <Search size={20} />
         </button>
-        <Link
-          className="flex px-6 py-2.5 rounded-full text-sm bg-light text-dark font-bold transition-all transform hover:-translate-y-0.5 duration-300 shadow-md"
-          href={"/register"}
-        >
-          Register
-        </Link>
+        {!isLoading ? (
+          !isLoggedIn ? (
+            <Link
+              className="flex px-6 py-2.5 rounded-full text-sm bg-light text-dark font-bold transition-all transform hover:-translate-y-0.5 duration-300 shadow-md"
+              href={"/register"}
+            >
+              Register
+            </Link>
+          ) : (
+            <Link
+              className="flex w-10 h-10 justify-center p-2.5 rounded-full text-sm bg-light text-dark font-bold transition-all transform hover:-translate-y-0.5 duration-300 shadow-md"
+              href={"/profile"}
+            >
+              M
+            </Link>
+          )
+        ) : (
+          <Spinner light={true} />
+        )}
       </div>
       <button className="md:hidden transition-colors duration-300 p-2 hover:bg-white/10 rounded-lg flex justify-center items-center">
         <Menu
@@ -93,14 +124,28 @@ const Navbar: NextPage<Props> = ({solid}:Props) => {
           ))}
         </div>
         <hr className="border-white/5 py-2" />
-        <div className="flex flex-col pb-4 gap-4 px-6">
-          <Link
-            href={"/register"}
-            onClick={() => setMenuOpen(false)}
-            className="w-full py-3 text-center bg-light text-dark font-bold rounded-xl"
-          >
-            Register Now
-          </Link>
+        <div className="flex justify-center items-center flex-col pb-4 gap-4 px-6">
+          {!isLoading ? (
+            !isLoggedIn ? (
+              <Link
+                href={"/register"}
+                onClick={() => setMenuOpen(false)}
+                className="w-full py-3 text-center bg-light text-dark font-bold rounded-xl"
+              >
+                Register Now
+              </Link>
+            ) : (
+              <Link
+                href={"/profile"}
+                onClick={() => setMenuOpen(false)}
+                className="w-full py-3 text-center bg-light text-dark font-bold rounded-xl"
+              >
+                Profile
+              </Link>
+            )
+          ) : (
+            <Spinner light={true} />
+          )}
         </div>
       </div>
     </nav>

@@ -52,7 +52,6 @@ export async function POST(req: NextRequest) {
         companyWebsite: true,
     }
   });
-  console.log(user);
 
   if (!user) {
     return NextResponse.json(

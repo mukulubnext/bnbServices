@@ -4,6 +4,9 @@ import { usePathname } from "next/navigation";
 export default function () {
   const pathname = usePathname();
   const segments = pathname.split("/").filter(Boolean);
+
+  
+
   return (
     <nav className="text-sm absolute top-2 left-[5%] z-10 text-dark/70">
       <ol className="flex items-center gap-2">

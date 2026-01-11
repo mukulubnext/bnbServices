@@ -31,7 +31,7 @@ model User {
   employeeCount String
   pastLegalAction Boolean @default(false)
   pastLegalExplanation String?
-  gstNumber String? 
+  gstNumber String? @unique
   interestedCategories String[]
   companyWebsite String?
 }

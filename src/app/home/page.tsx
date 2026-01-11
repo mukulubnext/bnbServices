@@ -14,9 +14,9 @@ interface Props {}
 
 const Page: NextPage<Props> = ({}) => {
   const [greeting, setGreeting] = useState("");
-  const [user, setUser] = useState<any>({});
-  const [isLoading, setLoading] = useState(false);
-  const router = useRouter(); 
+  const [isLoading, setLoading] = useState(true);
+  const router = useRouter();
+  const [user, setUser] = useState<any>(null);
   useEffect(() => {
     const hour = new Date().getHours();
     if (hour < 12) {
@@ -27,21 +27,24 @@ const Page: NextPage<Props> = ({}) => {
       setGreeting("Good Evening");
     }
   }, []);
+
   useEffect(() => {
-    setLoading(true);
-    async function getUser() {
-      const res = await axios.post("/api/v1/auth/user");
-      if (res.data.status === "success") {
+    const getUser = async () => {
+      try {
+        const res = await axios.post("/api/v1/auth/user");
+        if (res.data.status !== "success") {
+          router.push("/signin");
+        }
         setUser(res.data.user);
-        console.log(res.data.user);
+      } catch (e) {
+        console.error(e);
+      } finally {
         setLoading(false);
       }
-      else {
-        router.push("/signin");
-      }
-    }
+    };
     getUser();
   }, []);
+
   return (
     <div className="flex flex-col px-[5%] pb-10 pt-30 gap-5 min-h-screen bg-light">
       {!isLoading ? (

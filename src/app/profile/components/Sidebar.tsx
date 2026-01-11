@@ -4,9 +4,10 @@ import React, { useState } from "react";
 interface SideBarProps{
     selected : number,
     setSelected : React.Dispatch<React.SetStateAction<number>>
+    role: string
 }
 
-export default function Sidebar({selected, setSelected}: SideBarProps)
+export default function Sidebar({selected, setSelected, role}: SideBarProps)
 {
     return (
         <div className="h-fit w-screen bg-white flex justify-between pt-[3vh] md:pt-[15vh] md:flex-col md:w-fit md:h-screen md:fixed md:top-0 md:left-0 md:justify-start md:gap-0 md:border-right-2 md:border-dark">
@@ -28,12 +29,15 @@ export default function Sidebar({selected, setSelected}: SideBarProps)
                     Manage Categories
                 </p>
             </div>
-            <div className={`w-full justify-center cursor-pointer flex-col flex md:flex-row py-4 lg:gap-2 transition-all duration-300 items-center lg:py-6 text-dark  ${selected===3?'bg-dark text-white':'hover:bg-dark/20'}`} onClick={()=>setSelected(3)}>
+            {
+                role === "seller" && 
+                <div className={`w-full justify-center cursor-pointer flex-col flex md:flex-row py-4 lg:gap-2 transition-all duration-300 items-center lg:py-6 text-dark  ${selected===3?'bg-dark text-white':'hover:bg-dark/20'}`} onClick={()=>setSelected(3)}>
                 <History/>
                 <p className="hidden sm:block text-nowrap sm:text-xs md:text-[16px]">
                     Transaction History
                 </p>
             </div>
+            }
         </div>
     )
 }

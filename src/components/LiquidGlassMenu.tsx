@@ -1,9 +1,28 @@
+"use client";
 import { LiquidGlassCard } from "@/components/LiquidGlass";
-import { House, Phone, Plus, User } from "lucide-react";
+import axios from "axios";
+import { History, House, Phone, Plus, User } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function LiquidGlassMenu() {
+  const router = useRouter();
+  const [userRole, setUserRole] = useState<"buyer" | "seller">("buyer");
+  const pathname = usePathname();
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const res = await axios.post("/api/v1/auth/user");
+        if (res.data.status === "success") {
+          setUserRole(res.data.user.role);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    getUser();
+  }, []);
   return (
     <LiquidGlassCard
       shadowIntensity="lg"
@@ -12,7 +31,7 @@ export default function LiquidGlassMenu() {
       className="flex fixed bottom-4 left-1/2 -translate-x-1/2 z-30 w-fit rounded-xl"
     >
       <div className="flex gap-px px-1 rounded-3xl ">
-        {usePathname() === "/home" ? (
+        {pathname === "/home" ? (
           <LiquidGlassCard
             blurIntensity="sm"
             draggable={false}
@@ -39,34 +58,68 @@ export default function LiquidGlassMenu() {
             </Link>
           </div>
         )}
-        {usePathname() === "/post" ? (
-          <LiquidGlassCard
-            blurIntensity="sm"
-            draggable={false}
-            glowIntensity="lg"
-            shadowIntensity="md"
-            className="md:w-16 cursor-pointer md:h-16 w-12 h-12 rounded-full"
-          >
-            <Link
-              href={"/post"}
-              className="relative z-30 flex items-center justify-center text-dark text-2xl w-full h-full "
-            >
-              <Plus className="w-6 h-6 md:w-8 md:h-8 hover:scale-105" />
-              <span className="sr-only">Post</span>
-            </Link>
-          </LiquidGlassCard>
+        {userRole === "buyer" ? (
+          <>
+            {pathname === "/post" ? (
+              <LiquidGlassCard
+                blurIntensity="sm"
+                draggable={false}
+                glowIntensity="lg"
+                shadowIntensity="md"
+                className="md:w-16 cursor-pointer md:h-16 w-12 h-12 rounded-full"
+              >
+                <Link
+                  href={"/post"}
+                  className="relative z-30 flex items-center justify-center text-dark text-2xl w-full h-full "
+                >
+                  <Plus className="w-6 h-6 md:w-8 md:h-8 hover:scale-105" />
+                  <span className="sr-only">Post</span>
+                </Link>
+              </LiquidGlassCard>
+            ) : (
+              <div className="md:w-16 cursor-pointer md:h-16 w-12 h-12 rounded-full  ">
+                <Link
+                  href={"/post"}
+                  className="relative z-30 flex items-center justify-center text-dark text-2xl w-full h-full "
+                >
+                  <Plus className="w-6 h-6 md:w-8 md:h-8 hover:scale-105" />
+                  <span className="sr-only">Post</span>
+                </Link>
+              </div>
+            )}
+          </>
         ) : (
-          <div className="md:w-16 cursor-pointer md:h-16 w-12 h-12 rounded-full  ">
-            <Link
-              href={"/post"}
-              className="relative z-30 flex items-center justify-center text-dark text-2xl w-full h-full "
-            >
-              <Plus className="w-6 h-6 md:w-8 md:h-8 hover:scale-105" />
-              <span className="sr-only">Post</span>
-            </Link>
-          </div>
+          <>
+            {pathname === "/transactions" ? (
+              <LiquidGlassCard
+                blurIntensity="sm"
+                draggable={false}
+                glowIntensity="lg"
+                shadowIntensity="md"
+                className="md:w-16 cursor-pointer md:h-16 w-12 h-12 rounded-full"
+              >
+                <Link
+                  href={"/transactions"}
+                  className="relative z-30 flex items-center justify-center text-dark text-2xl w-full h-full "
+                >
+                  <History className="w-6 h-6 md:w-8 md:h-8 hover:scale-105" />
+                  <span className="sr-only">Transactions</span>
+                </Link>
+              </LiquidGlassCard>
+            ) : (
+              <div className="md:w-16 cursor-pointer md:h-16 w-12 h-12 rounded-full  ">
+                <Link
+                  href={"/transactions"}
+                  className="relative z-30 flex items-center justify-center text-dark text-2xl w-full h-full "
+                >
+                  <History className="w-6 h-6 md:w-8 md:h-8 hover:scale-105" />
+                  <span className="sr-only">Transactions</span>
+                </Link>
+              </div>
+            )}
+          </>
         )}
-        {usePathname() === "/profile" ? (
+        {pathname === "/profile" ? (
           <LiquidGlassCard
             blurIntensity="sm"
             draggable={false}
@@ -93,7 +146,7 @@ export default function LiquidGlassMenu() {
             </Link>
           </div>
         )}
-        {usePathname() === "/contact" ? (
+        {pathname === "/contact" ? (
           <LiquidGlassCard
             blurIntensity="sm"
             draggable={false}
