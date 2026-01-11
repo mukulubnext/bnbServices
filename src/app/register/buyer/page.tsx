@@ -305,7 +305,7 @@ function Register() {
             Submit
           </button>
         ) : (
-          <button className="text-xl my-6 font-bold bg-muted flex justify-center items-center w-full py-4 ring-1 ring-dark hover:bg-light transition-all duration-300 hover:text-dark">
+          <button className="text-xl my-6 font-bold bg-muted flex justify-center items-center w-full py-4 ring-1 ring-dark transition-all duration-300 hover:text-dark">
             <Spinner light={false} />
           </button>
         )}

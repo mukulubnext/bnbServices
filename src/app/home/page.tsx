@@ -6,13 +6,17 @@ import { useEffect, useState } from "react";
 import LiquidGlassMenu from "../../components/LiquidGlassMenu";
 import EllipsisComp from "./components/Ellipsis";
 import Link from "next/link";
+import axios from "axios";
+import Spinner from "@/components/Spinner";
+import { useRouter } from "next/navigation";
 
 interface Props {}
 
 const Page: NextPage<Props> = ({}) => {
-  const username = "John Doe";
   const [greeting, setGreeting] = useState("");
-  const [temp, setTemp] = useState(true);
+  const [user, setUser] = useState<any>({});
+  const [isLoading, setLoading] = useState(false);
+  const router = useRouter(); 
   useEffect(() => {
     const hour = new Date().getHours();
     if (hour < 12) {
@@ -23,32 +27,38 @@ const Page: NextPage<Props> = ({}) => {
       setGreeting("Good Evening");
     }
   }, []);
+  useEffect(() => {
+    setLoading(true);
+    async function getUser() {
+      const res = await axios.post("/api/v1/auth/user");
+      if (res.data.status === "success") {
+        setUser(res.data.user);
+        console.log(res.data.user);
+        setLoading(false);
+      }
+      else {
+        router.push("/signin");
+      }
+    }
+    getUser();
+  }, []);
   return (
     <div className="flex flex-col px-[5%] pb-10 pt-30 gap-5 min-h-screen bg-light">
-      <Navbar solid={true} />
-      <div className="text-dark md:gap-4 font-bold flex-col flex text-3xl md:text-4xl lg:text-6xl md:flex-row">
-        <span>{greeting},</span>
-        <span>{username}...</span>
-      </div>
-      <div>
-        {/* Input to select buyer/seller menu */}
-        <div className="relative border rounded-lg border-dark w-[60%] md:w-[30%] lg:w-[20%]">
-          <select
-            defaultValue={temp ? "buyer" : "seller"}
-            onChange={(e) => setTemp(e.target.value === "buyer")}
-            className="bg-light text-dark rounded-lg h-full placeholder:dark/22 pl-8 py-1 w-full"
-          >
-            <option value={"buyer"}>Buyer</option>
-            <option value={"seller"}>Seller</option>
-          </select>
-          <ArrowUpDown
-            size={20}
-            className="text-dark absolute left-1 top-1/2 -translate-y-1/2 "
-          />
+      {!isLoading ? (
+        <>
+          <Navbar solid={true} />
+          <div className="text-dark md:gap-4 font-bold flex-col flex text-3xl md:text-4xl lg:text-6xl md:flex-row">
+            <span>{greeting},</span>
+            <span>{user.companyName}...</span>
+          </div>
+          {user.role === "buyer" ? <Buyer /> : <Seller />}
+          <LiquidGlassMenu />
+        </>
+      ) : (
+        <div className="mx-auto flex justify-center items-center flex-col gap-4 font-bold text-dark">
+          <Spinner light={false} />
         </div>
-      </div>
-      {temp ? <Buyer /> : <Seller />}
-      <LiquidGlassMenu />
+      )}
     </div>
   );
 };
@@ -130,7 +140,10 @@ function Buyer() {
         <p className="text-lg md:text-3xl text-dark">
           Need to buy something? Make a post!
         </p>
-        <Link href={"/post"} className="flex gap-4 justify-center items-center w-full bg-dark md:max-w-[40%] text-highlight font-bold py-2 md:text-2xl hover:bg-transparent border border-dark hover:text-dark transition-all duration-300 rounded-lg">
+        <Link
+          href={"/post"}
+          className="flex gap-4 justify-center items-center w-full bg-dark md:max-w-[40%] text-highlight font-bold py-2 md:text-2xl hover:bg-transparent border border-dark hover:text-dark transition-all duration-300 rounded-lg"
+        >
           <Pencil size={20} />
           Post
         </Link>
@@ -151,10 +164,10 @@ function Buyer() {
                 className="text-dark absolute left-1 top-1/2 -translate-y-1/2 "
               />
             </div>
-            <div className="relative border rounded-lg border-dark w-[10%]">
+            <div className="relative bg-light  border rounded-lg border-dark w-10 md:min-w-fit md:w-[20%]">
               <select
                 defaultValue={""}
-                className="bg-light text-dark rounded-lg h-full placeholder:dark/22 pl-8 py-1 w-full"
+                className="text-dark rounded-lg h-full placeholder:dark/22 pl-8 py-1 w-full"
               >
                 <option value={""} disabled>
                   Sort By
@@ -276,10 +289,10 @@ function Seller() {
                 className="text-dark absolute left-1 top-1/2 -translate-y-1/2 "
               />
             </div>
-            <div className="relative border rounded-lg border-dark w-[20%]">
+            <div className="relative bg-light  border rounded-lg border-dark w-10 md:min-w-fit md:w-[20%]">
               <select
                 defaultValue={""}
-                className="bg-light text-dark rounded-lg h-full placeholder:dark/22 pl-8 py-1 w-full"
+                className="text-dark z-50 rounded-lg h-full placeholder:dark/22 pl-8 py-1 w-full"
               >
                 <option value={""} disabled>
                   Sort By

@@ -1,30 +1,61 @@
 "use client";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import Spinner from "@/components/Spinner";
+import axios from "axios";
 import { Eye, EyeClosed, LogIn } from "lucide-react";
 import { NextPage } from "next";
 import Link from "next/link";
+import { useRouter } from "next/navigation"
 import { useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
 
 interface Props {}
 
 const Page: NextPage<Props> = ({}) => {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
-  const handleSubmit = () => {
-  }
+  const handleSubmit = async () => {
+    if (!email || !password) {
+      toast.error("Please fill all the fields!");
+      return;
+    }
+    setLoading(true);
+    const body = {
+      email: email,
+      password: password,
+      rememberMe: rememberMe,
+    };
+    try {
+      const res = await axios.post("/api/v1/auth/signin", body);
+      if (res.data.status === "success") {
+        toast.success("Login Successful!");
+        router.push("/home");
+        setLoading(false);
+      } else {
+        toast.error(res.data.message);
+        setLoading(false);
+      }
+    } catch (err: any) {
+      toast.error(err.response.data.message);
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="flex relative md:flex-row flex-col-reverse bg-light">
+      <ToastContainer />
       <Breadcrumbs />
       <div className="flex flex-col gap-4 px-[5%] py-[10%] relative md:py-[5%] md:w-[50vw] min-h-screen h-fit">
         <div className=" text-dark mb-5">
           <h1 className="font-bold text-4xl">Sign In</h1>
           <p>Access your Buyer/Seller account </p>
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-2">
           <div className="w-full flex justify-center flex-col">
             <label htmlFor="email" className="font-medium text-xl text-dark">
               Email Address
@@ -59,15 +90,37 @@ const Page: NextPage<Props> = ({}) => {
               </button>
             </div>
           </div>
-          <Link
-            href={"/forgot-password"}
-            className="text-dark underline hover:no-underline transition-all duration-300"
+          <div className="flex justify-between">
+            <label className="inline-flex items-center mr-6">
+              <input
+                type="checkbox"
+                className="form-checkbox text-highlight"
+                name="rememberMe"
+                value="yes"
+                checked={rememberMe}
+                onChange={() => setRememberMe((e) => !e)}
+              />
+              <span className="ml-2 text-dark">Remember Me</span>
+            </label>
+            <Link
+              href={"/forgot-password"}
+              className="text-dark underline hover:no-underline transition-all duration-300"
+            >
+              Forgot Password?
+            </Link>
+          </div>
+          {!isLoading ? (
+          <button
+            onClick={handleSubmit}
+            className="text-xl my-6 font-bold text-highlight bg-dark w-full py-4 hover:ring-1 ring-dark hover:bg-light transition-all duration-300 hover:text-dark"
           >
-            Forgot Password?
-          </Link>
-          <Link href={"/home"} className="text-xl text-center my-6 font-bold text-highlight bg-dark w-full py-4 hover:ring-1 ring-dark hover:bg-light transition-all duration-300 hover:text-dark">
             Submit
-          </Link>
+          </button>
+        ) : (
+          <button className="text-xl my-6 font-bold bg-muted flex justify-center items-center w-full py-4 ring-1 ring-dark transition-all duration-300 hover:text-dark">
+            <Spinner light={false} />
+          </button>
+        )}
         </div>
         <div className="flex relative top-4 md:hidden justify-center items-center"></div>
       </div>
