@@ -151,7 +151,7 @@ function Buyer() {
                 className="text-dark absolute left-1 top-1/2 -translate-y-1/2 "
               />
             </div>
-            <div className="relative border rounded-lg border-dark w-[40%]">
+            <div className="relative border rounded-lg border-dark w-[10%]">
               <select
                 defaultValue={""}
                 className="bg-light text-dark rounded-lg h-full placeholder:dark/22 pl-8 py-1 w-full"
@@ -276,7 +276,7 @@ function Seller() {
                 className="text-dark absolute left-1 top-1/2 -translate-y-1/2 "
               />
             </div>
-            <div className="relative border rounded-lg border-dark w-[40%]">
+            <div className="relative border rounded-lg border-dark w-[20%]">
               <select
                 defaultValue={""}
                 className="bg-light text-dark rounded-lg h-full placeholder:dark/22 pl-8 py-1 w-full"

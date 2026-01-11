@@ -154,7 +154,7 @@ const Pag: NextPage<Props> = ({}) => {
             {selected === 3 &&
               <div className="flex flex-col gap-6">
                 <h1 className="font-semibold text-dark flex items-center gap-2 text-2xl">
-                  <Coins/> Transactions
+                  <Coins/> Transactions only for seller
                 </h1>
                 
                 <div className="flex flex-col gap-4">

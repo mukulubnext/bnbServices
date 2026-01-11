@@ -576,7 +576,7 @@ function AdditionalInfo() {
         {/* ADDRESS */}
         <div className="w-full flex flex-col">
           <label className="font-medium text-xl text-dark">
-            Link for socials, company website etc.
+            Link for company website
           </label>
           <div className="relative">
             <input className="border border-dark pl-12 text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full" />
