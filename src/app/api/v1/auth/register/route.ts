@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     employeeCount: z.string().min(3).max(50),
     pastLegalAction: z.boolean(),
     pastLegalExplanation: z.string().max(50).optional().nullable(),
-    gstNumber: z.string().min(3).max(50).optional(),
+    gstNumber: z.string().min(15).max(15).optional(),
     interestedCategories: z.array(z.string().min(3).max(50)).optional(),
     companyWebsite: z.url().optional(),
   });

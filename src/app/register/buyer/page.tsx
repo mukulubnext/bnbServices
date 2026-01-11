@@ -16,9 +16,9 @@ import RegisterStep from "../components/RegisterStep";
 import Link from "next/link";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
+import Spinner from "@/components/Spinner";
 
 const url = process.env.NEXT_PUBLIC_BACKEND_URL;
-console.log(url);
 
 interface Props {}
 
@@ -90,6 +90,7 @@ function Register() {
   const [sentPhoneOTP, setSentPhoneOTP] = useState(false);
   const [confirmMailOTP, setConfirmMailOTP] = useState(false);
   const [confirmPhoneOTP, setConfirmPhoneOTP] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const { stepNumber, setStepNumber, setData } = context;
 
   const handleSendMailOTP = () => {
@@ -104,7 +105,7 @@ function Register() {
   const handleConfirmPhoneOTP = () => {
     setConfirmPhoneOTP(true);
   };
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!email || !password || !phone || !role) {
       toast.error("Please fill all the fields!");
       return;
@@ -114,6 +115,19 @@ function Register() {
       return;
     }
     if (password === confirmPassword) {
+      setLoading(true);
+      const check = {
+        email: email,
+        phone: phone,
+      };
+      const res = await axios.post(`${url}/api/v1/auth/checkExisting`, check);
+      if (res.data.status === "success") {
+        if (res.data.exists) {
+          toast.error("User already exists with this email/phone!");
+          setLoading(false);
+          return;
+        }
+      }
       const body = {
         email: email,
         password: password,
@@ -283,12 +297,18 @@ function Register() {
             </button>
           </div>
         </div>
-        <button
-          onClick={handleSubmit}
-          className="text-xl my-6 font-bold text-highlight bg-dark w-full py-4 hover:ring-1 ring-dark hover:bg-light transition-all duration-300 hover:text-dark"
-        >
-          Submit
-        </button>
+        {!isLoading ? (
+          <button
+            onClick={handleSubmit}
+            className="text-xl my-6 font-bold text-highlight bg-dark w-full py-4 hover:ring-1 ring-dark hover:bg-light transition-all duration-300 hover:text-dark"
+          >
+            Submit
+          </button>
+        ) : (
+          <button className="text-xl my-6 font-bold bg-muted flex justify-center items-center w-full py-4 ring-1 ring-dark hover:bg-light transition-all duration-300 hover:text-dark">
+            <Spinner light={false} />
+          </button>
+        )}
         <Link
           href={"/signin"}
           className="text-dark underline hover:no-underline"
@@ -316,13 +336,21 @@ function Profile() {
   const [pastLegalExplanation, setPastLegalExplanation] = useState("");
 
   const handleSubmit = () => {
-    if(!companyName || !addressLine1 || !city || !stateName || !zipCode || !inceptionDate || !employeeCount){
+    if (
+      !companyName ||
+      !addressLine1 ||
+      !city ||
+      !stateName ||
+      !zipCode ||
+      !inceptionDate ||
+      !employeeCount
+    ) {
       toast.error("Please fill all the fields!");
       return;
     }
     const body = {
       companyName: companyName,
-      address: addressLine1+" "+addressLine2,
+      address: addressLine1 + " " + addressLine2,
       city: city,
       state: stateName,
       zipCode: zipCode,
@@ -330,7 +358,7 @@ function Profile() {
       employeeCount: employeeCount,
       pastLegalAction: pastLegalAction,
       pastLegalExplanation: pastLegalExplanation,
-    }
+    };
     setData((e: any) => ({ ...e, ...body }));
     setStepNumber(3);
   };
@@ -537,6 +565,7 @@ function AdditionalInfo() {
   );
   const [search, setSearch] = useState("");
   const [website, setWebsite] = useState("");
+  const [isLoading, setLoading] = useState(false);
   const context = useContext(StepContext);
   if (!context) return null;
   const { stepNumber, setStepNumber, data, setData } = context;
@@ -570,18 +599,37 @@ function AdditionalInfo() {
   };
 
   const handleSubmit = async () => {
-    if(website!=="" && (!website.includes("https://") && !website.includes("http://"))){
+    setLoading(true);
+    if (
+      website !== "" &&
+      !website.includes("https://") &&
+      !website.includes("http://")
+    ) {
       toast.error("Please enter full website url with https:// or http://");
       return;
     }
     const body = {
       interestedCategories: interestedCategories,
       companyWebsite: website,
+    };
+    const payload = {
+      ...data,
+      ...body,
+    };
+    try {
+      const res = await axios.post("/api/v1/auth/register", payload);
+
+      if (res.data.status === "success") {
+        toast.success("Registered successfully!");
+        window.location.href = `/signin`;
+      } else {
+        toast.error(res.data.message ?? "Something went wrong!");
+      }
+    } catch (err) {
+      toast.error("Something went wrong!");
+    } finally {
+      setLoading(false);
     }
-    setData((e: any) => ({ ...e, ...body }));
-    console.log(data);
-    const res = await axios.post("/api/v1/auth/register", data);
-    console.log(res);
   };
 
   return (
@@ -652,17 +700,29 @@ function AdditionalInfo() {
             Link for company website
           </label>
           <div className="relative">
-            <input onChange={(e)=>setWebsite(e.target.value)} value={website} className="border border-dark pl-12 text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full" />
+            <input
+              onChange={(e) => setWebsite(e.target.value)}
+              value={website}
+              className="border border-dark pl-12 text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
+            />
             <LinkIcon className="absolute text-dark left-3 top-1/2 -translate-y-1/2" />
           </div>
         </div>
 
-        <button
-          onClick={handleSubmit}
-          className="text-xl my-6 font-bold text-highlight bg-dark w-full py-4 hover:ring-1 ring-dark hover:bg-light transition-all duration-300 hover:text-dark"
-        >
-          {website==="" && interestedCategories.length===0 ? "Skip" : "Submit"}
-        </button>
+        {!isLoading ? (
+          <button
+            onClick={handleSubmit}
+            className="text-xl my-6 font-bold text-highlight bg-dark w-full py-4 hover:ring-1 ring-dark hover:bg-light transition-all duration-300 hover:text-dark"
+          >
+            {website === "" && interestedCategories.length === 0
+              ? "Skip"
+              : "Submit"}
+          </button>
+        ) : (
+          <button className="text-xl my-6 font-bold bg-muted flex justify-center items-center w-full py-4 ring-1 ring-dark transition-all duration-300 ">
+            <Spinner light={false} />
+          </button>
+        )}
       </div>
     </>
   );
