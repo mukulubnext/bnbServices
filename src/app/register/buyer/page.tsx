@@ -120,7 +120,7 @@ function Register() {
         email: email,
         phone: phone,
       };
-      const res = await axios.post(`${url}/api/v1/auth/checkExisting`, check);
+      const res = await axios.post(`/api/v1/auth/checkExisting`, check);
       if (res.data.status === "success") {
         if (res.data.exists) {
           toast.error("User already exists with this email/phone!");

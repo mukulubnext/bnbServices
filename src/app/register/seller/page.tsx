@@ -16,7 +16,6 @@ import RegisterStep from "../components/RegisterStep";
 import Link from "next/link";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
-import { SP } from "next/dist/shared/lib/utils";
 import Spinner from "@/components/Spinner";
 
 interface Props {}
