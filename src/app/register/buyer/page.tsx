@@ -14,21 +14,30 @@ import { NextPage } from "next";
 import React, { createContext, useContext, useState } from "react";
 import RegisterStep from "../components/RegisterStep";
 import Link from "next/link";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+
+const url = process.env.NEXT_PUBLIC_BACKEND_URL;
+console.log(url);
 
 interface Props {}
 
 type StepContextType = {
   stepNumber: number;
   setStepNumber: React.Dispatch<React.SetStateAction<number>>;
+  data: any;
+  setData: React.Dispatch<React.SetStateAction<any>>;
 };
 
 const StepContext = createContext<StepContextType | null>(null);
-const Role = "buyer";
+const role = "buyer";
 
 const Page: NextPage<Props> = ({}) => {
   const [stepNumber, setStepNumber] = useState(1);
+  const [data, setData] = useState<any>({});
   return (
-    <StepContext.Provider value={{ stepNumber, setStepNumber }}>
+    <StepContext.Provider value={{ stepNumber, setStepNumber, data, setData }}>
+      <ToastContainer />
       <div className="flex relative md:flex-row flex-col-reverse bg-light">
         <Breadcrumbs />
         <div className="flex flex-col gap-4 px-[5%] py-[10%] relative md:py-[5%] md:w-[50vw] min-h-screen h-fit">
@@ -36,7 +45,7 @@ const Page: NextPage<Props> = ({}) => {
           {stepNumber === 2 && <Profile />}
           {stepNumber === 3 && <AdditionalInfo />}
           <div className="flex relative top-8 md:hidden justify-center items-center">
-            <RegisterStep active={stepNumber} invert={true}/>
+            <RegisterStep active={stepNumber} invert={true} />
           </div>
         </div>
         <div className="relative">
@@ -81,7 +90,7 @@ function Register() {
   const [sentPhoneOTP, setSentPhoneOTP] = useState(false);
   const [confirmMailOTP, setConfirmMailOTP] = useState(false);
   const [confirmPhoneOTP, setConfirmPhoneOTP] = useState(false);
-  const { stepNumber, setStepNumber } = context;
+  const { stepNumber, setStepNumber, setData } = context;
 
   const handleSendMailOTP = () => {
     setSentMailOTP(true);
@@ -96,8 +105,27 @@ function Register() {
     setConfirmPhoneOTP(true);
   };
   const handleSubmit = () => {
-    if (stepNumber === 1) {
+    if (!email || !password || !phone || !role) {
+      toast.error("Please fill all the fields!");
+      return;
+    }
+    if (!confirmMailOTP || !confirmPhoneOTP) {
+      toast.error("Please confirm with OTP!");
+      return;
+    }
+    if (password === confirmPassword) {
+      const body = {
+        email: email,
+        password: password,
+        phone: phone,
+        isEmailVerified: confirmMailOTP,
+        isPhoneVerified: confirmPhoneOTP,
+        role: role,
+      };
+      setData((e: any) => ({ ...e, ...body }));
       setStepNumber(2);
+    } else {
+      toast.warning("Password and Confirm Password must be same");
     }
   };
   return (
@@ -114,7 +142,7 @@ function Register() {
           <div className="flex justify-center relative items-center w-full">
             <input
               value={email}
-              onChange={(e)=>setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               type="email"
               id="email"
               className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
@@ -142,7 +170,7 @@ function Register() {
             <div className="flex justify-center relative items-center w-full">
               <input
                 value={emailOTP}
-                onChange={(e)=>setEmailOTP(e.target.value)}
+                onChange={(e) => setEmailOTP(e.target.value)}
                 type="email"
                 id="email"
                 className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
@@ -163,7 +191,7 @@ function Register() {
           <div className="flex justify-center relative items-center w-full">
             <input
               value={phone}
-              onChange={(e)=>setPhone(e.target.value)}
+              onChange={(e) => setPhone(e.target.value)}
               type="tel"
               id="phone"
               className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
@@ -191,7 +219,7 @@ function Register() {
             <div className="flex justify-center relative items-center w-full">
               <input
                 value={phoneOTP}
-                onChange={(e)=>setPhoneOTP(e.target.value)}
+                onChange={(e) => setPhoneOTP(e.target.value)}
                 type="email"
                 id="email"
                 className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
@@ -212,7 +240,7 @@ function Register() {
           <div className="flex justify-center relative items-center w-full">
             <input
               value={password}
-              onChange={(e)=>setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               type={showPass ? "text" : "password"}
               id="confirm"
               className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
@@ -226,13 +254,23 @@ function Register() {
           </div>
         </div>
         <div className="w-full flex justify-center flex-col">
-          <label htmlFor="password" className="font-medium text-xl text-dark">
-            Confirm Password
+          <label
+            htmlFor="password"
+            className="font-medium flex gap-2 items-center text-xl text-dark"
+          >
+            Confirm Password{" "}
+            {password !== confirmPassword &&
+              confirmPassword !== "" &&
+              password !== "" && (
+                <p className="text-xs text-red-500">
+                  Doesnt match with password
+                </p>
+              )}
           </label>
           <div className="flex justify-center relative items-center w-full">
             <input
               value={confirmPassword}
-              onChange={(e)=>setConfirmPassword(e.target.value)}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               type={showConfirm ? "text" : "password"}
               id="password"
               className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
@@ -251,7 +289,12 @@ function Register() {
         >
           Submit
         </button>
-        <Link href={"/signin"} className="text-dark underline hover:no-underline">Already Registered?</Link>
+        <Link
+          href={"/signin"}
+          className="text-dark underline hover:no-underline"
+        >
+          Already Registered?
+        </Link>
       </div>
     </>
   );
@@ -260,7 +303,7 @@ function Register() {
 function Profile() {
   const context = useContext(StepContext);
   if (!context) return null;
-  const { stepNumber, setStepNumber } = context;
+  const { stepNumber, setStepNumber, setData } = context;
   const [companyName, setCompanyName] = useState("");
   const [addressLine1, setAddressLine1] = useState("");
   const [addressLine2, setAddressLine2] = useState("");
@@ -273,6 +316,22 @@ function Profile() {
   const [pastLegalExplanation, setPastLegalExplanation] = useState("");
 
   const handleSubmit = () => {
+    if(!companyName || !addressLine1 || !city || !stateName || !zipCode || !inceptionDate || !employeeCount){
+      toast.error("Please fill all the fields!");
+      return;
+    }
+    const body = {
+      companyName: companyName,
+      address: addressLine1+" "+addressLine2,
+      city: city,
+      state: stateName,
+      zipCode: zipCode,
+      inceptionDate: inceptionDate,
+      employeeCount: employeeCount,
+      pastLegalAction: pastLegalAction,
+      pastLegalExplanation: pastLegalExplanation,
+    }
+    setData((e: any) => ({ ...e, ...body }));
     setStepNumber(3);
   };
 
@@ -477,7 +536,10 @@ function AdditionalInfo() {
     []
   );
   const [search, setSearch] = useState("");
-
+  const [website, setWebsite] = useState("");
+  const context = useContext(StepContext);
+  if (!context) return null;
+  const { stepNumber, setStepNumber, data, setData } = context;
   const dummyCategories = [
     "Cloud Services",
     "AI & Machine Learning",
@@ -507,8 +569,19 @@ function AdditionalInfo() {
     setInterestedCategories(interestedCategories.filter((c) => c !== cat));
   };
 
-  const handleSubmit = () => {
-    console.log("Selected:", interestedCategories);
+  const handleSubmit = async () => {
+    if(website!=="" && (!website.includes("https://") && !website.includes("http://"))){
+      toast.error("Please enter full website url with https:// or http://");
+      return;
+    }
+    const body = {
+      interestedCategories: interestedCategories,
+      companyWebsite: website,
+    }
+    setData((e: any) => ({ ...e, ...body }));
+    console.log(data);
+    const res = await axios.post("/api/v1/auth/register", data);
+    console.log(res);
   };
 
   return (
@@ -579,7 +652,7 @@ function AdditionalInfo() {
             Link for company website
           </label>
           <div className="relative">
-            <input className="border border-dark pl-12 text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full" />
+            <input onChange={(e)=>setWebsite(e.target.value)} value={website} className="border border-dark pl-12 text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full" />
             <LinkIcon className="absolute text-dark left-3 top-1/2 -translate-y-1/2" />
           </div>
         </div>
@@ -588,7 +661,7 @@ function AdditionalInfo() {
           onClick={handleSubmit}
           className="text-xl my-6 font-bold text-highlight bg-dark w-full py-4 hover:ring-1 ring-dark hover:bg-light transition-all duration-300 hover:text-dark"
         >
-          Submit
+          {website==="" && interestedCategories.length===0 ? "Skip" : "Submit"}
         </button>
       </div>
     </>
