@@ -120,13 +120,22 @@ const Navbar: NextPage<Props> = ({ solid, userProp }: Props) => {
         <div className="flex justify-center items-center flex-col pb-4 gap-4 px-6">
           {!loading ? (
             !user ? (
-              <Link
+              <>
+                <Link
                 href={"/register"}
                 onClick={() => setMenuOpen(false)}
                 className="w-full py-3 text-center bg-light text-dark font-bold rounded-xl"
               >
                 Register Now
               </Link>
+              <Link
+                href={"/signin"}
+                onClick={() => setMenuOpen(false)}
+                className="w-full py-3 text-center text-light ring-2 ring-light font-bold rounded-xl"
+              >
+                Sign In
+              </Link>
+              </>
             ) : (
               <Link
                 href={"/profile"}
