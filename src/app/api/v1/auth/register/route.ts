@@ -91,7 +91,6 @@ export async function POST(req: NextRequest) {
         pastLegalAction: pastLegalAction,
         pastLegalExplanation: pastLegalExplanation,
         gstNumber: gstNumber,
-        interestedCategories: interestedCategories,
         companyWebsite: companyWebsite,
       },
     });
