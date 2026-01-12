@@ -20,6 +20,7 @@ const Page: NextPage<Props> = ({}) => {
   const [quantity, setQuantity] = useState(1);
   const [budget, setBudget] = useState(0);
   const [image, setImage] = useState<File | null>(null);
+  const [posting, setPosting] = useState(false);
   const router = useRouter();
   useEffect(() => {
     if (!loading && !user) {
@@ -27,6 +28,7 @@ const Page: NextPage<Props> = ({}) => {
     }
   }, [user, loading, router]);
   const handlePost = async () => {
+    setPosting(true);
     const body = {
       title,
       description,
@@ -36,6 +38,7 @@ const Page: NextPage<Props> = ({}) => {
     };
     if(!title || !description || !details || !quantity || !budget){
       toast.error("Please fill all the fields!");
+      setPosting(false);
       return;
     }
     try {
@@ -54,6 +57,9 @@ const Page: NextPage<Props> = ({}) => {
     } catch (err) {
       console.log(err);
       toast.error("Something went wrong!");
+    }
+    finally{
+      setPosting(false);
     }
   };
 
@@ -172,13 +178,26 @@ const Page: NextPage<Props> = ({}) => {
                 <IndianRupee size={16} className="absolute text-dark left-2"/>
                 </div>
               </label>
-              <button
+              {
+                !posting ?
+                (
+                  <button
                 type="submit"
                 onClick={() => handlePost()}
                 className="bg-dark text-highlight font-bold py-2 hover:bg-transparent border border-dark hover:text-dark transition-all duration-300 rounded-lg mt-4 w-fit px-6"
               >
                 Post
               </button>
+                )
+                :
+              (
+                <div
+                className="text-highlight font-bold py-2 hover:bg-transparent border border-dark transition-all duration-300 rounded-lg mt-4 w-fit px-8"
+              >
+                <Spinner light={false} />
+              </div>
+              )
+              }
             </div>
           </div>
         </div>

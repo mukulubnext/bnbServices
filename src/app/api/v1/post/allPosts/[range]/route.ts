@@ -23,7 +23,7 @@ export async function GET(
 
   try {
     const posts = await prisma.posts.findMany({
-      where: { userId: userId },
+      where: { userId: userId, isDeleted: false },
       select: {
         id: true,
         title: true,

@@ -69,7 +69,6 @@ function Buyer() {
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [total, setTotal] = useState(0);
   const [range, setRange] = useState(1);
   const fetchPosts = async (r: number) => {
   try {
@@ -81,7 +80,6 @@ function Buyer() {
       );
 
       setHasMore(res.data.hasMore);
-      setTotal(res.data.total);
     }
   } catch (err) {
     console.error(err);
@@ -157,7 +155,7 @@ function Buyer() {
                 >
                   <p className="text-dark font-semibold">{post.title}</p>
                   <p className="text-dark/70">{post.date}</p>
-                  <EllipsisComp />
+                  <EllipsisComp isActive={post.isActive} />
                   <div className="hidden md:flex justify-center gap-6 lg:gap-10 items-center">
                     <button className="font-bold flex justify-center items-center gap-1 hover:scale-105 py-1 px-4 border border-dark text-dark transition-all duration-300 rounded-lg">
                       <Pencil size={16} /> Edit
@@ -180,7 +178,7 @@ function Buyer() {
                 </div>
               ))
             ) : !loading && posts.length === 0 ? (
-              <div className="flex justify-center items-center">
+              <div className="flex justify-center py-2 items-center">
                 <p className="text-dark/70">No posts found</p>
               </div>
             ) : (
