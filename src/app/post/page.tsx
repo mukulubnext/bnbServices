@@ -1,16 +1,51 @@
 "use client";
 import LiquidGlassMenu from "@/components/LiquidGlassMenu";
 import Navbar from "@/components/Navbar";
+import Spinner from "@/components/Spinner";
+import axios from "axios";
 import { NextPage } from "next";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
 
 interface Props {}
 
 const Page: NextPage<Props> = ({}) => {
+  const [user, setUser] = useState<any>({});
+  const [fetching, setFetching] = useState(true);
+  const router = useRouter();
+  useEffect(()=>{
+    const getUser = async () => {
+      try{
+        const res = await axios.post("/api/v1/auth/user");
+        if(res.data.status === "success"){
+          setUser(res.data.user);
+          if(res.data.user.role === "seller"){
+            router.push("/home");
+          }
+        }
+        else{
+          router.push("/signin");
+        }
+      }
+      catch(e){
+        toast.error("Something went wrong!")
+        console.log(e)
+      }
+      finally{
+        setFetching(false);
+      }
+    }
+    getUser();
+  },[])
   return (
     <div className="min-h-screen pt-[10vh] items-center relative bg-light">
       <Navbar solid />
       <LiquidGlassMenu />
-      <div className="bg-white py-20 md:py-10 flex p-6 flex-col min-h-[80vh] w-[90vw] md:w-[60vw] border border-dark rounded-lg mx-auto">
+      <ToastContainer/>
+      {
+        !fetching && user.role === "buyer" ? (
+          <div className="bg-white py-20 md:py-10 flex p-6 flex-col min-h-[80vh] w-[90vw] md:w-[60vw] border border-dark rounded-lg mx-auto">
         <h1 className="text-dark font-semibold text-3xl">Add a requirement</h1>
         <div>
           <form className="flex flex-col gap-4 mt-6">
@@ -94,6 +129,14 @@ const Page: NextPage<Props> = ({}) => {
           </form>
         </div>
       </div>
+        )
+        :
+        (
+          <div className="flex justify-center items-center">
+            <Spinner light={false} />
+          </div>
+        )
+      }
     </div>
   );
 };
