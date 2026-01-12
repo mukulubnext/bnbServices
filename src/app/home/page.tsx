@@ -1,6 +1,6 @@
 "use client";
 import Navbar from "@/components/Navbar";
-import { ArrowUpDown, Pencil, Search } from "lucide-react";
+import { ArrowUpDown, Eye, EyeOff, Pencil, Search, Trash, Trash2 } from "lucide-react";
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import LiquidGlassMenu from "../../components/LiquidGlassMenu";
@@ -9,12 +9,13 @@ import Link from "next/link";
 import Spinner from "@/components/Spinner";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import axios from "axios";
 
 interface Props {}
 
 const Page: NextPage<Props> = ({}) => {
   const [greeting, setGreeting] = useState("");
-  const {user, loading} = useAuth();
+  const { user, loading } = useAuth();
   const router = useRouter();
   useEffect(() => {
     const hour = new Date().getHours();
@@ -55,74 +56,24 @@ const Page: NextPage<Props> = ({}) => {
 export default Page;
 
 function Buyer() {
-  const posts = [
-    {
-      id: 1,
-      title: "Cartons",
-      date: "2024-06-15",
-      category: "Packaging Materials",
-    },
-    {
-      id: 2,
-      title: "Cartons",
-      date: "2024-06-15",
-      category: "Packaging Materials",
-    },
-    {
-      id: 3,
-      title: "Cartons",
-      date: "2024-06-15",
-      category: "Packaging Materials",
-    },
-    {
-      id: 4,
-      title: "Cartons",
-      date: "2024-06-15",
-      category: "Packaging Materials",
-    },
-    {
-      id: 5,
-      title: "Cartons",
-      date: "2024-06-15",
-      category: "Packaging Materials",
-    },
-    {
-      id: 6,
-      title: "Cartons",
-      date: "2024-06-15",
-      category: "Packaging Materials",
-    },
-    {
-      id: 7,
-      title: "Cartons",
-      date: "2024-06-15",
-      category: "Packaging Materials",
-    },
-    {
-      id: 8,
-      title: "Cartons",
-      date: "2024-06-15",
-      category: "Packaging Materials",
-    },
-    {
-      id: 9,
-      title: "Cartons",
-      date: "2024-06-15",
-      category: "Packaging Materials",
-    },
-    {
-      id: 10,
-      title: "Cartons",
-      date: "2024-06-15",
-      category: "Packaging Materials",
-    },
-    {
-      id: 11,
-      title: "Cartons",
-      date: "2024-06-15",
-      category: "Packaging Materials",
-    },
-  ];
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const res = await axios.get("/api/v1/post/allPosts/1");
+        if (res.data.status === "success") {
+          setPosts(res.data.posts);
+          setLoading(false);
+        } else {
+          setLoading(false);
+        }
+      } catch (err) {
+        setLoading(false);
+      }
+    };
+    fetchPosts();
+  }, []);
   return (
     <>
       <div className="flex flex-col md:flex-row gap-2 justify-between items-center">
@@ -169,30 +120,45 @@ function Buyer() {
             </div>
           </div>
           <div>
-            {posts.map((post) => (
-              <div
-                key={post.id}
-                className="flex justify-between items-center py-3 px-2 w-full first:border-0 border-t border-dark"
-              >
-                <p className="text-dark font-semibold">{post.title}</p>
-                <p className="text-dark/70">{post.date}</p>
-                <EllipsisComp />
-                <div className="hidden md:flex justify-center gap-6 lg:gap-10 items-center">
-                  <button className="font-bold hover:scale-105 py-1 px-4 border border-dark text-dark transition-all duration-300 rounded-lg">
-                    Option 1
-                  </button>
-                  <button className="font-bold hover:scale-105 py-1 px-4 border border-dark text-dark transition-all duration-300 rounded-lg">
-                    Option 2
-                  </button>
-                  <button className="font-bold hover:scale-105 py-1 px-4 border border-dark text-dark transition-all duration-300 rounded-lg">
-                    Option 3
-                  </button>
-                  <button className="font-bold hover:scale-105 py-1 px-4 border border-dark text-dark transition-all duration-300 rounded-lg">
-                    Option 4
-                  </button>
+            {!loading && posts.length > 0 ? (
+              posts.map((post: any) => (
+                <div
+                  key={post.id}
+                  className="flex justify-between items-center py-3 px-2 w-full first:border-0 border-t border-dark"
+                >
+                  <p className="text-dark font-semibold">{post.title}</p>
+                  <p className="text-dark/70">{post.date}</p>
+                  <EllipsisComp />
+                  <div className="hidden md:flex justify-center gap-6 lg:gap-10 items-center">
+                    <button className="font-bold flex justify-center items-center gap-1 hover:scale-105 py-1 px-4 border border-dark text-dark transition-all duration-300 rounded-lg">
+                      <Pencil size={16} /> Edit
+                    </button>
+                    {post.isActive ? (
+                      <button className="font-bold flex justify-center items-center gap-1 hover:scale-105 py-1 px-4 border border-dark text-dark transition-all duration-300 rounded-lg">
+                        <EyeOff size={16} /> Hide Post
+                      </button>
+                    ) : (
+                      <div>
+                        <button className="font-bold flex justify-center items-center gap-1 hover:scale-105 py-1 px-4 border border-dark text-dark transition-all duration-300 rounded-lg">
+                          <Eye size={16}/> Unhide Post
+                        </button>
+                      </div>
+                    )}
+                    <button className="font-bold flex justify-center items-center gap-1 hover:scale-105 py-1 px-4 border border-red-500 text-red-500 transition-all duration-300 rounded-lg">
+                        <Trash2 size={16} /> Delete
+                    </button>
+                  </div>
                 </div>
+              ))
+            ) : !loading && posts.length === 0 ? (
+              <div className="flex justify-center items-center">
+                <p className="text-dark/70">No posts found</p>
               </div>
-            ))}
+            ) : (
+              <div className="flex justify-center items-center py-6">
+                <Spinner light={false} />
+              </div>
+            )}
           </div>
         </div>
       </div>

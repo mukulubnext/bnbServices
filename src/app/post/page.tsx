@@ -4,7 +4,8 @@ import Navbar from "@/components/Navbar";
 import Spinner from "@/components/Spinner";
 import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
-import { NextPage } from "next"
+import { IndianRupee } from "lucide-react";
+import { NextPage } from "next";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
@@ -31,11 +32,29 @@ const Page: NextPage<Props> = ({}) => {
       description,
       details,
       quantity,
-      budget, 
+      budget,
+    };
+    if(!title || !description || !details || !quantity || !budget){
+      toast.error("Please fill all the fields!");
+      return;
     }
-    const res = await axios.post("/api/v1/post", body);
-    console.log("Body is: ", body);
-    console.log("Response is: ",res);
+    try {
+      const res = await axios.post("/api/v1/post/create", body);
+      if (res.data.status === "success") {
+        toast.success("Post created successfully!");
+        setTitle("");
+        setDescription("");
+        setDetails("");
+        setQuantity(1);
+        setBudget(0);
+        setImage(null);
+      } else {
+        toast.error(res.data.message);
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("Something went wrong!");
+    }
   };
 
   return (
@@ -102,39 +121,39 @@ const Page: NextPage<Props> = ({}) => {
               </div>
 
               <label className="flex flex-col gap-2">
-                <span className="text-dark font-medium">Title:</span>
+                <span className="text-dark font-medium">Title (3-100 characters):</span>
                 <input
                   type="text"
                   placeholder="Cartons"
                   value={title}
-                  onChange={(e)=>setTitle(e.target.value)}
+                  onChange={(e) => setTitle(e.target.value)}
                   className="border border-dark/20 rounded-md p-2 focus:outline-none focus:border-dark transition-all"
                 />
               </label>
               <label className="flex flex-col gap-2">
-                <span className="text-dark font-medium">Description:</span>
+                <span className="text-dark font-medium">Description (3-1000 characters):</span>
                 <textarea
                   value={description}
-                  onChange={(e)=>setDescription(e.target.value)}
+                  onChange={(e) => setDescription(e.target.value)}
                   placeholder="Need high quality cartons for packaging of Wooden Artifacts"
                   className="border border-dark/20 rounded-md p-2 h-32 focus:outline-none focus:border-dark transition-all"
                 />
               </label>
               <label className="flex flex-col gap-2">
-                <span className="text-dark font-medium">More Details:</span>
+                <span className="text-dark font-medium">More Details(max 200 characters):</span>
                 <input
                   type="text"
                   value={details}
-                  onChange={(e)=>setDetails(e.target.value)}
+                  onChange={(e) => setDetails(e.target.value)}
                   placeholder="Size, Material, Type etc."
                   className="border border-dark/20 rounded-md p-2 focus:outline-none focus:border-dark transition-all"
                 />
               </label>
               <label className="flex flex-col gap-2">
-                <span className="text-dark font-medium">Quantity:</span>
+                <span className="text-dark font-medium">Quantity(min 1):</span>
                 <input
                   value={quantity}
-                  onChange={(e)=>setQuantity(e.target.valueAsNumber)}
+                  onChange={(e) => setQuantity(e.target.valueAsNumber)}
                   type="number"
                   placeholder="1, 5, 10, 100 etc."
                   className="border border-dark/20 rounded-md p-2 focus:outline-none focus:border-dark transition-all"
@@ -142,15 +161,22 @@ const Page: NextPage<Props> = ({}) => {
               </label>
               <label className="flex flex-col gap-2">
                 <span className="text-dark font-medium">Budget:</span>
-                <input
+                <div className="relative w-full flex items-center">
+                  <input
                   type="number"
                   value={budget}
-                  onChange={(e)=>setBudget(e.target.valueAsNumber)}
+                  onChange={(e) => setBudget(e.target.valueAsNumber)}
                   placeholder="Budget for whole order (in INR)"
-                  className="border border-dark/20 rounded-md p-2 focus:outline-none focus:border-dark transition-all"
+                  className="border pl-8 border-dark/20 rounded-md p-2 w-full focus:outline-none focus:border-dark transition-all"
                 />
+                <IndianRupee size={16} className="absolute text-dark left-2"/>
+                </div>
               </label>
-              <button type="submit" onClick={()=>handlePost()} className="bg-dark text-highlight font-bold py-2 hover:bg-transparent border border-dark hover:text-dark transition-all duration-300 rounded-lg mt-4 w-fit px-6">
+              <button
+                type="submit"
+                onClick={() => handlePost()}
+                className="bg-dark text-highlight font-bold py-2 hover:bg-transparent border border-dark hover:text-dark transition-all duration-300 rounded-lg mt-4 w-fit px-6"
+              >
                 Post
               </button>
             </div>
