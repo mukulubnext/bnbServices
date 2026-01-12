@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 
 export default function LiquidGlassMenu() {
   const router = useRouter();
-  const [userRole, setUserRole] = useState<"buyer" | "seller">("buyer");
+  const [userRole, setUserRole] = useState<"buyer" | "seller" | null>(null);
   const pathname = usePathname();
   useEffect(() => {
     const getUser = async () => {
@@ -88,7 +88,7 @@ export default function LiquidGlassMenu() {
               </div>
             )}
           </>
-        ) : (
+        ) : userRole === "seller" ? (
           <>
             {pathname === "/transactions" ? (
               <LiquidGlassCard
@@ -118,6 +118,13 @@ export default function LiquidGlassMenu() {
               </div>
             )}
           </>
+        ) : (
+          <div className="md:w-16 cursor-pointer md:h-16 p-2 w-12 h-12 rounded-full  ">
+            <div
+              className="relative z-30 flex items-center bg-black/40 animate-pulse rounded-full  justify-center text-dark text-2xl w-full h-full "
+            >
+            </div>
+          </div>
         )}
         {pathname === "/profile" ? (
           <LiquidGlassCard
