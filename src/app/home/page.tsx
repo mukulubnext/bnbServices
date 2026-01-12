@@ -1,6 +1,15 @@
 "use client";
 import Navbar from "@/components/Navbar";
-import { ArrowUpDown, Eye, EyeOff, Pencil, Search, Trash, Trash2 } from "lucide-react";
+import {
+  ArrowUpDown,
+  Eye,
+  EyeOff,
+  Loader,
+  Pencil,
+  Search,
+  Trash,
+  Trash2,
+} from "lucide-react";
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import LiquidGlassMenu from "../../components/LiquidGlassMenu";
@@ -58,22 +67,42 @@ export default Page;
 function Buyer() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [total, setTotal] = useState(0);
+  const [range, setRange] = useState(1);
+  const fetchPosts = async (r: number) => {
+  try {
+    const res = await axios.get(`/api/v1/post/allPosts/${r}`);
+
+    if (res.data.status === "success") {
+      setPosts(prev =>
+        r === 1 ? res.data.posts : [...prev, ...res.data.posts]
+      );
+
+      setHasMore(res.data.hasMore);
+      setTotal(res.data.total);
+    }
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setLoading(false);
+    setLoadingMore(false);
+  }
+};
+
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const res = await axios.get("/api/v1/post/allPosts/1");
-        if (res.data.status === "success") {
-          setPosts(res.data.posts);
-          setLoading(false);
-        } else {
-          setLoading(false);
-        }
-      } catch (err) {
-        setLoading(false);
-      }
-    };
-    fetchPosts();
+    fetchPosts(1);
   }, []);
+  const handleLoadMore = () => {
+  if (loadingMore || !hasMore) return;
+
+  const nextRange = range + 1;
+  setLoadingMore(true);
+  setRange(nextRange);
+  fetchPosts(nextRange);
+};
+
   return (
     <>
       <div className="flex flex-col md:flex-row gap-2 justify-between items-center">
@@ -140,12 +169,12 @@ function Buyer() {
                     ) : (
                       <div>
                         <button className="font-bold flex justify-center items-center gap-1 hover:scale-105 py-1 px-4 border border-dark text-dark transition-all duration-300 rounded-lg">
-                          <Eye size={16}/> Unhide Post
+                          <Eye size={16} /> Unhide Post
                         </button>
                       </div>
                     )}
                     <button className="font-bold flex justify-center items-center gap-1 hover:scale-105 py-1 px-4 border border-red-500 text-red-500 transition-all duration-300 rounded-lg">
-                        <Trash2 size={16} /> Delete
+                      <Trash2 size={16} /> Delete
                     </button>
                   </div>
                 </div>
@@ -160,6 +189,20 @@ function Buyer() {
               </div>
             )}
           </div>
+          {
+            !loadingMore ?
+            (
+              hasMore && (
+              <button onClick={handleLoadMore} className="border px-2 my-2 rounded text-dark font-medium mx-auto flex justify-center items-center w-fit hover:opacity-50 transition-all">
+                Load More
+              </button>
+            )
+            )
+            :
+            (
+              <Loader size={20} className="animate-spin my-2 text-dark flex justify-center items-center mx-auto" />
+            )
+          }
         </div>
       </div>
     </>
