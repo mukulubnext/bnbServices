@@ -8,6 +8,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 type AuthContextType = {
   user: any | null;
   loading: boolean;
+  refresh: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -17,30 +18,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {
-    const getUser = async () => {
+  const getUser = async () => {
         try{
             const res = await axios.post("/api/v1/auth/user");
             if(res.data.status === "success"){
                 setUser(res.data.user);
             }
-            else{
-                router.push("/signin");
-            }
         }
         catch(e){
-            router.push("/signin");
             console.log(e)
         }
         finally{
             setLoading(false);
         }
     }
+
+  useEffect(() => {
     getUser();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{ user, loading, refresh: getUser }}>
       {children}
     </AuthContext.Provider>
   );

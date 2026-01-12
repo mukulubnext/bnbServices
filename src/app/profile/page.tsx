@@ -35,17 +35,23 @@ const Pag: NextPage<Props> = ({}) => {
     try {
       const res = await axios.post("/api/v1/auth/signout");
       if (res.data.status === "success") {
-        toast.success("Signed out successfully!");
-        router.push("/signin");
+        window.location.reload();
       }
     } catch (e) {
       toast.error("Something went wrong!");
+    }
+    finally{
       setSigningOut(false);
     }
   };
+  useEffect(() => {
+    if (!user) {
+      router.push("/signin");
+    }
+  }, [user, loading, router]);
   return (
     <div className="min-h-screen pt-[5vh] relative bg-light">
-      {!loading ? (
+      {!loading && user ? (
         <>
           <ToastContainer />
           <Navbar solid />

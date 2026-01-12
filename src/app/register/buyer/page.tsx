@@ -37,9 +37,11 @@ const Page: NextPage<Props> = ({}) => {
   const [data, setData] = useState<any>({});
   const {user, loading} = useAuth();
   const router = useRouter();
-  if(user){
-    router.push("/home");
-  }
+  useEffect(() => {
+    if (!loading && user) {
+      router.push("/home");
+    }
+  }, [user, loading, router]);
   return (
     <StepContext.Provider value={{ stepNumber, setStepNumber, data, setData }}>
       <ToastContainer />

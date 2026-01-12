@@ -19,10 +19,12 @@ const Page: NextPage<Props> = ({}) => {
   const [showPass, setShowPass] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const {user, loading} = useAuth();
-  if(user){
-    router.push("/home");
-  }
+  const {user, loading, refresh} = useAuth();
+  useEffect(() => {
+      if (!loading && user) {
+        router.push("/home");
+      }
+    }, [user, loading, router]);
 
   const handleSubmit = async () => {
     if (!email || !password) {
@@ -39,7 +41,7 @@ const Page: NextPage<Props> = ({}) => {
       const res = await axios.post("/api/v1/auth/signin", body);
       if (res.data.status === "success") {
         toast.success("Login Successful!");
-        router.push("/home");
+        refresh();
         setLoading(false);
       } else {
         toast.error(res.data.message);

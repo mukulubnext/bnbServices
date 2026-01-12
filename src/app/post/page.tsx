@@ -3,24 +3,29 @@ import LiquidGlassMenu from "@/components/LiquidGlassMenu";
 import Navbar from "@/components/Navbar";
 import Spinner from "@/components/Spinner";
 import { useAuth } from "@/context/AuthContext";
-import axios from "axios";
 import { NextPage } from "next";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 
 interface Props {}
 
 const Page: NextPage<Props> = ({}) => {
   const {user, loading} = useAuth();
+  const router = useRouter();
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/signin");
+    }
+  }, [user, loading, router]);
   return (
-    <div className="min-h-screen pt-[10vh] items-center relative bg-light">
+    <div className="min-h-screen py-[10vh] items-center relative bg-light">
       <Navbar solid />
       <LiquidGlassMenu />
       <ToastContainer/>
       {
-        !loading && user.role === "buyer" ? (
-          <div className="bg-white py-20 md:py-10 flex p-6 flex-col min-h-[80vh] w-[90vw] md:w-[60vw] border border-dark rounded-lg mx-auto">
+        !loading && user && user.role === "buyer" ? (
+          <div className="bg-white py-10 flex p-6 flex-col min-h-[80vh] w-[90vw] md:w-[60vw] border border-dark rounded-lg mx-auto">
         <h1 className="text-dark font-semibold text-3xl">Add a requirement</h1>
         <div>
           <form className="flex flex-col gap-4 mt-6">

@@ -11,7 +11,7 @@ import {
   X,
 } from "lucide-react";
 import { NextPage } from "next";
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import RegisterStep from "../components/RegisterStep";
 import Link from "next/link";
 import { toast, ToastContainer } from "react-toastify";
@@ -35,11 +35,13 @@ const role = "seller";
 const Page: NextPage<Props> = ({}) => {
   const [stepNumber, setStepNumber] = useState(1);
   const [data, setData] = useState<any>({});
-  const {user, loading} = useAuth();
-    const router = useRouter();
-    if(user){
+  const { user, loading } = useAuth();
+  const router = useRouter();
+  useEffect(() => {
+    if (!loading && user) {
       router.push("/home");
     }
+  }, [user, loading, router]);
   return (
     <StepContext.Provider value={{ stepNumber, setStepNumber, data, setData }}>
       <ToastContainer />
@@ -69,9 +71,9 @@ const Page: NextPage<Props> = ({}) => {
               globally.
             </p>
           </div>
-        <div className="hidden justify-center items-center md:flex">
-          <RegisterStep active={stepNumber} />
-        </div>
+          <div className="hidden justify-center items-center md:flex">
+            <RegisterStep active={stepNumber} />
+          </div>
         </div>
       </div>
     </StepContext.Provider>
@@ -302,27 +304,27 @@ function Register() {
             </button>
           </div>
         </div>
-        {
-          !isLoading ?
-          (
-            <button
-          onClick={handleSubmit}
-          className="text-xl my-6 font-bold text-highlight bg-dark w-full py-4 hover:ring-1 ring-dark hover:bg-light transition-all duration-300 hover:text-dark"
+        {!isLoading ? (
+          <button
+            onClick={handleSubmit}
+            className="text-xl my-6 font-bold text-highlight bg-dark w-full py-4 hover:ring-1 ring-dark hover:bg-light transition-all duration-300 hover:text-dark"
+          >
+            Submit
+          </button>
+        ) : (
+          <button
+            onClick={handleSubmit}
+            className="text-xl my-6 flex justify-center items-center font-bold bg-muted w-full py-4 ring-1 ring-dark transition-all duration-300"
+          >
+            <Spinner light={false} />
+          </button>
+        )}
+        <Link
+          href={"/signin"}
+          className="text-dark underline hover:no-underline"
         >
-          Submit
-        </button>
-          )
-          :
-          (
-            <button
-          onClick={handleSubmit}
-          className="text-xl my-6 flex justify-center items-center font-bold bg-muted w-full py-4 ring-1 ring-dark transition-all duration-300"
-        >
-          <Spinner light={false} />
-        </button>
-          )
-        }
-        <Link href={"/signin"} className="text-dark underline hover:no-underline">Already Registered?</Link>
+          Already Registered?
+        </Link>
       </div>
     </>
   );
@@ -346,34 +348,34 @@ function Profile() {
   const [pastLegalExplanation, setPastLegalExplanation] = useState("");
 
   const handleSubmit = () => {
-      if (
-        !companyName ||
-        !gstNumber ||
-        !addressLine1 ||
-        !city ||
-        !stateName ||
-        !zipCode ||
-        !inceptionDate ||
-        !employeeCount
-      ) {
-        toast.error("Please fill all the fields!");
-        return;
-      }
-      const body = {
-        companyName: companyName,
-        address: addressLine1 + " " + addressLine2,
-        gstNumber: gstNumber,
-        city: city,
-        state: stateName,
-        zipCode: zipCode,
-        inceptionDate: inceptionDate,
-        employeeCount: employeeCount,
-        pastLegalAction: pastLegalAction,
-        pastLegalExplanation: pastLegalExplanation,
-      };
-      setData((e: any) => ({ ...e, ...body }));
-      setStepNumber(3);
+    if (
+      !companyName ||
+      !gstNumber ||
+      !addressLine1 ||
+      !city ||
+      !stateName ||
+      !zipCode ||
+      !inceptionDate ||
+      !employeeCount
+    ) {
+      toast.error("Please fill all the fields!");
+      return;
+    }
+    const body = {
+      companyName: companyName,
+      address: addressLine1 + " " + addressLine2,
+      gstNumber: gstNumber,
+      city: city,
+      state: stateName,
+      zipCode: zipCode,
+      inceptionDate: inceptionDate,
+      employeeCount: employeeCount,
+      pastLegalAction: pastLegalAction,
+      pastLegalExplanation: pastLegalExplanation,
     };
+    setData((e: any) => ({ ...e, ...body }));
+    setStepNumber(3);
+  };
 
   return (
     <>
@@ -725,7 +727,11 @@ function AdditionalInfo() {
             Link for company website
           </label>
           <div className="relative">
-            <input value={website} onChange={(e)=>setWebsite(e.target.value)} className="border border-dark pl-12 text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full" />
+            <input
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+              className="border border-dark pl-12 text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
+            />
             <LinkIcon className="absolute text-dark left-3 top-1/2 -translate-y-1/2" />
           </div>
         </div>

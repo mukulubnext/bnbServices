@@ -46,7 +46,7 @@ export default function LiquidGlassMenu() {
             </Link>
           </div>
         )}
-        {user.role === "buyer" ? (
+        {!loading && user && user.role === "buyer" ? (
           <>
             {pathname === "/post" ? (
               <LiquidGlassCard
@@ -76,7 +76,7 @@ export default function LiquidGlassMenu() {
               </div>
             )}
           </>
-        ) : user.role === "seller" ? (
+        ) : !loading && user && user.role === "seller" ? (
           <>
             {pathname === "/transactions" ? (
               <LiquidGlassCard

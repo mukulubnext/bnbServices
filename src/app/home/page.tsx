@@ -15,6 +15,7 @@ interface Props {}
 const Page: NextPage<Props> = ({}) => {
   const [greeting, setGreeting] = useState("");
   const {user, loading} = useAuth();
+  const router = useRouter();
   useEffect(() => {
     const hour = new Date().getHours();
     if (hour < 12) {
@@ -25,9 +26,13 @@ const Page: NextPage<Props> = ({}) => {
       setGreeting("Good Evening");
     }
   }, []);
-
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/signin");
+    }
+  }, [user, loading, router]);
   return (
-    <div className="flex flex-col px-[5%] pb-10 pt-30 gap-5 min-h-screen bg-light">
+    <div className="flex flex-col px-[5%] pb-10 pt-24 md:pt-30 gap-5 min-h-screen bg-light">
       {!loading && user ? (
         <>
           <Navbar solid={true} />
