@@ -21,31 +21,15 @@ import axios from "axios";
 import Spinner from "@/components/Spinner";
 import { toast, ToastContainer } from "react-toastify";
 import { set } from "zod";
+import { useAuth } from "@/context/AuthContext";
 
 interface Props {}
 
 const Pag: NextPage<Props> = ({}) => {
   const [selected, setSelected] = useState<number>(0);
-  const [user, setUser] = useState<any>({});
-  const [isLoading, setLoading] = useState(true);
   const [signingOut, setSigningOut] = useState(false);
   const router = useRouter();
-  useEffect(() => {
-    const getInfo = async () => {
-      try {
-        const res = await axios.post("/api/v1/auth/user");
-        if (res.data.status === "success") {
-          setUser(res.data.user);
-          setLoading(false);
-        } else {
-          router.push("/signin");
-        }
-      } catch (e) {
-        router.push("/signin");
-      }
-    };
-    getInfo();
-  }, []);
+  const {user, loading} = useAuth();
   const handleSignout = async () => {
     setSigningOut(true);
     try {
@@ -61,7 +45,7 @@ const Pag: NextPage<Props> = ({}) => {
   };
   return (
     <div className="min-h-screen pt-[5vh] relative bg-light">
-      {!isLoading ? (
+      {!loading ? (
         <>
           <ToastContainer />
           <Navbar solid />

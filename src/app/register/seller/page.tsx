@@ -17,6 +17,8 @@ import Link from "next/link";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import Spinner from "@/components/Spinner";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 interface Props {}
 
@@ -33,6 +35,11 @@ const role = "seller";
 const Page: NextPage<Props> = ({}) => {
   const [stepNumber, setStepNumber] = useState(1);
   const [data, setData] = useState<any>({});
+  const {user, loading} = useAuth();
+    const router = useRouter();
+    if(user){
+      router.push("/home");
+    }
   return (
     <StepContext.Provider value={{ stepNumber, setStepNumber, data, setData }}>
       <ToastContainer />

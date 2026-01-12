@@ -6,16 +6,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Spinner from "./Spinner";
+import { useAuth } from "@/context/AuthContext";
 
 interface Props {
   solid?: boolean;
+  userProp ?: any;
 }
 
-const Navbar: NextPage<Props> = ({ solid }: Props) => {
+const Navbar: NextPage<Props> = ({ solid, userProp }: Props) => {
   const [isScrolled, setScrolled] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
-  const [isLoggedIn, setLoggedIn] = useState(false);
-  const [isLoading, setLoading] = useState(true);
+  const {user , loading} = useAuth();
   const navlinks = [
     { name: "Home", path: "/" },
     { name: "About", path: "/about" },
@@ -32,22 +33,6 @@ const Navbar: NextPage<Props> = ({ solid }: Props) => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  useEffect(() => {
-    const getUser = async () => {
-      try {
-        const res = await axios.post("/api/v1/auth/user");
-        if (res.data.status === "success") {
-          setLoggedIn(true);
-        }
-      } catch (e) {
-        console.error(e);
-      }
-      finally{
-        setLoading(false);
-      }
-    };
-    getUser();
-  }, []);
   return (
     <nav
       className={`w-screen z-100 fixed flex justify-between px-6 md:justify-around items-center transition-all duration-300 top-0 left-0 py-4 text-light ${
@@ -57,7 +42,7 @@ const Navbar: NextPage<Props> = ({ solid }: Props) => {
       }`}
     >
       <Link
-        href={"/"}
+        href={user ? "/home" : "/"}
         className="flex justify-center group items-center gap-2 cursor-pointer"
       >
         <div className="w-8 h-8 rounded-lg flex items-center justify-center group-hover:rotate-12 transition-transform shadow-lg bg-light text-dark">
@@ -74,20 +59,28 @@ const Navbar: NextPage<Props> = ({ solid }: Props) => {
         <button className="p-2 hover:bg-highlight/10 transition-all duration-300 rounded-full ">
           <Search size={20} />
         </button>
-        {!isLoading ? (
-          !isLoggedIn ? (
-            <Link
+        {!loading ? (
+          !user ? (
+            <>
+              <Link
               className="flex px-6 py-2.5 rounded-full text-sm bg-light text-dark font-bold transition-all transform hover:-translate-y-0.5 duration-300 shadow-md"
               href={"/register"}
             >
               Register
             </Link>
+            <Link
+              className="flex px-6 py-2.5 rounded-full text-sm ring-2 ring-light text-light font-bold transition-all transform hover:-translate-y-0.5 duration-300 shadow-md"
+              href={"/signin"}
+            >
+              Sign In
+            </Link>
+            </>
           ) : (
             <Link
               className="flex w-10 h-10 justify-center p-2.5 rounded-full text-sm bg-light text-dark font-bold transition-all transform hover:-translate-y-0.5 duration-300 shadow-md"
               href={"/profile"}
             >
-              M
+              {user.companyName[0]}
             </Link>
           )
         ) : (
@@ -125,8 +118,8 @@ const Navbar: NextPage<Props> = ({ solid }: Props) => {
         </div>
         <hr className="border-white/5 py-2" />
         <div className="flex justify-center items-center flex-col pb-4 gap-4 px-6">
-          {!isLoading ? (
-            !isLoggedIn ? (
+          {!loading ? (
+            !user ? (
               <Link
                 href={"/register"}
                 onClick={() => setMenuOpen(false)}

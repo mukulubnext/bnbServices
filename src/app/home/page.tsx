@@ -6,17 +6,15 @@ import { useEffect, useState } from "react";
 import LiquidGlassMenu from "../../components/LiquidGlassMenu";
 import EllipsisComp from "./components/Ellipsis";
 import Link from "next/link";
-import axios from "axios";
 import Spinner from "@/components/Spinner";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 interface Props {}
 
 const Page: NextPage<Props> = ({}) => {
   const [greeting, setGreeting] = useState("");
-  const [isLoading, setLoading] = useState(true);
-  const router = useRouter();
-  const [user, setUser] = useState<any>(null);
+  const {user, loading} = useAuth();
   useEffect(() => {
     const hour = new Date().getHours();
     if (hour < 12) {
@@ -28,26 +26,9 @@ const Page: NextPage<Props> = ({}) => {
     }
   }, []);
 
-  useEffect(() => {
-    const getUser = async () => {
-      try {
-        const res = await axios.post("/api/v1/auth/user");
-        if (res.data.status !== "success") {
-          router.push("/signin");
-        }
-        setUser(res.data.user);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    };
-    getUser();
-  }, []);
-
   return (
     <div className="flex flex-col px-[5%] pb-10 pt-30 gap-5 min-h-screen bg-light">
-      {!isLoading ? (
+      {!loading && user ? (
         <>
           <Navbar solid={true} />
           <div className="text-dark md:gap-4 font-bold flex-col flex text-3xl md:text-4xl lg:text-6xl md:flex-row">

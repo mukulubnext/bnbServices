@@ -1,5 +1,6 @@
 "use client";
 import { LiquidGlassCard } from "@/components/LiquidGlass";
+import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
 import { History, House, Phone, Plus, User } from "lucide-react";
 import Link from "next/link";
@@ -8,21 +9,8 @@ import { useEffect, useState } from "react";
 
 export default function LiquidGlassMenu() {
   const router = useRouter();
-  const [userRole, setUserRole] = useState<"buyer" | "seller" | null>(null);
   const pathname = usePathname();
-  useEffect(() => {
-    const getUser = async () => {
-      try {
-        const res = await axios.post("/api/v1/auth/user");
-        if (res.data.status === "success") {
-          setUserRole(res.data.user.role);
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    };
-    getUser();
-  }, []);
+  const {user, loading} = useAuth();
   return (
     <LiquidGlassCard
       shadowIntensity="lg"
@@ -58,7 +46,7 @@ export default function LiquidGlassMenu() {
             </Link>
           </div>
         )}
-        {userRole === "buyer" ? (
+        {user.role === "buyer" ? (
           <>
             {pathname === "/post" ? (
               <LiquidGlassCard
@@ -88,7 +76,7 @@ export default function LiquidGlassMenu() {
               </div>
             )}
           </>
-        ) : userRole === "seller" ? (
+        ) : user.role === "seller" ? (
           <>
             {pathname === "/transactions" ? (
               <LiquidGlassCard

@@ -1,6 +1,7 @@
 "use client";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import Spinner from "@/components/Spinner";
+import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
 import { Eye, EyeClosed, LogIn } from "lucide-react";
 import { NextPage } from "next";
@@ -18,24 +19,10 @@ const Page: NextPage<Props> = ({}) => {
   const [showPass, setShowPass] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [fetching, setFetching] = useState(true);
-
-  useEffect(() => {
-    const getUser = async () => {
-      try {
-        const res = await axios.post("/api/v1/auth/user");
-        console.log(res.data);
-        if (res.data.status === "success") {
-          router.push("/home");
-        }
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setFetching(false);
-      }
-    };
-    getUser();
-  }, []);
+  const {user, loading} = useAuth();
+  if(user){
+    router.push("/home");
+  }
 
   const handleSubmit = async () => {
     if (!email || !password) {
@@ -69,7 +56,7 @@ const Page: NextPage<Props> = ({}) => {
       <ToastContainer />
       <Breadcrumbs />
       <div className="flex flex-col gap-4 px-[5%] pt-[10%]  relative  md:w-[50vw] min-h-screen h-fit">
-        {!fetching ? (
+        {!loading ? (
           <>
             <div className=" text-dark mb-5">
               <h1 className="font-bold text-4xl">Sign In</h1>

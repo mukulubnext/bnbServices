@@ -18,8 +18,7 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import Spinner from "@/components/Spinner";
 import { useRouter } from "next/navigation";
-
-const url = process.env.NEXT_PUBLIC_BACKEND_URL;
+import { useAuth } from "@/context/AuthContext";
 
 interface Props {}
 
@@ -36,32 +35,18 @@ const role = "buyer";
 const Page: NextPage<Props> = ({}) => {
   const [stepNumber, setStepNumber] = useState(1);
   const [data, setData] = useState<any>({});
-  const [fetching, setFetching] = useState(true);
+  const {user, loading} = useAuth();
   const router = useRouter();
-
-  useEffect(() => {
-    const getUser = async () => {
-      try {
-        const res = await axios.post("/api/v1/auth/user");
-        console.log(res.data);
-        if (res.data.status === "success") {
-          router.push("/home");
-        }
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setFetching(false);
-      }
-    };
-    getUser();
-  }, []);
+  if(user){
+    router.push("/home");
+  }
   return (
     <StepContext.Provider value={{ stepNumber, setStepNumber, data, setData }}>
       <ToastContainer />
       <div className="flex relative md:flex-row flex-col-reverse bg-light">
         <Breadcrumbs />
         <div className="flex flex-col gap-4 px-[5%] py-[10%] relative md:py-[5%] md:w-[50vw] min-h-screen h-fit">
-          {!fetching ? (
+          {!loading ? (
             <>
               {stepNumber === 1 && <Register />}
               {stepNumber === 2 && <Profile />}
