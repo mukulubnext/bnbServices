@@ -25,7 +25,7 @@ const reqBody = z.object({
 
 export async function PUT(
   req: NextRequest,
-  ctx: { params: Promise<{ postId: number }> }
+  ctx: { params: Promise<{ postId: string }> }
 ) {
   const postId = Number((await ctx.params).postId);
   const token = req.cookies.get("token")?.value;
