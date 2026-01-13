@@ -1,14 +1,17 @@
 import { LiquidGlassCard } from "@/components/LiquidGlass";
 import { EllipsisVertical, Eye, EyeOff, Pencil, Trash2 } from "lucide-react";
 import { NextPage } from "next";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface Props {
   isActive: boolean;
+  postId: number
 }
 
-const EllipsisComp: NextPage<Props> = ({ isActive }: Props) => {
+const EllipsisComp: NextPage<Props> = ({ isActive, postId }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
   useEffect(() => {
     const closeMenu = () => setIsOpen(false);
     window.addEventListener("ellipsis-opened", closeMenu);
@@ -24,8 +27,11 @@ const EllipsisComp: NextPage<Props> = ({ isActive }: Props) => {
   return (
     <div
       onMouseDown={(e) => e.preventDefault()}
-      onClick={toggleMenu}
-      className="text-dark relative cursor-pointer md:hidden"
+      onClick={(e)=>{
+        e.stopPropagation();
+        toggleMenu()
+      }}
+      className="text-dark z-40 relative cursor-pointer md:hidden"
     >
       <EllipsisVertical
         className={`${isOpen && "-rotate-90"} transition-all`}
@@ -39,7 +45,9 @@ const EllipsisComp: NextPage<Props> = ({ isActive }: Props) => {
           borderRadius="6px"
           className="absolute z-10 text-sm top-6 right-0 border border-dark/20 rounded-md shadow-lg w-32 py-2 flex flex-col"
         >
-          <button className="w-full z-30 flex gap-2 items-center text-left px-4 py-2 hover:bg-dark/10">
+          <button onClick={()=>{
+            router.push(`/post/${postId}/?edit=true`);
+          }} className="w-full z-30 flex gap-2 items-center text-left px-4 py-2 hover:bg-dark/10">
             <Pencil size={16} /> Edit
           </button>
           {isActive ? (

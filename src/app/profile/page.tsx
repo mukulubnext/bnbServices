@@ -73,7 +73,7 @@ const Pag: NextPage<Props> = ({}) => {
                         <p className="font-medium flex items-center gap-2 text-dark/70">
                           <Mail /> Email:
                         </p>
-                        <div className="border border-dark/20 rounded-md p-2 mt-1">
+                        <div className="border overflow-clip border-dark/20 rounded-md p-2 mt-1">
                           {user.email}
                         </div>
                       </div>

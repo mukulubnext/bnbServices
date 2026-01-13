@@ -2,7 +2,7 @@ import prisma from "@/lib/prisma";
 import { decrypt } from "@/lib/sessions";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest) {
+export async function GET(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
 
   if (!token) {

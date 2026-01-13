@@ -70,36 +70,38 @@ function Buyer() {
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [range, setRange] = useState(1);
+  const router = useRouter();
   const fetchPosts = async (r: number) => {
-  try {
-    const res = await axios.get(`/api/v1/post/allPosts/${r}`);
+    try {
+      const res = await axios.get(`/api/v1/post/allPosts/${r}`);
 
-    if (res.data.status === "success") {
-      setPosts(prev =>
-        r === 1 ? res.data.posts : [...prev, ...res.data.posts]
-      );
+      if (res.data.status === "success") {
+        setPosts((prev) =>
+          r === 1 ? res.data.posts : [...prev, ...res.data.posts]
+        );
 
-      setHasMore(res.data.hasMore);
+        setHasMore(res.data.hasMore);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
     }
-  } catch (err) {
-    console.error(err);
-  } finally {
-    setLoading(false);
-    setLoadingMore(false);
-  }
-};
+  };
 
   useEffect(() => {
     fetchPosts(1);
   }, []);
-  const handleLoadMore = () => {
-  if (loadingMore || !hasMore) return;
 
-  const nextRange = range + 1;
-  setLoadingMore(true);
-  setRange(nextRange);
-  fetchPosts(nextRange);
-};
+  const handleLoadMore = () => {
+    if (loadingMore || !hasMore) return;
+
+    const nextRange = range + 1;
+    setLoadingMore(true);
+    setRange(nextRange);
+    fetchPosts(nextRange);
+  };
 
   return (
     <>
@@ -151,13 +153,21 @@ function Buyer() {
               posts.map((post: any) => (
                 <div
                   key={post.id}
-                  className="flex justify-between items-center py-3 px-2 w-full first:border-0 border-t border-dark"
+                  onClick={() => {
+                    router.push(`/post/${post.id}`);
+                  }}
+                  className="flex justify-between hover:bg-dark/5 cursor-pointer items-center py-3 px-2 w-full first:border-0 border-t border-dark"
                 >
                   <p className="text-dark font-semibold">{post.title}</p>
                   <p className="text-dark/70">{post.date}</p>
-                  <EllipsisComp isActive={post.isActive} />
+                  <EllipsisComp postId={post.id} isActive={post.isActive} />
                   <div className="hidden md:flex justify-center gap-6 lg:gap-10 items-center">
-                    <button className="font-bold flex justify-center items-center gap-1 hover:scale-105 py-1 px-4 border border-dark text-dark transition-all duration-300 rounded-lg">
+                    <button
+                      onClick={() => {
+                        router.push(`/post/${post.id}/?edit=true`);
+                      }}
+                      className="font-bold flex justify-center items-center gap-1 hover:scale-105 py-1 px-4 border border-dark text-dark transition-all duration-300 rounded-lg"
+                    >
                       <Pencil size={16} /> Edit
                     </button>
                     {post.isActive ? (
@@ -187,20 +197,21 @@ function Buyer() {
               </div>
             )}
           </div>
-          {
-            !loadingMore ?
-            (
-              hasMore && (
-              <button onClick={handleLoadMore} className="border px-2 my-2 rounded text-dark font-medium mx-auto flex justify-center items-center w-fit hover:opacity-50 transition-all">
+          {!loadingMore ? (
+            hasMore && (
+              <button
+                onClick={handleLoadMore}
+                className="border px-2 my-2 rounded text-dark font-medium mx-auto flex justify-center items-center w-fit hover:opacity-50 transition-all"
+              >
                 Load More
               </button>
             )
-            )
-            :
-            (
-              <Loader size={20} className="animate-spin my-2 text-dark flex justify-center items-center mx-auto" />
-            )
-          }
+          ) : (
+            <Loader
+              size={20}
+              className="animate-spin my-2 text-dark flex justify-center items-center mx-auto"
+            />
+          )}
         </div>
       </div>
     </>

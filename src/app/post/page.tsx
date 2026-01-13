@@ -132,6 +132,8 @@ const Page: NextPage<Props> = ({}) => {
                   type="text"
                   placeholder="Cartons"
                   value={title}
+                  minLength={3}
+                  maxLength={100}
                   onChange={(e) => setTitle(e.target.value)}
                   className="border border-dark/20 rounded-md p-2 focus:outline-none focus:border-dark transition-all"
                 />
@@ -140,6 +142,9 @@ const Page: NextPage<Props> = ({}) => {
                 <span className="text-dark font-medium">Description (3-1000 characters):</span>
                 <textarea
                   value={description}
+                  minLength={3}
+                  contentEditable={true}
+                  maxLength={1000}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Need high quality cartons for packaging of Wooden Artifacts"
                   className="border border-dark/20 rounded-md p-2 h-32 focus:outline-none focus:border-dark transition-all"
@@ -149,6 +154,7 @@ const Page: NextPage<Props> = ({}) => {
                 <span className="text-dark font-medium">More Details(max 200 characters):</span>
                 <input
                   type="text"
+                  maxLength={200}
                   value={details}
                   onChange={(e) => setDetails(e.target.value)}
                   placeholder="Size, Material, Type etc."
@@ -161,6 +167,7 @@ const Page: NextPage<Props> = ({}) => {
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.valueAsNumber)}
                   type="number"
+                  min={1}
                   placeholder="1, 5, 10, 100 etc."
                   className="border border-dark/20 rounded-md p-2 focus:outline-none focus:border-dark transition-all"
                 />
@@ -171,6 +178,7 @@ const Page: NextPage<Props> = ({}) => {
                   <input
                   type="number"
                   value={budget}
+                  min={0}
                   onChange={(e) => setBudget(e.target.valueAsNumber)}
                   placeholder="Budget for whole order (in INR)"
                   className="border pl-8 border-dark/20 rounded-md p-2 w-full focus:outline-none focus:border-dark transition-all"

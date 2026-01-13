@@ -20,7 +20,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const getUser = async () => {
         try{
-            const res = await axios.post("/api/v1/auth/user");
+            const res = await axios.get("/api/v1/auth/user");
             if(res.data.status === "success"){
                 setUser(res.data.user);
             }
