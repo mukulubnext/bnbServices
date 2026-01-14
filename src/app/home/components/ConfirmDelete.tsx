@@ -55,12 +55,12 @@ const ConfirmDelete: NextPage<Props> = ({
   return (
     <div className="bg-black/10 text-dark p-6 backdrop-blur-2xl flex justify-center items-center fixed z-100 top-0 left-0 w-full h-screen">
       <ToastContainer />
-      <div className="bg-white h-fit gap-10 flex flex-col w-full md:w-fit rounded-lg shadow-xl py-10 px-20">
+      <div className="bg-white h-fit gap-10 flex flex-col w-full md:w-fit rounded-lg shadow-xl  py-10 md:px-20 px-4">
         <div className="flex flex-col">
-          <h1 className="text-xl font-bold text-center">
+          <h1 className="md:text-xl font-bold text-center">
             Are you sure you want to delete titled: {postTitle}?
           </h1>
-          <p className="text-center">
+          <p className="text-center md:text-[16px] text-sm">
             This step is irreversible and cannot be undone.
           </p>
         </div>

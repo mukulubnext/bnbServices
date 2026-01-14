@@ -74,6 +74,7 @@ function Buyer() {
   const [deletePost, setDeletePost] = useState(false);
   const [deletePostId, setDeletePostId] = useState(NaN);
   const [deletePostTitle, setDeletePostTitle] = useState("");
+  const [postRedirecting, setPostRedirecting] = useState(0);
   const router = useRouter();
   const fetchPosts = async (r: number) => {
     try {
@@ -160,16 +161,18 @@ function Buyer() {
           <div>
             {!loading && posts.length > 0 ? (
               posts.map((post: any) => (
-                <div
+                postRedirecting !== post.id ? (
+                    <div
                   key={post.id}
                   onClick={() => {
+                    setPostRedirecting(post.id);
                     router.push(`/post/${post.id}`);
                   }}
                   className="flex justify-between hover:bg-dark/5 cursor-pointer items-center py-3 px-2 w-full first:border-0 border-t border-dark"
                 >
                   <p className="text-dark font-semibold">{post.title}</p>
                   <p className="text-dark/70">{post.date}</p>
-                  <EllipsisComp postId={post.id} isActive={post.isActive} />
+                  <EllipsisComp postId={post.id} isActive={post.isActive} setDeletePost={setDeletePost} setDeletePostId={setDeletePostId} deletePostTitle={post.title} setDeletePostTitle={setDeletePostTitle}/>
                   <div className="hidden md:flex justify-center gap-6 lg:gap-10 items-center">
                     <button
                       onClick={(e) => {
@@ -203,6 +206,11 @@ function Buyer() {
                     </button>
                   </div>
                 </div>
+                )
+                :
+                (
+                  <div className="flex justify-between hover:bg-dark/5 cursor-pointer items-center py-5 px-2 w-full first:border-0 border-t bg-dark/30 animate-pulse border-dark"></div>
+                )
               ))
             ) : !loading && posts.length === 0 ? (
               <div className="flex justify-center py-2 items-center">

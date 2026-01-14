@@ -2,14 +2,18 @@ import { LiquidGlassCard } from "@/components/LiquidGlass";
 import { EllipsisVertical, Eye, EyeOff, Pencil, Trash2 } from "lucide-react";
 import { NextPage } from "next";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface Props {
   isActive: boolean;
-  postId: number
+  postId: number;
+  setDeletePost: React.Dispatch<React.SetStateAction<boolean>>;
+  setDeletePostId: React.Dispatch<React.SetStateAction<number>>;
+  deletePostTitle: string;
+  setDeletePostTitle: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const EllipsisComp: NextPage<Props> = ({ isActive, postId }: Props) => {
+const EllipsisComp: NextPage<Props> = ({ isActive, postId, setDeletePost, setDeletePostId, setDeletePostTitle, deletePostTitle }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   useEffect(() => {
@@ -59,7 +63,12 @@ const EllipsisComp: NextPage<Props> = ({ isActive, postId }: Props) => {
                 <Eye size={16} /> Unhide Post
               </button>
           )}
-          <button className="w-full z-30 flex gap-2 text-red-500 items-center text-left px-4 py-2 hover:bg-dark/10">
+          <button onClick={(e)=>{
+            e.stopPropagation()
+            setDeletePostId(postId)
+            setDeletePostTitle(deletePostTitle)
+            setDeletePost(true)
+          }} className="w-full z-30 flex gap-2 text-red-500 items-center text-left px-4 py-2 hover:bg-dark/10">
             <Trash2 size={16} /> Delete
           </button>
         </LiquidGlassCard>
