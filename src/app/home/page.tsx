@@ -19,6 +19,7 @@ import Spinner from "@/components/Spinner";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
+import ConfirmDelete from "./components/ConfirmDelete";
 
 interface Props {}
 
@@ -70,6 +71,9 @@ function Buyer() {
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [range, setRange] = useState(1);
+  const [deletePost, setDeletePost] = useState(false);
+  const [deletePostId, setDeletePostId] = useState(NaN);
+  const [deletePostTitle, setDeletePostTitle] = useState("");
   const router = useRouter();
   const fetchPosts = async (r: number) => {
     try {
@@ -105,7 +109,12 @@ function Buyer() {
 
   return (
     <>
-      <div className="flex flex-col md:flex-row gap-2 justify-between items-center">
+      <div className="flex flex-col md:flex-row gap-2 justify-between relative items-center">
+        {
+          deletePost && (
+            <ConfirmDelete postId={deletePostId} postTitle={deletePostTitle} setDeletePost={setDeletePost} fetchPosts={fetchPosts}/>
+          )
+        }
         <p className="text-lg md:text-3xl text-dark">
           Need to buy something? Make a post!
         </p>
@@ -163,7 +172,8 @@ function Buyer() {
                   <EllipsisComp postId={post.id} isActive={post.isActive} />
                   <div className="hidden md:flex justify-center gap-6 lg:gap-10 items-center">
                     <button
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         router.push(`/post/${post.id}/?edit=true`);
                       }}
                       className="font-bold flex justify-center items-center gap-1 hover:scale-105 py-1 px-4 border border-dark text-dark transition-all duration-300 rounded-lg"
@@ -181,7 +191,14 @@ function Buyer() {
                         </button>
                       </div>
                     )}
-                    <button className="font-bold flex justify-center items-center gap-1 hover:scale-105 py-1 px-4 border border-red-500 text-red-500 transition-all duration-300 rounded-lg">
+                    <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setDeletePost(true);
+                        setDeletePostId(post.id);
+                        setDeletePostTitle(post.title);
+                      }}
+                    className="font-bold flex justify-center items-center gap-1 hover:scale-105 py-1 px-4 border border-red-500 text-red-500 transition-all duration-300 rounded-lg">
                       <Trash2 size={16} /> Delete
                     </button>
                   </div>

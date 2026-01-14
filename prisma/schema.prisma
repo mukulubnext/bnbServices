@@ -61,6 +61,7 @@ model Posts {
 
   isDeleted           Boolean?    @default(false)
   deletedAt           DateTime?
+  deleteReason        String?
   
   createdAt           DateTime    @default(now())
   updatedAt           DateTime    @updatedAt
