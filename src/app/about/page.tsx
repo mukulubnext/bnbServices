@@ -8,7 +8,7 @@ interface Props {}
 const Page: NextPage<Props> = ({}) => {
   return (
     <>
-      <Navbar/>
+      <Navbar />
       <section className="relative h-screen flex bg-dark items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
@@ -26,15 +26,18 @@ const Page: NextPage<Props> = ({}) => {
           <h2 className="text-4xl md:text-6xl font-bold mb-8 text-light">
             Our Mission
           </h2>
-          <p className="text-xl md:text-2xl leading-relaxed font-light text-muted">
-            We bridge the gap between innovation and reality. Our deep green
-            roots represent stability, while our light-speed tools empower you
-            to reach the summit of your digital ambitions.
+          <p className="text-lg md:text-xl leading-relaxed text-muted">
+            Our mission is to transform the way packaging businesses connect
+            and trade by creating an exclusive, trusted platform for buyers and
+            sellers of packaging materials and products. We aim to simplify
+            sourcing and selling through transparency, reliability, and
+            meaningful business connections, enabling partners to grow faster,
+            trade smarter, and build long-term value in the packaging ecosystem.
           </p>
           <div className="mt-12 h-1 w-24 mx-auto rounded-full text-highlight"></div>
         </div>
       </section>
-      <Footer/>
+      <Footer />
     </>
   );
 };

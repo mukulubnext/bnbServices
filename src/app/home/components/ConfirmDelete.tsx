@@ -53,7 +53,7 @@ const ConfirmDelete: NextPage<Props> = ({
   };
 
   return (
-    <div className="bg-black/10 text-dark p-6 backdrop-blur-2xl flex justify-center items-center fixed z-100 top-0 left-0 w-full h-screen">
+    <div className="bg-black/80 text-dark p-6 flex justify-center items-center fixed z-100 top-0 left-0 w-full h-screen">
       <ToastContainer />
       <div className="bg-white h-fit gap-10 flex flex-col w-full md:w-fit rounded-lg shadow-xl  py-10 md:px-20 px-4">
         <div className="flex flex-col">
@@ -110,14 +110,14 @@ const ConfirmDelete: NextPage<Props> = ({
               ) : (
                 <button
                   onClick={handleDelete}
-                  className="bg-red-500 cursor-pointer flex ring-1 ring-red-500 justify-center items-center gap-2 hover:text-red-500 text-white hover:bg-transparent font-bold py-2 px-4 rounded-lg"
+                  className="bg-red-500 transition-all duration-300 cursor-pointer flex ring-1 ring-red-500 justify-center items-center gap-2 hover:text-red-500 text-white hover:bg-transparent font-bold py-2 px-4 rounded-lg"
                 >
                   <Trash2 size={20} /> Delete
                 </button>
               )}
               <button
                 onClick={() => setDeletePost(false)}
-                className="bg-dark cursor-pointer hover:bg-transparent text-white hover:text-dark ring-1 ring-dark flex justify-center items-center gap-2 font-bold py-2 px-4 rounded-lg ml-2"
+                className="bg-dark cursor-pointer transition-all duration-300 hover:bg-transparent text-white hover:text-dark ring-1 ring-dark flex justify-center items-center gap-2 font-bold py-2 px-4 rounded-lg ml-2"
               >
                 <X size={20} /> Cancel
               </button>

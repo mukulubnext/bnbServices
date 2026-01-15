@@ -1,12 +1,13 @@
 "use client";
-import axios from "axios";
-import { ChevronRight, Menu, Search, UserCircle2, X } from "lucide-react";
+import { ChevronRight, Menu, Search, X } from "lucide-react";
 import { NextPage } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Spinner from "./Spinner";
 import { useAuth } from "@/context/AuthContext";
+import logo from "../../public/Green.png";
+import Image from "next/image";
 
 interface Props {
   solid?: boolean;
@@ -45,10 +46,10 @@ const Navbar: NextPage<Props> = ({ solid, userProp }: Props) => {
         href={user ? "/home" : "/"}
         className="flex justify-center group items-center gap-2 cursor-pointer"
       >
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center group-hover:rotate-12 transition-transform shadow-lg bg-light text-dark">
-          <span className="font-bold text-xl">S</span>
+        <div className="w-10 h-10 rounded-full flex items-center justify-center group-hover:rotate-12 transition-transform shadow-lg bg-light text-dark">
+          <Image src={logo} className="w-full h-full rounded-full" alt="logo" />
         </div>
-        <span className="text-xl font-bold tracking-tight">SOLARIS</span>
+        <span className="text-xl font-bold tracking-tight">Boxes n Bottles</span>
       </Link>
       <div className={`hidden md:flex justify-center items-center gap-8`}>
         {navlinks.map((d, i) => (

@@ -167,7 +167,7 @@ function Register() {
               onChange={(e) => setEmail(e.target.value)}
               type="email"
               id="email"
-              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
+              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
             />
             {!sentEmailOTP && (
               <button
@@ -195,7 +195,7 @@ function Register() {
                 onChange={(e) => setEmailOTP(e.target.value)}
                 type="email"
                 id="email"
-                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
+                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
               />
               <button
                 onClick={handleconfirmMailOTP}
@@ -216,7 +216,7 @@ function Register() {
               onChange={(e) => setPhone(e.target.value)}
               type="tel"
               id="phone"
-              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
+              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
             />
             {!sentPhoneOTP && (
               <button
@@ -244,7 +244,7 @@ function Register() {
                 onChange={(e) => setPhoneOTP(e.target.value)}
                 type="email"
                 id="email"
-                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
+                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
               />
               <button
                 onClick={handleConfirmPhoneOTP}
@@ -265,7 +265,7 @@ function Register() {
               onChange={(e) => setPassword(e.target.value)}
               type={showPass ? "text" : "password"}
               id="confirm"
-              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
+              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
             />
             <button
               onClick={() => setShowPass((e) => !e)}
@@ -295,7 +295,7 @@ function Register() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               type={showConfirm ? "text" : "password"}
               id="password"
-              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
+              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
             />
             <button
               onClick={() => setShowConfirm((e) => !e)}
@@ -394,7 +394,7 @@ function Profile() {
               id="company"
               value={companyName}
               onChange={(e) => setCompanyName(e.target.value)}
-              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
+              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
             />
           </div>
         </div>
@@ -407,7 +407,7 @@ function Profile() {
               id="gst"
               value={gstNumber}
               onChange={(e) => setGstNumber(e.target.value)}
-              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
+              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
             />
           </div>
         </div>
@@ -420,7 +420,7 @@ function Profile() {
               id="address1"
               value={addressLine1}
               onChange={(e) => setAddressLine1(e.target.value)}
-              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
+              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
             />
           </div>
         </div>
@@ -433,7 +433,7 @@ function Profile() {
               id="address2"
               value={addressLine2}
               onChange={(e) => setAddressLine2(e.target.value)}
-              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
+              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
             />
           </div>
         </div>
@@ -447,7 +447,7 @@ function Profile() {
                 id="city"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
-                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
+                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
               />
             </div>
           </div>
@@ -460,7 +460,7 @@ function Profile() {
                 id="state"
                 value={stateName}
                 onChange={(e) => setStateName(e.target.value)}
-                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
+                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
               />
             </div>
           </div>
@@ -477,7 +477,7 @@ function Profile() {
                 maxLength={6}
                 value={zipCode}
                 onChange={(e) => setZipCode(e.target.value)}
-                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
+                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
               />
             </div>
           </div>
@@ -496,7 +496,7 @@ function Profile() {
                 id="inception"
                 value={inceptionDate}
                 onChange={(e) => setInceptionDate(e.target.value)}
-                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
+                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
               />
             </div>
           </div>
@@ -512,7 +512,7 @@ function Profile() {
                 id="employeeCount"
                 value={employeeCount}
                 onChange={(e) => setEmployeeCount(e.target.value)}
-                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 pl-10 w-full"
+                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full pl-10"
               >
                 <option value="" disabled>
                   Select Employee Count
@@ -571,7 +571,7 @@ function Profile() {
                 id="legalExplanation"
                 value={pastLegalExplanation}
                 onChange={(e) => setPastLegalExplanation(e.target.value)}
-                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
+                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
               />
             </div>
           </div>
@@ -655,7 +655,7 @@ function AdditionalInfo() {
             <input
               value={website}
               onChange={(e) => setWebsite(e.target.value)}
-              className="border border-dark pl-12 text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
+              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full pl-12"
             />
             <LinkIcon className="absolute text-dark left-3 top-1/2 -translate-y-1/2" />
           </div>

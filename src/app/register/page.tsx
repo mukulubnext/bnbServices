@@ -28,23 +28,20 @@ const Page: NextPage<Props> = ({}) => {
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             <Link
               href={"/register/seller"}
-              className="group relative overflow-hidden border p-10 rounded-[2.5rem] transition-all duration-500 text-left"
-              style={{
-                backgroundColor: "rgba(255,255,255,0.03)",
-                borderColor: "rgba(255,255,255,0.1)",
-              }}
+              className="group relative bg-light/67 border-light overflow-hidden border p-10 rounded-[2.5rem] transition-all duration-500 text-left"
+              
             >
-              <div className="mb-6 w-16 h-16 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform bg-highlight/22">
-                <Store className="text-highlight" size={32} />
+              <div className="mb-6 w-16 h-16 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform bg-dark/22">
+                <Store className="text-dark" size={32} />
               </div>
-              <h3 className="text-2xl text-light font-bold mb-3">
+              <h3 className="text-2xl text-dark font-bold mb-3">
                 Join as a Seller
               </h3>
-              <p className="mb-6 text-sm text-muted leading-relaxed">
+              <p className="mb-6 text-sm text-dark leading-relaxed">
                 Manage inventory, reach millions, and scale your storefront
                 globally.
               </p>
-              <div className="inline-flex text-highlight items-center gap-2 font-bold">
+              <div className="inline-flex text-dark items-center gap-2 font-bold">
                 Start Selling{" "}
                 <ChevronRight
                   size={20}
@@ -54,23 +51,19 @@ const Page: NextPage<Props> = ({}) => {
             </Link>
             <Link
               href={"/register/buyer"}
-              className="group relative overflow-hidden border p-10 rounded-[2.5rem] transition-all duration-500 text-left"
-              style={{
-                backgroundColor: "rgba(255,255,255,0.03)",
-                borderColor: "rgba(255,255,255,0.1)",
-              }}
+              className="group relative overflow-hidden bg-light/67 border-light border p-10 rounded-[2.5rem] transition-all duration-500 text-left"
             >
-              <div className="mb-6 w-16 h-16 rounded-2xl bg-highlight/22 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <ShoppingBag className="text-highlight" size={32} />
+              <div className="mb-6 w-16 h-16 rounded-2xl bg-dark/22 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <ShoppingBag className="text-dark" size={32} />
               </div>
-              <h3 className="text-2xl text-light font-bold mb-3">
+              <h3 className="text-2xl text-dark font-bold mb-3">
                 Join as a Buyer
               </h3>
-              <p className="mb-6 text-muted text-sm leading-relaxed">
+              <p className="mb-6 text-dark/80 text-sm leading-relaxed">
                 Browse tools, manage subscriptions, and enjoy exclusive
                 marketplace benefits.
               </p>
-              <div className="inline-flex text-highlight items-center gap-2 font-bold">
+              <div className="inline-flex text-dark items-center gap-2 font-bold">
                 Start Shopping{" "}
                 <ChevronRight
                   size={20}

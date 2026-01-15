@@ -46,7 +46,7 @@ const Page: NextPage<Props> = ({}) => {
       {!loading && user ? (
         <>
           <Navbar solid={true} />
-          <div className="text-dark md:gap-4 font-bold flex-col flex text-3xl md:text-4xl lg:text-6xl md:flex-row">
+          <div className="text-dark md:gap-4 font-bold flex-col flex text-2xl md:text-3xl lg:text-4xl md:flex-row">
             <span>{greeting},</span>
             <span>{user.companyName}...</span>
           </div>
@@ -116,7 +116,7 @@ function Buyer() {
             <ConfirmDelete postId={deletePostId} postTitle={deletePostTitle} setDeletePost={setDeletePost} fetchPosts={fetchPosts}/>
           )
         }
-        <p className="text-lg md:text-3xl text-dark">
+        <p className="text-lg md:text-2xl text-dark">
           Need to buy something? Make a post!
         </p>
         <Link
@@ -209,7 +209,7 @@ function Buyer() {
                 )
                 :
                 (
-                  <div className="flex justify-between hover:bg-dark/5 cursor-pointer items-center py-5 px-2 w-full first:border-0 border-t bg-dark/30 animate-pulse border-dark"></div>
+                  <div key={post.id} className="flex justify-between hover:bg-dark/5 cursor-pointer items-center py-5 px-2 w-full first:border-0 border-t bg-dark/30 animate-pulse border-dark"></div>
                 )
               ))
             ) : !loading && posts.length === 0 ? (

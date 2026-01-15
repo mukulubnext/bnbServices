@@ -98,9 +98,6 @@ const Page: NextPage<Props> = ({}) => {
                     <h1 className="font-semibold text-dark text-2xl">
                       Account Details
                     </h1>
-                    <div className="flex justify-center items-center">
-                      <CircleUserRound className="bg-gray-200 w-20 h-20 stroke-1 text-white rounded-full" />
-                    </div>
                     <div className="flex flex-col gap-4">
                       <div>
                         <p className="font-medium flex items-center gap-2 text-dark/70">

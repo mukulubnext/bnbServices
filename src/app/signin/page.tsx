@@ -127,7 +127,7 @@ const Page: NextPage<Props> = ({}) => {
               {!isLoading ? (
                 <button
                   onClick={handleSubmit}
-                  className="text-xl my-6 font-bold text-highlight bg-dark w-full py-4 hover:ring-1 ring-dark hover:bg-light transition-all duration-300 hover:text-dark"
+                  className="text-xl my-6 font-bold rounded-lg text-highlight bg-dark w-full py-4 hover:ring-1 ring-dark hover:bg-light transition-all duration-300 hover:text-dark"
                 >
                   Submit
                 </button>

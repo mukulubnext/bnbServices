@@ -32,7 +32,7 @@ const InterestedCategories: NextPage<Props> = ({interestedCategories,setInterest
   return (
     <div
       onClick={() => setExpanded((prev) => !prev)}
-      className="bg-white select-none text-xl p-3 flex flex-col gap-4 w-full border border-dark text-dark rounded-md"
+      className="bg-white select-none p-3 flex flex-col gap-4 w-full border border-dark text-dark rounded-md"
     >
       {interestedCategories.length > 0 ? (
         <div className="flex flex-wrap gap-2 items-center">
