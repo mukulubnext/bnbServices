@@ -26,7 +26,10 @@ export async function POST(req: NextRequest) {
     pastLegalAction: z.boolean(),
     pastLegalExplanation: z.string().max(50).optional().nullable(),
     gstNumber: z.string().min(15).max(15).optional(),
-    interestedCategories: z.array(z.string().min(3).max(50)).optional(),
+    interestedCategories: z.array(z.object({
+      id: z.number(),
+      name: z.string()
+    })),
     companyWebsite: z.url().optional(),
   });
 
@@ -92,6 +95,11 @@ export async function POST(req: NextRequest) {
         pastLegalExplanation: pastLegalExplanation,
         gstNumber: gstNumber,
         companyWebsite: companyWebsite,
+        interestedCategories: {
+          connect: interestedCategories?.map((cat)=>(
+            {id: cat.id, name: cat.name}
+          ))
+        }
       },
     });
     console.log(user);

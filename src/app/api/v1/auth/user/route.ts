@@ -13,6 +13,7 @@ export async function GET(req: NextRequest) {
   }
 
   let payload;
+  
   try {
     payload = await decrypt(token);
   } catch {

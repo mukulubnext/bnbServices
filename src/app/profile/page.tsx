@@ -13,6 +13,7 @@ import {
   Mail,
   MapPin,
   Phone,
+  Plus,
   Tag,
   Users,
 } from "lucide-react";
@@ -20,16 +21,25 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import Spinner from "@/components/Spinner";
 import { toast, ToastContainer } from "react-toastify";
-import { set } from "zod";
 import { useAuth } from "@/context/AuthContext";
+import InterestedCategories from "@/components/InterestedCategories";
 
 interface Props {}
 
-const Pag: NextPage<Props> = ({}) => {
+const Page: NextPage<Props> = ({}) => {
   const [selected, setSelected] = useState<number>(0);
   const [signingOut, setSigningOut] = useState(false);
+
+  const [categories, setCategories] = useState<any[]>([]);
+  const [interestedCategories, setInterestedCategories] = useState<number[]>(
+    []
+  );
+
+  const [addCategory, setAddCategory] = useState(false);
+
   const router = useRouter();
-  const {user, loading} = useAuth();
+  const { user, loading } = useAuth();
+
   const handleSignout = async () => {
     setSigningOut(true);
     try {
@@ -39,16 +49,35 @@ const Pag: NextPage<Props> = ({}) => {
       }
     } catch (e) {
       toast.error("Something went wrong!");
-    }
-    finally{
+    } finally {
       setSigningOut(false);
     }
   };
+
+  const handleSubmit = async () => {
+    try{
+      const res = await axios.put("/api/v1/category", {interestedCategories});
+      if(res.data.status === "success"){
+        toast.success("Interested Categories updated successfully!");
+        setInterestedCategories([]);
+        setAddCategory(false);
+      }
+      else{
+        toast.error(res.data.message ?? "Something went wrong!");
+      }
+    }
+    catch(err) {
+      toast.error("Something went wrong!");
+      console.error(err);
+    }
+  }
+
   useEffect(() => {
     if (!user) {
       router.push("/signin");
     }
   }, [user, loading, router]);
+
   return (
     <div className="min-h-screen pt-[5vh] relative bg-light">
       {!loading && user ? (
@@ -57,7 +86,11 @@ const Pag: NextPage<Props> = ({}) => {
           <Navbar solid />
           <LiquidGlassMenu />
           <div className="flex flex-col">
-            <Sidebar selected={selected} setSelected={setSelected} role={user.role} />
+            <Sidebar
+              selected={selected}
+              setSelected={setSelected}
+              role={user.role}
+            />
             <div className="w-full bg-light px-[5%] md:pl-[30vw] lg:pl-[20vw]">
               <div className="md:mt-12 mt-4 relative bg-white p-6 border border-dark rounded-lg min-h-[80vh]">
                 {selected === 0 && (
@@ -190,23 +223,58 @@ const Pag: NextPage<Props> = ({}) => {
                     </h1>
 
                     <div className="flex flex-col gap-4">
-                      <div>
+                      <div className="gap-2 flex flex-col">
                         <p className="font-medium flex items-center gap-2 text-dark/70">
                           <Tag /> Interested Service Categories:
                         </p>
-                        <div className="border border-dark/20 rounded-md p-2 mt-1 flex flex-wrap gap-2">
-                          {user.interestedCategories.map(
-                            (category: string, index: number) => (
-                              <span
-                                key={index}
-                                className="bg-dark font-medium text-light px-3 py-1 rounded-full text-sm"
-                              >
-                                {category}
-                              </span>
-                            )
-                          )}
-                        </div>
+                        {!addCategory ? (
+                          <div className="border border-dark/20 rounded-md p-2 mt-1 flex flex-wrap gap-2">
+                            {user.interestedCategories.length > 0 ? (
+                              user.interestedCategories.map(
+                                (cat: { id: number; name: string, createdAt: Date, updatedAt: Date}) => (
+                                  <span
+                                    key={cat.id}
+                                    className="bg-dark font-medium text-light px-3 py-1 rounded-full text-sm"
+                                  >
+                                    {cat.name}
+                                  </span>
+                                )
+                              )
+                            ) : (
+                              <div className="text-dark/60 text-sm">
+                                No categories selected
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <InterestedCategories
+                            interestedCategories={user.interestedCategories}
+                            setInterestedCategories={setInterestedCategories}
+                          />
+                        )}
                       </div>
+                      {!addCategory ? <button
+                        onClick={() => setAddCategory(true)}
+                        className="flex justify-start cursor-pointer hover:text-dark hover:bg-white border transition-all items-center px-3 py-1 rounded w-fit bg-dark text-white font-medium"
+                      >
+                        <Plus size={20} /> Edit Categories
+                      </button>
+                    :
+                      <div className="flex items-center gap-2">
+                        <button
+                        onClick={handleSubmit}
+                        className="flex justify-start cursor-pointer hover:text-dark hover:bg-white border transition-all items-center px-3 py-1 rounded w-fit bg-dark text-white font-medium"
+                      >
+                        Submit
+                      </button>
+                      <button
+                        onClick={() => setAddCategory(false)}
+                        className="flex justify-start cursor-pointer hover:text-red-500 hover:bg-white border transition-all items-center px-3 py-1 rounded w-fit bg-red-500 text-white font-medium"
+                      >
+                        Cancel
+                      </button>
+                      </div>
+                    }
                     </div>
                   </div>
                 )}
@@ -257,4 +325,4 @@ const Pag: NextPage<Props> = ({}) => {
   );
 };
 
-export default Pag;
+export default Page;

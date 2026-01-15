@@ -19,6 +19,7 @@ import axios from "axios";
 import Spinner from "@/components/Spinner";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import InterestedCategories from "@/components/InterestedCategories";
 
 interface Props {}
 
@@ -587,43 +588,14 @@ function Profile() {
 }
 
 function AdditionalInfo() {
-  const [interestedCategories, setInterestedCategories] = useState<string[]>(
+  const [interestedCategories, setInterestedCategories] = useState<any[]>(
     []
   );
-  const [search, setSearch] = useState("");
   const [isLoading, setLoading] = useState(false);
   const [website, setWebsite] = useState("");
   const context = useContext(StepContext);
   if (!context) return null;
   const { stepNumber, setStepNumber, data, setData } = context;
-  const dummyCategories = [
-    "Cloud Services",
-    "AI & Machine Learning",
-    "DevOps Tools",
-    "Cybersecurity",
-    "Data Analytics",
-    "IoT Solutions",
-    "Blockchain Technology",
-    "Mobile App Development",
-    "E-commerce Platforms",
-    "Collaboration Software",
-  ];
-
-  const filteredCategories = dummyCategories.filter(
-    (cat) =>
-      cat.toLowerCase().includes(search.toLowerCase()) &&
-      !interestedCategories.includes(cat)
-  );
-
-  const addCategory = (cat: string) => {
-    if (interestedCategories.length >= 5) return;
-    setInterestedCategories([...interestedCategories, cat]);
-    setSearch("");
-  };
-
-  const removeCategory = (cat: string) => {
-    setInterestedCategories(interestedCategories.filter((c) => c !== cat));
-  };
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -667,58 +639,11 @@ function AdditionalInfo() {
       </div>
 
       <div className="w-full flex flex-col gap-4">
-        {/* CATEGORY SEARCH */}
         <div className="w-full flex flex-col">
           <label className="font-medium text-xl text-dark">
             Interested Categories
           </label>
-
-          <div className="relative w-full">
-            <input
-              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 pl-12 w-full"
-              placeholder="Search Categories..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-dark" />
-          </div>
-
-          {/* Dropdown */}
-          {search && filteredCategories.length > 0 && (
-            <div className="border mt-2 rounded-md bg-white shadow-md max-h-40 overflow-y-auto">
-              {filteredCategories.map((cat) => (
-                <div
-                  key={cat}
-                  onClick={() => addCategory(cat)}
-                  className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                >
-                  {cat}
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Selected badges */}
-          {interestedCategories.length > 0 && (
-            <div className="flex flex-wrap gap-2 mt-3">
-              {interestedCategories.map((cat) => (
-                <div
-                  key={cat}
-                  className="flex items-center gap-2 bg-dark font-medium text-white px-3 py-1 rounded-full text-sm"
-                >
-                  {cat}
-                  <button onClick={() => removeCategory(cat)}>
-                    <X size={14} />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-
-          <p className="text-sm text-dark/90 mt-1">
-            {interestedCategories.length}/5 selected
-          </p>
+          <InterestedCategories interestedCategories={interestedCategories} setInterestedCategories={setInterestedCategories} />
         </div>
 
         {/* ADDRESS */}

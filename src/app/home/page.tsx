@@ -7,7 +7,6 @@ import {
   Loader,
   Pencil,
   Search,
-  Trash,
   Trash2,
 } from "lucide-react";
 import { NextPage } from "next";
@@ -76,6 +75,7 @@ function Buyer() {
   const [deletePostTitle, setDeletePostTitle] = useState("");
   const [postRedirecting, setPostRedirecting] = useState(0);
   const router = useRouter();
+
   const fetchPosts = async (r: number) => {
     try {
       const res = await axios.get(`/api/v1/post/allPosts/${r}`);
@@ -223,7 +223,7 @@ function Buyer() {
             )}
           </div>
           {!loadingMore ? (
-            hasMore && (
+            !loading && hasMore && (
               <button
                 onClick={handleLoadMore}
                 className="border px-2 my-2 rounded text-dark font-medium mx-auto flex justify-center items-center w-fit hover:opacity-50 transition-all"
