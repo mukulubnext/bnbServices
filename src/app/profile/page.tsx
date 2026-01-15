@@ -73,8 +73,11 @@ const Page: NextPage<Props> = ({}) => {
   }
 
   useEffect(() => {
-    if (!user) {
+    if (!user && !loading) {
       router.push("/signin");
+    }
+    if(user){
+      setInterestedCategories(user.interestedCategories);
     }
   }, [user, loading, router]);
 
@@ -231,7 +234,7 @@ const Page: NextPage<Props> = ({}) => {
                                 (cat: { id: number; name: string, createdAt: Date, updatedAt: Date}) => (
                                   <span
                                     key={cat.id}
-                                    className="bg-dark font-medium text-light px-3 py-1 rounded-full text-sm"
+                                    className="bg-dark font-medium text-white px-3 py-1 rounded-full"
                                   >
                                     {cat.name}
                                   </span>
@@ -245,7 +248,7 @@ const Page: NextPage<Props> = ({}) => {
                           </div>
                         ) : (
                           <InterestedCategories
-                            interestedCategories={user.interestedCategories}
+                            interestedCategories={interestedCategories}
                             setInterestedCategories={setInterestedCategories}
                           />
                         )}

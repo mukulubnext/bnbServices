@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import axios from "axios";
 import { ChevronDown, X } from "lucide-react";
 import { NextPage } from "next";
@@ -6,11 +6,14 @@ import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 
 interface Props {
-  interestedCategories : any[];
+  interestedCategories: any[];
   setInterestedCategories: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
-const InterestedCategories: NextPage<Props> = ({interestedCategories,setInterestedCategories}: Props) => {
+const InterestedCategories: NextPage<Props> = ({
+  interestedCategories,
+  setInterestedCategories,
+}: Props) => {
   const [expanded, setExpanded] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
 
@@ -35,37 +38,39 @@ const InterestedCategories: NextPage<Props> = ({interestedCategories,setInterest
       className="bg-white select-none p-3 flex flex-col gap-4 w-full border border-dark text-dark rounded-md"
     >
       {interestedCategories.length > 0 ? (
-        <div className="flex flex-wrap gap-2 items-center">
-          {interestedCategories.map((cat) => {
-            return (
-              <div
-                onClick={(e) => {
-                  const index = interestedCategories.indexOf(cat);
-                  if (index !== -1) {
-                    setInterestedCategories((prev) =>
-                      prev.filter((c) => c.id !== cat.id)
-                    );
-                  }
-                  e.stopPropagation();
-                }}
-                className="px-3 py-1 font-medium flex flex-row justify-center items-center cursor-pointer w-fit text-light bg-dark rounded-full"
-                key={cat.id}
-              >
-                {cat.name} <X size={14} className="ml-2" />
-              </div>
-            );
-          })}
-        </div>
-      ) : (
-        <div className="flex items-center justify-between">
-          <p className="text-dark opacity-50">Select</p>
-          <div>
+        <div className="flex items-center">
+          <div className="flex flex-wrap gap-2 items-center">
+            {interestedCategories.map((cat) => {
+              return (
+                <div
+                  onClick={(e) => {
+                    const index = interestedCategories.indexOf(cat);
+                    if (index !== -1) {
+                      setInterestedCategories((prev) =>
+                        prev.filter((c) => c.id !== cat.id)
+                      );
+                    }
+                    e.stopPropagation();
+                  }}
+                  className="px-3 py-1 font-medium flex flex-row justify-center items-center cursor-pointer w-fit text-light bg-dark rounded-full"
+                  key={cat.id}
+                >
+                  {cat.name} <X size={14} className="ml-2" />
+                </div>
+              );
+            })}
+          </div>
+          <div className="absolute right-10">
             <ChevronDown
               className={`${
                 expanded ? "rotate-180" : ""
               } text-dark transition-all duration-300`}
             />
           </div>
+        </div>
+      ) : (
+        <div className="flex items-center justify-between">
+          <p className="text-dark opacity-50">Select</p>
         </div>
       )}
       {expanded && (
@@ -78,10 +83,12 @@ const InterestedCategories: NextPage<Props> = ({interestedCategories,setInterest
             {categories.map((cat) => {
               return (
                 <div
-                  onClick={() =>
-                    !interestedCategories.includes(cat) &&
-                    setInterestedCategories((prev) => [...prev, cat])
-                  }
+                  onClick={() => {
+                    setInterestedCategories((prev) => {
+                      if (prev.some((c) => c.id === cat.id)) return prev;
+                      return [...prev, cat];
+                    });
+                  }}
                   className="px-3 border-dark hover:bg-dark/10 transition-all duration-300 border rounded-full font-medium text-[16px] py-1 cursor-pointer"
                   key={cat.id}
                 >
