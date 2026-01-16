@@ -12,11 +12,11 @@ const AuthCheck: NextPage<Props> = ({}) => {
     const router =useRouter();
     useEffect(()=>{
         if(!loading && user){
-            router.push("/home")
+            router.replace("/home")
         }
-    },[])
+    },[user, loading])
   return loading && <div className='bg-light fixed top-0 left-0 w-screen h-screen flex justify-center items-center z-100'>
-    <Spinner light={true} />
+    <Spinner light={false} />
   </div>
 }
 
