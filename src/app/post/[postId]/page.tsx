@@ -19,6 +19,8 @@ export default function Page({
   const [canEdit, setCanEdit] = useState(false);
   const [isLoading, setLoading] = useState(true);
   const [title, setTitle] = useState("");
+  const [createdAt, setCreatedAt] = useState("");
+  const [updatedAt, setUpdatedAt] = useState("");
   const [description, setDescription] = useState("");
   const [details, setDetails] = useState("");
   const [quantity, setQuantity] = useState<number>(1);
@@ -37,8 +39,10 @@ export default function Page({
           setTitle(post.title);
           setDescription(post.description);
           setDetails(post.details);
-          setQuantity(post.quantity);
-          setBudget(post.budget);
+          setQuantity(Number(post.quantity));
+          setBudget(Number(post.budget));
+          setCreatedAt(post.createdAt);
+          setUpdatedAt(post.updatedAt);
           console.log(typeof post.budget);
         }
       } catch {
@@ -110,8 +114,12 @@ export default function Page({
           </div>
         ) : !canEdit ? (
           <>
-            <div>
+            <div className="flex justify-between items-center">
               <h1 className="font-bold text-4xl">{title}</h1>
+              <div>
+                <p className="text-xs">Created at: {new Intl.DateTimeFormat('en-GB',{dateStyle:'short', timeStyle:'short', hour12:true}).format(new Date(createdAt))}</p>
+                {updatedAt!==createdAt && <p className="text-xs">Last Edited: {new Intl.DateTimeFormat('en-GB',{dateStyle:'short', timeStyle:'short', hour12:true}).format(new Date(updatedAt))}</p>}
+              </div>
             </div>
             <hr className="text-dark/50" />
             <p className="whitespace-pre-wrap">

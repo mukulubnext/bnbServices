@@ -35,7 +35,7 @@ const EllipsisComp: NextPage<Props> = ({ isActive, postId, setDeletePost, setDel
         e.stopPropagation();
         toggleMenu()
       }}
-      className="text-dark z-40 relative cursor-pointer md:hidden"
+      className="text-dark hover:bg-dark/10 transition-all duration-300 p-1 rounded-full relative cursor-pointer"
     >
       <EllipsisVertical
         className={`${isOpen && "-rotate-90"} transition-all`}

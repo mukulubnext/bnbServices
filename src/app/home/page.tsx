@@ -10,7 +10,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { NextPage } from "next";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import LiquidGlassMenu from "../../components/LiquidGlassMenu";
 import EllipsisComp from "./components/Ellipsis";
 import Link from "next/link";
@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
 import ConfirmDelete from "./components/ConfirmDelete";
+import { SortIndicator } from "./components/SortIndicator";
 
 interface Props {}
 
@@ -65,15 +66,65 @@ const Page: NextPage<Props> = ({}) => {
 export default Page;
 
 function Buyer() {
+  type SortKey = "title" | "date" | "category" | "offers";
+  type SortOrder = "asc" | "desc";
+
   const [posts, setPosts] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [range, setRange] = useState(1);
+
   const [deletePost, setDeletePost] = useState(false);
   const [deletePostId, setDeletePostId] = useState(NaN);
   const [deletePostTitle, setDeletePostTitle] = useState("");
+
   const [postRedirecting, setPostRedirecting] = useState(0);
+
+  const [sort, setSort] = useState<{ key: SortKey; order: SortOrder }>({
+    key: "date",
+    order: "desc",
+  });
+
+  const sortedPosts = useMemo(() => {
+    const { key, order } = sort;
+
+    return [...posts].sort((a: any, b: any) => {
+      let aVal: any;
+      let bVal: any;
+
+      switch (key) {
+        case "title":
+          aVal = a.title;
+          bVal = b.title;
+          return order === "asc"
+            ? aVal.localeCompare(bVal)
+            : bVal.localeCompare(aVal);
+
+        case "date":
+          return order === "asc"
+            ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+            : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+
+        case "category":
+          aVal = a.category?.title ?? "";
+          bVal = b.category?.title ?? "";
+          return order === "asc"
+            ? aVal.localeCompare(bVal)
+            : bVal.localeCompare(aVal);
+
+        case "offers":
+          return order === "asc"
+            ? a.offers.length - b.offers.length
+            : b.offers.length - a.offers.length;
+
+        default:
+          return 0;
+      }
+    });
+  }, [posts, sort]);
+
   const router = useRouter();
 
   const fetchPosts = async (r: number) => {
@@ -99,6 +150,39 @@ function Buyer() {
     fetchPosts(1);
   }, []);
 
+  useEffect(() => {
+    sort.key === "date" &&
+      sort.order === "asc" &&
+      posts.sort((a: any, b: any) => b.createdAt - a.createdAt);
+    sort.key === "date" &&
+      sort.order === "desc" &&
+      posts.sort((a: any, b: any) => a.createdAt - b.createdAt);
+
+    sort.key === "category" &&
+      sort.order === "asc" &&
+      posts.sort(
+        (a: any, b: any) =>
+          a.category &&
+          b.category &&
+          a.category.title.localeCompare(b.category.title)
+      );
+    sort.key === "category" &&
+      sort.order === "desc" &&
+      posts.sort(
+        (a: any, b: any) =>
+          a.category &&
+          b.category &&
+          b.category.title.localeCompare(a.category.title)
+      );
+
+    sort.key === "offers" &&
+      sort.order === "asc" &&
+      posts.sort((a: any, b: any) => a.offers.length - b.offers.length);
+    sort.key === "offers" &&
+      sort.order === "desc" &&
+      posts.sort((a: any, b: any) => b.offers.length - a.offers.length);
+  }, [sort]);
+
   const handleLoadMore = () => {
     if (loadingMore || !hasMore) return;
 
@@ -107,15 +191,26 @@ function Buyer() {
     setRange(nextRange);
     fetchPosts(nextRange);
   };
+  const handleSort = (key: SortKey) => {
+    setSort((prev) => {
+      if (prev.key === key) {
+        return { key, order: prev.order === "asc" ? "desc" : "asc" };
+      }
+      return { key, order: "asc" };
+    });
+  };
 
   return (
     <>
       <div className="flex flex-col md:flex-row gap-2 justify-between relative items-center">
-        {
-          deletePost && (
-            <ConfirmDelete postId={deletePostId} postTitle={deletePostTitle} setDeletePost={setDeletePost} fetchPosts={fetchPosts}/>
-          )
-        }
+        {deletePost && (
+          <ConfirmDelete
+            postId={deletePostId}
+            postTitle={deletePostTitle}
+            setDeletePost={setDeletePost}
+            fetchPosts={fetchPosts}
+          />
+        )}
         <p className="text-lg md:text-2xl text-dark">
           Need to buy something? Make a post!
         </p>
@@ -130,113 +225,150 @@ function Buyer() {
       <hr className="text-dark/22" />
       <div>
         <h1 className="text-dark font-bold text-2xl">Previous Posts</h1>
-        <div className="border border-dark border-t overflow-y-visible rounded bg-white w-full">
-          <div className="flex justify-between p-2 w-full border-b border-dark">
-            <div className="relative border rounded-lg border-dark w-[50%]">
-              <input
-                type="text"
-                placeholder="Search"
-                className="bg-light text-dark rounded-lg placeholder:text-dark pl-8 py-1 w-full"
-              />
-              <Search
-                size={20}
-                className="text-dark absolute left-1 top-1/2 -translate-y-1/2 "
-              />
-            </div>
-            <div className="relative bg-light  border rounded-lg border-dark w-10 md:min-w-fit md:w-[20%]">
-              <select
-                defaultValue={""}
-                className="text-dark rounded-lg h-full placeholder:dark/22 pl-8 py-1 w-full"
-              >
-                <option value={""} disabled>
-                  Sort By
-                </option>
-              </select>
-              <ArrowUpDown
-                size={20}
-                className="text-dark absolute left-1 top-1/2 -translate-y-1/2 "
-              />
-            </div>
-          </div>
-          <div>
-            {!loading && posts.length > 0 ? (
-              posts.map((post: any) => (
-                postRedirecting !== post.id ? (
-                    <div
-                  key={post.id}
-                  onClick={() => {
-                    setPostRedirecting(post.id);
-                    router.push(`/post/${post.id}`);
-                  }}
-                  className="flex justify-between hover:bg-dark/5 cursor-pointer items-center py-3 px-2 w-full first:border-0 border-t border-dark"
+        <div>
+          <table className="bg-white relative my-2 shadow rounded-md min-w-150 w-full">
+            <thead>
+              <tr className="bg-dark/2 text-dark/50">
+                <th
+                  onClick={() => handleSort("title")}
+                  className={`p-3 cursor-pointer text-left ${
+                    sort.key === "title" && "text-dark"
+                  }`}
                 >
-                  <p className="text-dark font-semibold">{post.title}</p>
-                  <p className="text-dark/70">{post.date}</p>
-                  <EllipsisComp postId={post.id} isActive={post.isActive} setDeletePost={setDeletePost} setDeletePostId={setDeletePostId} deletePostTitle={post.title} setDeletePostTitle={setDeletePostTitle}/>
-                  <div className="hidden md:flex justify-center gap-6 lg:gap-10 items-center">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        router.push(`/post/${post.id}/?edit=true`);
-                      }}
-                      className="font-bold flex justify-center items-center gap-1 hover:scale-105 py-1 px-4 border border-dark text-dark transition-all duration-300 rounded-lg"
-                    >
-                      <Pencil size={16} /> Edit
-                    </button>
-                    {post.isActive ? (
-                      <button className="font-bold flex justify-center items-center gap-1 hover:scale-105 py-1 px-4 border border-dark text-dark transition-all duration-300 rounded-lg">
-                        <EyeOff size={16} /> Hide Post
-                      </button>
-                    ) : (
-                      <div>
-                        <button className="font-bold flex justify-center items-center gap-1 hover:scale-105 py-1 px-4 border border-dark text-dark transition-all duration-300 rounded-lg">
-                          <Eye size={16} /> Unhide Post
-                        </button>
-                      </div>
-                    )}
-                    <button
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        setDeletePost(true);
-                        setDeletePostId(post.id);
-                        setDeletePostTitle(post.title);
-                      }}
-                    className="font-bold flex justify-center items-center gap-1 hover:scale-105 py-1 px-4 border border-red-500 text-red-500 transition-all duration-300 rounded-lg">
-                      <Trash2 size={16} /> Delete
-                    </button>
+                  <div className="flex items-center select-none">
+                    Title
+                    <SortIndicator
+                      active={sort.key === "title"}
+                      order={sort.order}
+                    />
                   </div>
-                </div>
-                )
-                :
-                (
-                  <div key={post.id} className="flex justify-between hover:bg-dark/5 cursor-pointer items-center py-5 px-2 w-full first:border-0 border-t bg-dark/30 animate-pulse border-dark"></div>
-                )
-              ))
-            ) : !loading && posts.length === 0 ? (
-              <div className="flex justify-center py-2 items-center">
-                <p className="text-dark/70">No posts found</p>
-              </div>
+                </th>
+
+                <th
+                  onClick={() => handleSort("date")}
+                  className={`p-3 cursor-pointer text-left ${
+                    sort.key === "date" && "text-dark"
+                  }`}
+                >
+                  <div className="flex items-center select-none">
+                    Date
+                  <SortIndicator
+                    active={sort.key === "date"}
+                    order={sort.order}
+                  />
+                  </div>
+                </th>
+
+                <th
+                  onClick={() => handleSort("category")}
+                  className={`p-3 cursor-pointer text-left ${
+                    sort.key === "category" && "text-dark"
+                  }`}
+                >
+                  <div className="flex items-center select-none">
+                    Category
+                  <SortIndicator
+                    active={sort.key === "category"}
+                    order={sort.order}
+                  />
+                  </div>
+                </th>
+
+                <th
+                  onClick={() => handleSort("offers")}
+                  className={`p-3 cursor-pointer text-center ${
+                    sort.key === "offers" && "text-dark"
+                  }`}
+                >
+                  <div className="flex items-center justify-center select-none">
+                    Offers
+                  <SortIndicator
+                    active={sort.key === "offers"}
+                    order={sort.order}
+                  />
+                  </div>
+                </th>
+                <th className="p-3">Actions</th>
+              </tr>
+            </thead>
+            {!loading ? (
+              <tbody>
+                {sortedPosts.sort().map((post: any) => (
+                  <tr
+                    key={post.id}
+                    onClick={() => {
+                      router.push(`/post/${post.id}`);
+                      setPostRedirecting(post.id);
+                    }}
+                    className="text-black/90 cursor-pointer hover:bg-dark/5 transition-all duration-300 border-t border-b last:border-b-0 border-dark/20 even:bg-dark/2"
+                  >
+                    {postRedirecting !== post.id ? (
+                      <td className="px-3 py-4 font-medium text-dark text-left">
+                        {post.title}
+                      </td>
+                    ) : (
+                      <td className="px-3 py-4 text-left">
+                        <Spinner light={false} />
+                      </td>
+                    )}
+                    <td className="px-3 py-4">
+                      {new Intl.DateTimeFormat("en-GB", {
+                        dateStyle: "short",
+                      }).format(new Date(post.createdAt))}
+                    </td>
+                    <td className="px-3 py-4">
+                      {post.category ? (
+                        <div className="py-1 px-3 bg-dark text-white font-medium text-sm w-fit rounded-full">
+                          {post.category.title}
+                        </div>
+                      ) : (
+                        <p className="text-black/50">no category</p>
+                      )}
+                    </td>
+                    <td className="px-3 py-4 text-center font-bold text-dark">
+                      {post.offers.length}
+                    </td>
+                    <td className="flex px-3 py-4 justify-center">
+                      <EllipsisComp
+                        isActive={post.isActive}
+                        postId={post.id}
+                        setDeletePost={setDeletePost}
+                        setDeletePostId={setDeletePostId}
+                        setDeletePostTitle={setDeletePostTitle}
+                        deletePostTitle={deletePostTitle}
+                      />
+                    </td>
+                  </tr>
+                ))}
+                {hasMore && (
+                  <tr>
+                    {loadingMore ? (
+                      <td className="p-6 relative translate-x-4/2">
+                        <Spinner light={false} />
+                      </td>
+                    ) : (
+                      <td className="p-6 relative translate-x-5/3">
+                        <button
+                          onClick={handleLoadMore}
+                          className="font-medium text-white transition-all duration-300 cursor-pointer bg-dark hover:bg-white hover:text-dark border p-2 rounded"
+                        >
+                          Load More
+                        </button>
+                      </td>
+                    )}
+                  </tr>
+                )}
+              </tbody>
             ) : (
-              <div className="flex justify-center items-center py-6">
-                <Spinner light={false} />
-              </div>
+              <tbody className="absolute flex justify-center bg-dark/30 animate-pulse w-full py-3 rounded-md items-center top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                <tr>
+                  <td>
+                    <Spinner light={false} />
+                  </td>
+                </tr>
+              </tbody>
             )}
-          </div>
-          {!loadingMore ? (
-            !loading && hasMore && (
-              <button
-                onClick={handleLoadMore}
-                className="border px-2 my-2 rounded text-dark font-medium mx-auto flex justify-center items-center w-fit hover:opacity-50 transition-all"
-              >
-                Load More
-              </button>
-            )
-          ) : (
-            <Loader
-              size={20}
-              className="animate-spin my-2 text-dark flex justify-center items-center mx-auto"
-            />
-          )}
+          </table>
         </div>
       </div>
     </>
