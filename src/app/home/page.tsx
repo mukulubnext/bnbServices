@@ -226,7 +226,7 @@ function Buyer() {
       <div>
         <h1 className="text-dark font-bold text-2xl">Previous Posts</h1>
         <div className="overflow-x-auto md:overflow-x-visible">
-          <table className="bg-white relative my-2 shadow rounded-md min-w-150 w-full">
+          <table className="bg-white relative my-2 shadow rounded-md min-w-200 w-full">
             <thead>
               <tr className="bg-dark/2 text-dark/50">
                 <th
@@ -484,7 +484,7 @@ const handleLoadMore = () => {
         </h1>
 
         <div className="overflow-x-auto">
-          <table className="bg-white shadow rounded-md w-full">
+          <table className="bg-white shadow rounded-md w-full min-w-200">
             <thead>
               <tr className="bg-dark/2 text-dark/50">
                 <th
