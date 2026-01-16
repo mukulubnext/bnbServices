@@ -7,21 +7,9 @@ export async function GET(
   ctx: { params: Promise<{ postId: string }> }
 ) {
   const postId = Number((await ctx.params).postId);
-  const token = req.cookies.get("token")?.value;
-  if (!token) {
-    return NextResponse.json({ status: "failed", message: "Unauthroized" });
-  }
-  const decrypted = await decrypt(token);
-  if (!decrypted) {
-    return NextResponse.json({ status: "failed", message: "Invalid token" });
-  }
-  const userId = decrypted.id;
-  const user = await prisma.user.findUnique({ where: { id: userId } });
-  if (!user) {
-    return NextResponse.json({ status: "failed", message: "User not found" });
-  }
+
   const post = await prisma.posts.findUnique({
-    where: { id: postId, userId: userId, isDeleted: false },
+    where: { id: postId, isDeleted: false },
     select: {
       id: true,
       title: true,

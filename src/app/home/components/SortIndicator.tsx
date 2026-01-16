@@ -7,9 +7,9 @@ interface SortIndicatorProps {
 
 export function SortIndicator({ active, order }: SortIndicatorProps) {
   return (
-    <span className="inline-flex flex-col ml-2 leading-none">
+    <span className="inline-flex flex-col ml-2 gap-1 md:gap-0.5 leading-none">
       <span
-        className={`text-xs transition-colors ${
+        className={`text-[6px] md:text-[10px] transition-colors ${
           active && order === "asc"
             ? "text-dark"
             : "text-dark/30"
@@ -19,7 +19,7 @@ export function SortIndicator({ active, order }: SortIndicatorProps) {
       </span>
 
       <span
-        className={`text-xs transition-colors -mt-1 ${
+        className={`text-[6px]  md:text-[10px] transition-colors -mt-1 ${
           active && order === "desc"
             ? "text-dark"
             : "text-dark/30"

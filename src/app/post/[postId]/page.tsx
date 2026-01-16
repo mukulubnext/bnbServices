@@ -2,6 +2,7 @@
 import LiquidGlassMenu from "@/components/LiquidGlassMenu";
 import Navbar from "@/components/Navbar";
 import Spinner from "@/components/Spinner";
+import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
 import { IndianRupee, Pencil } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -19,14 +20,17 @@ export default function Page({
   const [canEdit, setCanEdit] = useState(false);
   const [isLoading, setLoading] = useState(true);
   const [title, setTitle] = useState("");
+
   const [createdAt, setCreatedAt] = useState("");
   const [updatedAt, setUpdatedAt] = useState("");
+
   const [description, setDescription] = useState("");
   const [details, setDetails] = useState("");
   const [quantity, setQuantity] = useState<number>(1);
   const [budget, setBudget] = useState<number>(0);
   const [posting, setPosting] = useState(false);
   const edit = searchParams.get("edit") === "true";
+  const { loading, user } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -108,22 +112,41 @@ export default function Page({
       <LiquidGlassMenu />
       <ToastContainer />
       <div className="bg-white gap-3 px-[5%] md:px-12 text-dark md:w-[60vw] py-8 h-fit rounded-lg border border-dark flex flex-col w-[90vw] mx-auto">
-        {isLoading ? (
+        {isLoading && loading ? (
           <div className="flex justify-center items-center">
             <Spinner light={false} />
           </div>
         ) : !canEdit ? (
           <>
-            <div className="flex justify-between items-center">
-              <h1 className="font-bold text-4xl">{title}</h1>
+            <div className="flex justify-between flex-col items-start md:flex-row md:items-center">
+              <h1 className="font-bold text-2xl md:text-4xl">{title}</h1>
               <div>
-                <p className="text-xs">Created at: {new Intl.DateTimeFormat('en-GB',{dateStyle:'short', timeStyle:'short', hour12:true}).format(new Date(createdAt))}</p>
-                {updatedAt!==createdAt && <p className="text-xs">Last Edited: {new Intl.DateTimeFormat('en-GB',{dateStyle:'short', timeStyle:'short', hour12:true}).format(new Date(updatedAt))}</p>}
+                <p className="text-xs">
+                  Created at:{" "}
+                  {createdAt &&
+                    new Intl.DateTimeFormat("en-GB", {
+                      dateStyle: "short",
+                      timeStyle: "short",
+                      hour12: true,
+                    }).format(new Date(createdAt))}
+                </p>
+                {createdAt && updatedAt !== createdAt && (
+                  <p className="text-xs">
+                    Last Edited:{" "}
+                    {new Intl.DateTimeFormat("en-GB", {
+                      dateStyle: "short",
+                      timeStyle: "short",
+                      hour12: true,
+                    }).format(new Date(updatedAt))}
+                  </p>
+                )}
               </div>
             </div>
             <hr className="text-dark/50" />
             <p className="whitespace-pre-wrap">
-              <span className="font-semibold">Description:</span><br />{description}
+              <span className="font-semibold">Description:</span>
+              <br />
+              {description}
             </p>
             <hr className="text-dark/50" />
             <p>
@@ -137,109 +160,116 @@ export default function Page({
             <p>
               <span className="font-semibold">Budget:</span> {budget}
             </p>
-            <button
-              onClick={() => setCanEdit(true)}
-              className="flex hover:bg-dark hover:text-white transition-all duration-300 cursor-pointer justify-center items-center gap-2 px-4 py-2 rounded border border-dark bg-white font-medium"
-            >
-              <Pencil size={20} /> Edit
-            </button>
+            {user && user.role === "buyer" && (
+              <button
+                onClick={() => setCanEdit(true)}
+                className="flex hover:bg-dark hover:text-white transition-all duration-300 cursor-pointer justify-center items-center gap-2 px-4 py-2 rounded border border-dark bg-white font-medium"
+              >
+                <Pencil size={20} /> Edit
+              </button>
+            )}
           </>
         ) : (
-          <>
-            <div className="flex flex-col gap-4 mt-6">
-              <label className="flex flex-col gap-2">
-                <span className="text-dark font-medium">
-                  Title (3-100 characters):
-                </span>
-                <input
-                  type="text"
-                  placeholder="Cartons"
-                  value={title}
-                  minLength={3}
-                  maxLength={100}
-                  onChange={(e) => setTitle(e.target.value)}
-                  className="border border-dark/20 rounded-md p-2 focus:outline-none focus:border-dark transition-all"
-                />
-              </label>
-              <label className="flex flex-col gap-2">
-                <span className="text-dark font-medium">
-                  Description (3-1000 characters):
-                </span>
-                <textarea
-                  value={description}
-                  contentEditable={true}
-                  minLength={3}
-                  maxLength={1000}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Need high quality cartons for packaging of Wooden Artifacts"
-                  className="border border-dark/20 rounded-md p-2 h-32 focus:outline-none focus:border-dark transition-all"
-                />
-              </label>
-              <label className="flex flex-col gap-2">
-                <span className="text-dark font-medium">
-                  More Details(max 200 characters):
-                </span>
-                <input
-                  type="text"
-                  maxLength={200}
-                  value={details}
-                  onChange={(e) => setDetails(e.target.value)}
-                  placeholder="Size, Material, Type etc."
-                  className="border border-dark/20 rounded-md p-2 focus:outline-none focus:border-dark transition-all"
-                />
-              </label>
-              <label className="flex flex-col gap-2">
-                <span className="text-dark font-medium">Quantity(min 1):</span>
-                <input
-                  value={quantity}
-                  onChange={(e) => setQuantity(e.target.valueAsNumber)}
-                  type="number"
-                  min={1}
-                  placeholder="1, 5, 10, 100 etc."
-                  className="border border-dark/20 rounded-md p-2 focus:outline-none focus:border-dark transition-all"
-                />
-              </label>
-              <label className="flex flex-col gap-2">
-                <span className="text-dark font-medium">Budget:</span>
-                <div className="relative w-full flex items-center">
+          user &&
+          user.role === "buyer" && (
+            <>
+              <div className="flex flex-col gap-4 mt-6">
+                <label className="flex flex-col gap-2">
+                  <span className="text-dark font-medium">
+                    Title (3-100 characters):
+                  </span>
                   <input
+                    type="text"
+                    placeholder="Cartons"
+                    value={title}
+                    minLength={3}
+                    maxLength={100}
+                    onChange={(e) => setTitle(e.target.value)}
+                    className="border border-dark/20 rounded-md p-2 focus:outline-none focus:border-dark transition-all"
+                  />
+                </label>
+                <label className="flex flex-col gap-2">
+                  <span className="text-dark font-medium">
+                    Description (3-1000 characters):
+                  </span>
+                  <textarea
+                    value={description}
+                    contentEditable={true}
+                    minLength={3}
+                    maxLength={1000}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Need high quality cartons for packaging of Wooden Artifacts"
+                    className="border border-dark/20 rounded-md p-2 h-32 focus:outline-none focus:border-dark transition-all"
+                  />
+                </label>
+                <label className="flex flex-col gap-2">
+                  <span className="text-dark font-medium">
+                    More Details(max 200 characters):
+                  </span>
+                  <input
+                    type="text"
+                    maxLength={200}
+                    value={details}
+                    onChange={(e) => setDetails(e.target.value)}
+                    placeholder="Size, Material, Type etc."
+                    className="border border-dark/20 rounded-md p-2 focus:outline-none focus:border-dark transition-all"
+                  />
+                </label>
+                <label className="flex flex-col gap-2">
+                  <span className="text-dark font-medium">
+                    Quantity(min 1):
+                  </span>
+                  <input
+                    value={quantity}
+                    onChange={(e) => setQuantity(e.target.valueAsNumber)}
                     type="number"
-                    value={budget}
-                    min={0}
-                    onChange={(e) => setBudget(e.target.valueAsNumber)}
-                    placeholder="Budget for whole order (in INR)"
-                    className="border pl-8 border-dark/20 rounded-md p-2 w-full focus:outline-none focus:border-dark transition-all"
+                    min={1}
+                    placeholder="1, 5, 10, 100 etc."
+                    className="border border-dark/20 rounded-md p-2 focus:outline-none focus:border-dark transition-all"
                   />
-                  <IndianRupee
-                    size={16}
-                    className="absolute text-dark left-2"
-                  />
-                </div>
-              </label>
-              {!posting ? (
-                <div className="flex flex-col md:flex-row md:gap-2">
-                  <button
-                    onClick={() => handlePost()}
-                    type="submit"
-                    className="bg-dark text-white font-bold py-2 hover:bg-transparent border border-dark hover:text-dark transition-all duration-300 rounded-lg mt-4 md:w-fit px-6"
-                  >
-                    Submit
-                  </button>
-                  <button
-                    onClick={() => handleCancel()}
-                    type="submit"
-                    className="bg-red-500 text-white font-bold py-2 hover:bg-transparent border border-red-500 hover:text-red-500 transition-all duration-300 rounded-lg mt-4 md:w-fit px-6"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              ) : (
-                <div className="text-highlight font-bold py-2 hover:bg-transparent border border-dark transition-all duration-300 rounded-lg mt-4 w-fit px-8">
-                  <Spinner light={false} />
-                </div>
-              )}
-            </div>
-          </>
+                </label>
+                <label className="flex flex-col gap-2">
+                  <span className="text-dark font-medium">Budget:</span>
+                  <div className="relative w-full flex items-center">
+                    <input
+                      type="number"
+                      value={budget}
+                      min={0}
+                      onChange={(e) => setBudget(e.target.valueAsNumber)}
+                      placeholder="Budget for whole order (in INR)"
+                      className="border pl-8 border-dark/20 rounded-md p-2 w-full focus:outline-none focus:border-dark transition-all"
+                    />
+                    <IndianRupee
+                      size={16}
+                      className="absolute text-dark left-2"
+                    />
+                  </div>
+                </label>
+                {!posting ? (
+                  <div className="flex flex-col md:flex-row md:gap-2">
+                    <button
+                      onClick={() => handlePost()}
+                      type="submit"
+                      className="bg-dark text-white font-bold py-2 hover:bg-transparent border border-dark hover:text-dark transition-all duration-300 rounded-lg mt-4 md:w-fit px-6"
+                    >
+                      Submit
+                    </button>
+                    <button
+                      onClick={() => handleCancel()}
+                      type="submit"
+                      className="bg-red-500 text-white font-bold py-2 hover:bg-transparent border border-red-500 hover:text-red-500 transition-all duration-300 rounded-lg mt-4 md:w-fit px-6"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <div className="text-highlight font-bold py-2 hover:bg-transparent border border-dark transition-all duration-300 rounded-lg mt-4 w-fit px-8">
+                    <Spinner light={false} />
+                  </div>
+                )}
+              </div>
+            </>
+          )
         )}
       </div>
     </div>

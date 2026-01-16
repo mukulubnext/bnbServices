@@ -9,3 +9,6 @@
 *{
   scroll-behavior: smooth;
 }
+.scrollBar{
+  scrollbar-color: transparent transparent;
+}

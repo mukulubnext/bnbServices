@@ -19,14 +19,29 @@ const Page: NextPage<Props> = ({}) => {
   const [details, setDetails] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [budget, setBudget] = useState(0);
-  const [image, setImage] = useState<File | null>(null);
   const [posting, setPosting] = useState(false);
+  const [category, setCategory] = useState<number | undefined>(undefined);
+  const [allCategories, setAllCategories] = useState<any[]>([]);
   const router = useRouter();
   useEffect(() => {
     if (!loading && !user) {
       router.push("/signin");
     }
   }, [user, loading, router]);
+
+  const fetchCategories = async () => {
+    try {
+      const res = await axios.get("/api/v1/category");
+      setAllCategories(res.data.categories);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(()=>{
+    fetchCategories();
+  },[])
+
   const handlePost = async () => {
     setPosting(true);
     const body = {
@@ -35,6 +50,7 @@ const Page: NextPage<Props> = ({}) => {
       details,
       quantity,
       budget,
+      category
     };
     if(!title || !description || !details || !quantity || !budget){
       toast.error("Please fill all the fields!");
@@ -50,7 +66,7 @@ const Page: NextPage<Props> = ({}) => {
         setDetails("");
         setQuantity(1);
         setBudget(0);
-        setImage(null);
+        setCategory(undefined);
       } else {
         toast.error(res.data.message);
       }
@@ -110,6 +126,26 @@ const Page: NextPage<Props> = ({}) => {
                   className="border border-dark/20 rounded-md p-2 focus:outline-none focus:border-dark transition-all"
                 />
               </label>
+              
+              <label className="flex flex-col gap-2">
+                <span className="text-dark font-medium">Category:</span>
+                <select
+                  value={category}
+                  defaultValue={""}
+                  onChange={(e) => setCategory(Number(e.target.value))}
+                  className="border border-dark/20 rounded-md p-2 focus:outline-none focus:border-dark transition-all"
+                >
+                  <option value={""} disabled>
+                    Select a category
+                  </option>
+                  {
+                    allCategories.map((cat)=>(
+                      <option key={cat.id} value={cat.id}>{cat.name}</option>
+                    ))
+                  }
+                  </select>
+              </label>
+
               <label className="flex flex-col gap-2">
                 <span className="text-dark font-medium">Quantity(min 1):</span>
                 <input

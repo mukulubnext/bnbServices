@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     details: z.string().max(200, "Details must be less than 200 characters"),
     quantity: z.number().min(1, "Quantity must be at least 1"),
     budget: z.number().min(1, "Budget must be at least 1"),
-    image: z.instanceof(File).optional(),
+    category: z.number().min(1, "Category must be at least 1"),
   });
   const token = req.cookies.get("token")?.value;
   const decrypted = await decrypt(token);
@@ -25,12 +25,8 @@ export async function POST(req: NextRequest) {
   }
   const userId = decrypted.id;
   try {
-    const { title, description, details, quantity, budget, image } =
+    const { title, description, details, quantity, budget, category } =
       reqBody.parse(await req.json());
-    let imageUrl;
-    if (!image) {
-      imageUrl = null;
-    }
 
     try {
       const post = await prisma.posts.create({
@@ -40,11 +36,10 @@ export async function POST(req: NextRequest) {
           details: details,
           quantity: quantity,
           budget: budget,
-          image: imageUrl,
           userId: userId,
+          categoryId: category,
         },
       });
-      console.log(post);
       return NextResponse.json({ status: "success" });
     } catch (e) {
       return NextResponse.json({

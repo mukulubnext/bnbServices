@@ -3,8 +3,6 @@ import Navbar from "@/components/Navbar";
 import Image from "next/image";
 import Link from "next/link";
 import bg from "../../public/Img3.webp"
-import { useAuth } from "@/context/AuthContext";
-import Spinner from "@/components/Spinner";
 import AuthCheck from "@/components/AuthCheck";
 
 export default async function Home() {
