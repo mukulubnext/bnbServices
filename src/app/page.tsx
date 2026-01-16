@@ -3,10 +3,15 @@ import Navbar from "@/components/Navbar";
 import Image from "next/image";
 import Link from "next/link";
 import bg from "../../public/Img3.webp"
+import { useAuth } from "@/context/AuthContext";
+import Spinner from "@/components/Spinner";
+import AuthCheck from "@/components/AuthCheck";
 
-export default function Home() {
+export default async function Home() {
+  
   return (
     <>
+      <AuthCheck />
       <Navbar />
       <div className="bg-dark h-[90vh] flex relative justify-center items-center overflow-hidden">
         <div className="z-0 inset-0 absolute overflow-hidden opacity-40">
@@ -45,5 +50,5 @@ export default function Home() {
       </div>
       <Footer />
     </>
-  );
+  )
 }
