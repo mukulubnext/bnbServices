@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import Spinner from "@/components/Spinner";
 import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
-import { IndianRupee, Pencil } from "lucide-react";
+import { IndianRupee, Mail, Pencil, PhoneCall, Pin, User } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { use, useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
@@ -31,10 +31,16 @@ export default function Page({
   const [posting, setPosting] = useState(false);
   const [categoryName, setCategoryName] = useState("");
   const [category, setCategory] = useState<number | undefined>(undefined);
+
   const edit = searchParams.get("edit") === "true";
   const [allCategories, setAllCategories] = useState<any[]>([]);
   const { loading, user } = useAuth();
-    const fetchCategories = async () => {
+
+  const [buyer, setBuyer] = useState<any>();
+  const [fetchingBuyer, setFetchingBuyer] = useState(false);
+  const [madeOffer, setMadeOffer] = useState(false);
+
+  const fetchCategories = async () => {
     try {
       const res = await axios.get("/api/v1/category");
       setAllCategories(res.data.categories);
@@ -43,9 +49,9 @@ export default function Page({
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchCategories();
-  },[])
+  }, []);
   const router = useRouter();
 
   useEffect(() => {
@@ -100,7 +106,7 @@ export default function Page({
         details,
         quantity,
         budget,
-        category
+        category,
       });
       if (res.data.status === "success") {
         toast.success("Post updated successfully!");
@@ -125,13 +131,40 @@ export default function Page({
     setCategory(post.category?.id);
     setCategoryName(post.category?.name);
   };
+
+  const handleMakeOffer = async () => {
+    if (user.role === "buyer") {
+      toast.error("You can't make an offer for your own post");
+      return;
+    }
+    try {
+      setFetchingBuyer(true);
+      const buyerId = (
+        await axios.post(`/api/v1/post/getUser`, { postId: postId })
+      ).data?.user;
+      const res = await axios.get(`/api/v1/user/${buyerId}`);
+      if (res.data.status === "failed") {
+        toast.error("Failed to fetch buyer's details");
+        return;
+      }
+      setBuyer(res.data.buyer);
+      setMadeOffer(true);
+    } catch (err) {
+      toast.error("Failed to fetch buyer's details");
+      console.error(err);
+    }
+    finally{
+      setFetchingBuyer(false);
+    }
+    console.log(buyer);
+  };
   return (
     <div className="flex py-[12vh] min-h-screen bg-light">
       <Navbar solid />
       <LiquidGlassMenu />
       <ToastContainer />
       <div className="bg-white gap-3 px-[5%] md:px-12 text-dark md:w-[60vw] py-8 h-fit rounded-lg border border-dark flex flex-col w-[90vw] mx-auto">
-        {isLoading && loading ? (
+        {isLoading ? (
           <div className="flex justify-center items-center">
             <Spinner light={false} />
           </div>
@@ -161,13 +194,12 @@ export default function Page({
                 )}
               </div>
             </div>
+            {categoryName && (
+              <div className="flex justify-center text-xs items-center px-3 py-1 font-medium text-white bg-dark w-fit rounded-full">
+                {categoryName}
+              </div>
+            )}
             <hr className="text-dark/50" />
-            {
-              categoryName &&
-              <div className="flex justify-center items-center px-3 py-1 font-medium text-white bg-dark w-fit rounded-full">
-              {categoryName}
-            </div>
-            }
             <p className="whitespace-pre-wrap">
               <span className="font-semibold">Description:</span>
               <br />
@@ -185,13 +217,51 @@ export default function Page({
             <p>
               <span className="font-semibold">Budget:</span> {budget}
             </p>
-            {user && user.role === "buyer" && (
+            {user && user.role === "buyer" ? (
               <button
                 onClick={() => setCanEdit(true)}
                 className="flex hover:bg-dark hover:text-white transition-all duration-300 cursor-pointer justify-center items-center gap-2 px-4 py-2 rounded border border-dark bg-white font-medium"
               >
                 <Pencil size={20} /> Edit
               </button>
+            ) : (
+              <>
+                <div className="flex justify-center items-center mt-10">
+                  {fetchingBuyer ? (
+                    <div className="flex justify-center items-center">
+                      <Spinner light={false} />
+                    </div>
+                  ) : (
+                    !madeOffer &&<button
+                      onClick={handleMakeOffer}
+                      className="flex w-fit hover:bg-transparent text-white hover:text-dark transition-all duration-300 cursor-pointer justify-center items-center gap-2 px-4 py-2 rounded border bg-dark font-medium"
+                    >
+                      Make Offer
+                    </button>
+                  )}
+                </div>
+                {
+                  buyer && (
+                    <>
+                    <div className="flex flex-col border p-3 gap-2">
+                      <h1 className="font-bold text-center text-xl">Buyer's Details:</h1>
+                      <div className="flex items-center gap-1">
+                        <span className="font-semibold flex items-center gap-1"><User size={16}/> Buyer: </span> {buyer.companyName}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span className="font-semibold flex items-center gap-1"><PhoneCall size={16} /> Phone Number: </span> <a href={`tel:${buyer.phone}`} className="underline">{buyer.phone}</a>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span className="font-semibold flex items-center gap-1"><Mail size={16} /> Email: </span> <a href={`mail:${buyer.email}`} className="underline">{buyer.email}</a>
+                      </div>
+                      <div className="flex items-start gap-1">
+                        <span className="font-semibold flex items-center gap-1"><Pin size={16} /> Address: </span> <p>{buyer.address}, {buyer.city}, {buyer.state}, {buyer.zipCode}</p>
+                      </div>
+                      
+                    </div></>
+                  )
+                }
+              </>
             )}
           </>
         ) : (
@@ -241,22 +311,22 @@ export default function Page({
                   />
                 </label>
                 <label className="flex flex-col gap-2">
-                <span className="text-dark font-medium">Category:</span>
-                <select
-                  value={category}
-                  onChange={(e) => setCategory(Number(e.target.value))}
-                  className="border border-dark/20 rounded-md p-2 focus:outline-none focus:border-dark transition-all"
-                >
-                  <option value={""} disabled>
-                    Select a category
-                  </option>
-                  {
-                    allCategories.map((cat)=>(
-                      <option key={cat.id} value={cat.id}>{cat.name}</option>
-                    ))
-                  }
+                  <span className="text-dark font-medium">Category:</span>
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(Number(e.target.value))}
+                    className="border border-dark/20 rounded-md p-2 focus:outline-none focus:border-dark transition-all"
+                  >
+                    <option value={""} disabled>
+                      Select a category
+                    </option>
+                    {allCategories.map((cat) => (
+                      <option key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </option>
+                    ))}
                   </select>
-              </label>
+                </label>
                 <label className="flex flex-col gap-2">
                   <span className="text-dark font-medium">
                     Quantity(min 1):

@@ -11,7 +11,6 @@ export async function GET(req: NextRequest) {
         name: true,
       },
     });
-    console.log(categories);
     return NextResponse.json({ status: "success", categories });
   } catch {
     return NextResponse.json({

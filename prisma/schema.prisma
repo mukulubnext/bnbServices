@@ -48,7 +48,6 @@ model Posts {
   id                  Int         @id @default(autoincrement()) @unique
   title               String
   description         String
-  items               Json        
   details             String
   quantity            Int         @default(1)
   budget              Decimal     @default(0)
