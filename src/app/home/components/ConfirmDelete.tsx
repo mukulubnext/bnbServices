@@ -58,7 +58,7 @@ const ConfirmDelete: NextPage<Props> = ({
       <div className="bg-white h-fit gap-10 flex flex-col w-full md:w-fit rounded-lg shadow-xl  py-10 md:px-20 px-4">
         <div className="flex flex-col">
           <h1 className="md:text-xl font-bold text-center">
-            Are you sure you want to delete titled: {postTitle}?
+            Are you sure you want to delete post titled: {postTitle}?
           </h1>
           <p className="text-center md:text-[16px] text-sm">
             This step is irreversible and cannot be undone.

@@ -48,10 +48,10 @@ model Posts {
   id                  Int         @id @default(autoincrement()) @unique
   title               String
   description         String
+  items               Json        
   details             String
   quantity            Int         @default(1)
   budget              Decimal     @default(0)
-  image               String?
 
   categoryId          Int?
   category            Category?    @relation(fields: [categoryId], references: [id])

@@ -20,6 +20,7 @@ import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
 import ConfirmDelete from "./components/ConfirmDelete";
 import { SortIndicator } from "./components/SortIndicator";
+import ConfirmHide from "./components/ConfirmHide";
 
 interface Props {}
 
@@ -66,7 +67,7 @@ const Page: NextPage<Props> = ({}) => {
 export default Page;
 
 function Buyer() {
-  type SortKey = "title" | "date" | "category" | "offers";
+  type SortKey = "title" | "date" | "category" | "active" | "offers";
   type SortOrder = "asc" | "desc";
 
   const [posts, setPosts] = useState([]);
@@ -79,6 +80,11 @@ function Buyer() {
   const [deletePost, setDeletePost] = useState(false);
   const [deletePostId, setDeletePostId] = useState(NaN);
   const [deletePostTitle, setDeletePostTitle] = useState("");
+  
+  const [hidePost, setHidePost] = useState(false);
+  const [hidePostId, setHidePostId] = useState(NaN);
+  const [hidePostTitle, setHidePostTitle] = useState("");
+  const [isActive, setIsActive] = useState(true);
 
   const [postRedirecting, setPostRedirecting] = useState(0);
 
@@ -119,6 +125,13 @@ function Buyer() {
             ? a.offers.length - b.offers.length
             : b.offers.length - a.offers.length;
 
+        // case "active":
+        //   const val1 = a.isActive ? "Active" : "Inactive";
+        //   const val2 = b.isActive ? "Active" : "Inactive";
+        //   return order === "asc"
+        //     ? val1.localeCompare(val2)
+        //     : val2.localeCompare(val1);
+
         default:
           return 0;
       }
@@ -128,6 +141,7 @@ function Buyer() {
   const router = useRouter();
 
   const fetchPosts = async (r: number) => {
+    setLoading(true);
     try {
       const res = await axios.get(`/api/v1/post/allPosts/${r}`);
 
@@ -157,14 +171,13 @@ function Buyer() {
     sort.key === "date" &&
       sort.order === "desc" &&
       posts.sort((a: any, b: any) => a.createdAt - b.createdAt);
-
     sort.key === "category" &&
       sort.order === "asc" &&
       posts.sort(
         (a: any, b: any) =>
           a.category &&
           b.category &&
-          a.category.title.localeCompare(b.category.title)
+          a.category.name.localeCompare(b.category.name)
       );
     sort.key === "category" &&
       sort.order === "desc" &&
@@ -172,7 +185,18 @@ function Buyer() {
         (a: any, b: any) =>
           a.category &&
           b.category &&
-          b.category.title.localeCompare(a.category.title)
+          b.category.name.localeCompare(a.category.name)
+      );
+
+
+
+    sort.key === "category" &&
+      sort.order === "desc" &&
+      posts.sort(
+        (a: any, b: any) =>
+          a.category &&
+          b.category &&
+          b.category.name.localeCompare(a.category.name)
       );
 
     sort.key === "offers" &&
@@ -208,6 +232,15 @@ function Buyer() {
             postId={deletePostId}
             postTitle={deletePostTitle}
             setDeletePost={setDeletePost}
+            fetchPosts={fetchPosts}
+          />
+        )}
+        {hidePost && (
+          <ConfirmHide
+            isActive={true}
+            postId={hidePostId}
+            postTitle={hidePostTitle}
+            setHidePost={setHidePost}
             fetchPosts={fetchPosts}
           />
         )}
@@ -275,6 +308,16 @@ function Buyer() {
                 </th>
 
                 <th
+                  className={`p-3 cursor-pointer text-left ${
+                    sort.key === "active" && "text-dark"
+                  }`}
+                >
+                  <div className="flex items-center select-none">
+                    Status
+                  </div>
+                </th>
+
+                <th
                   onClick={() => handleSort("offers")}
                   className={`p-3 cursor-pointer text-center ${
                     sort.key === "offers" && "text-dark"
@@ -325,6 +368,9 @@ function Buyer() {
                         <p className="text-black/50">no category</p>
                       )}
                     </td>
+                    <td className="px-3 py-4 text-left font-medium text-dark">
+                      {post.isActive ? <p className="text-dark flex gap-1 items-center"><div className="w-2 h-2 rounded-full bg-dark"></div> Active</p> : <p className="text-red-500 flex gap-1 items-center"><div className="w-2 h-2 rounded-full bg-red-500"></div> Inactive</p>}
+                    </td>
                     <td className="px-3 py-4 text-center font-bold text-dark">
                       {post.offers.length}
                     </td>
@@ -336,6 +382,11 @@ function Buyer() {
                         setDeletePostId={setDeletePostId}
                         setDeletePostTitle={setDeletePostTitle}
                         deletePostTitle={deletePostTitle}
+                        setHidePost={setHidePost}
+                        setHidePostId={setHidePostId}
+                        setHidePostTitle={setHidePostTitle}
+                        hidePostTitle={hidePostTitle}
+                        setIsActive={setIsActive}
                       />
                     </td>
                   </tr>

@@ -1,4 +1,5 @@
 import { LiquidGlassCard } from "@/components/LiquidGlass";
+import axios from "axios";
 import { EllipsisVertical, Eye, EyeOff, Pencil, Trash2 } from "lucide-react";
 import { NextPage } from "next";
 import { useRouter } from "next/navigation";
@@ -11,11 +12,17 @@ interface Props {
   setDeletePostId: React.Dispatch<React.SetStateAction<number>>;
   deletePostTitle: string;
   setDeletePostTitle: React.Dispatch<React.SetStateAction<string>>;
+  setHidePost: React.Dispatch<React.SetStateAction<boolean>>;
+  setHidePostId: React.Dispatch<React.SetStateAction<number>>;
+  hidePostTitle: string;
+  setHidePostTitle: React.Dispatch<React.SetStateAction<string>>;
+  setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const EllipsisComp: NextPage<Props> = ({ isActive, postId, setDeletePost, setDeletePostId, setDeletePostTitle, deletePostTitle }: Props) => {
+const EllipsisComp: NextPage<Props> = ({ isActive, postId, setDeletePost, setDeletePostId, setDeletePostTitle, deletePostTitle, setHidePostId, setHidePostTitle, hidePostTitle, setHidePost, setIsActive }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+
   useEffect(() => {
     const closeMenu = () => setIsOpen(false);
     window.addEventListener("ellipsis-opened", closeMenu);
@@ -28,6 +35,7 @@ const EllipsisComp: NextPage<Props> = ({ isActive, postId, setDeletePost, setDel
     }
     setIsOpen((x) => !x);
   };
+
   return (
     <div
       onMouseDown={(e) => e.preventDefault()}
@@ -55,15 +63,28 @@ const EllipsisComp: NextPage<Props> = ({ isActive, postId, setDeletePost, setDel
             <Pencil size={16} /> Edit
           </button>
           {isActive ? (
-            <button className="w-full z-30 flex gap-2 items-center text-left px-4 py-2 hover:bg-dark/10">
+            <button onClick={(e)=>{
+            e.stopPropagation()
+            setHidePostId(postId)
+            setHidePostTitle(hidePostTitle)
+            setHidePost(true)
+            setIsActive(isActive)
+          }} className="w-full z-30 flex gap-2 items-center text-left px-4 py-2 hover:bg-dark/10">
               <EyeOff size={16} /> Hide Post
             </button>
           ) : (
-              <button className="w-full z-30 flex gap-2 items-center text-left px-4 py-2 hover:bg-dark/10">
+            <button onClick={(e)=>{
+              e.stopPropagation()
+              setHidePostId(postId)
+              setHidePostTitle(hidePostTitle)
+              setHidePost(true)
+              setIsActive(isActive)
+          }}  className="w-full z-30 flex gap-2 text-xs items-center text-left px-4 py-2 hover:bg-dark/10">
                 <Eye size={16} /> Unhide Post
               </button>
           )}
-          <button onClick={(e)=>{
+          <button 
+          onClick={(e)=>{
             e.stopPropagation()
             setDeletePostId(postId)
             setDeletePostTitle(deletePostTitle)
