@@ -369,7 +369,7 @@ function Buyer() {
                       )}
                     </td>
                     <td className="px-3 py-4 text-left font-medium text-dark">
-                      {post.isActive ? <p className="text-dark flex gap-1 items-center"><div className="w-2 h-2 rounded-full bg-dark"></div> Active</p> : <p className="text-red-500 flex gap-1 items-center"><div className="w-2 h-2 rounded-full bg-red-500"></div> Inactive</p>}
+                      {post.isActive ? <div className="text-dark flex gap-1 items-center"><div className="w-2 h-2 rounded-full bg-dark"></div> Active</div> : <div className="text-red-500 flex gap-1 items-center"><div className="w-2 h-2 rounded-full bg-red-500"></div> Inactive</div>}
                     </td>
                     <td className="px-3 py-4 text-center font-bold text-dark">
                       {post.offers.length}

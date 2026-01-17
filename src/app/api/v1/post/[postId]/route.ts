@@ -19,6 +19,7 @@ export async function GET(
       budget: true,
       createdAt: true,
       updatedAt: true,
+      category: true,
     },
   });
   if (!post) {

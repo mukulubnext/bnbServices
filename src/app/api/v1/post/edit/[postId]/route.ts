@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import { decrypt } from "@/lib/sessions";
 import { NextRequest, NextResponse } from "next/server";
 import z, { ZodError } from "zod";
+import { ca } from "zod/v4/locales";
 
 const reqBody = z.object({
   title: z
@@ -20,7 +21,7 @@ const reqBody = z.object({
     .optional(),
   quantity: z.number().min(1, "Quantity must be at least 1").optional(),
   budget: z.number().min(1, "Budget must be at least 1").optional(),
-  image: z.instanceof(File).optional(),
+  category: z.number(),
 });
 
 export async function PUT(
@@ -43,7 +44,7 @@ export async function PUT(
   }
   try {
     const parsed = reqBody.parse(await req.json());
-    const { title, description, details, quantity, budget, image } = parsed;
+    const { title, description, details, quantity, budget, category } = parsed;
     const post = await prisma.posts.findUnique({
       where: { id: postId, userId: userId },
     });
@@ -58,7 +59,19 @@ export async function PUT(
         details: details,
         quantity: quantity,
         budget: budget,
+        categoryId: category,
       },
+      select:{
+        id: true,
+        title: true,
+        description: true,
+        details: true,
+        quantity: true,
+        budget: true,
+        createdAt: true,
+        updatedAt: true,
+        category: true,
+      }
     });
     return NextResponse.json({ status: "success", post: newPost });
   } catch (e) {

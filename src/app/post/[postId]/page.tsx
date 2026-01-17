@@ -29,8 +29,23 @@ export default function Page({
   const [quantity, setQuantity] = useState<number>(1);
   const [budget, setBudget] = useState<number>(0);
   const [posting, setPosting] = useState(false);
+  const [categoryName, setCategoryName] = useState("");
+  const [category, setCategory] = useState<number | undefined>(undefined);
   const edit = searchParams.get("edit") === "true";
+  const [allCategories, setAllCategories] = useState<any[]>([]);
   const { loading, user } = useAuth();
+    const fetchCategories = async () => {
+    try {
+      const res = await axios.get("/api/v1/category");
+      setAllCategories(res.data.categories);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(()=>{
+    fetchCategories();
+  },[])
   const router = useRouter();
 
   useEffect(() => {
@@ -47,7 +62,8 @@ export default function Page({
           setBudget(Number(post.budget));
           setCreatedAt(post.createdAt);
           setUpdatedAt(post.updatedAt);
-          console.log(typeof post.budget);
+          setCategoryName(post.category?.name);
+          setCategory(post.category?.id);
         }
       } catch {
         toast.error("Something went wrong!");
@@ -84,6 +100,7 @@ export default function Page({
         details,
         quantity,
         budget,
+        category
       });
       if (res.data.status === "success") {
         toast.success("Post updated successfully!");
@@ -105,6 +122,8 @@ export default function Page({
     setDetails(post.details);
     setQuantity(post.quantity);
     setBudget(post.budget);
+    setCategory(post.category?.id);
+    setCategoryName(post.category?.name);
   };
   return (
     <div className="flex py-[12vh] min-h-screen bg-light">
@@ -143,6 +162,12 @@ export default function Page({
               </div>
             </div>
             <hr className="text-dark/50" />
+            {
+              categoryName &&
+              <div className="flex justify-center items-center px-3 py-1 font-medium text-white bg-dark w-fit rounded-full">
+              {categoryName}
+            </div>
+            }
             <p className="whitespace-pre-wrap">
               <span className="font-semibold">Description:</span>
               <br />
@@ -215,6 +240,23 @@ export default function Page({
                     className="border border-dark/20 rounded-md p-2 focus:outline-none focus:border-dark transition-all"
                   />
                 </label>
+                <label className="flex flex-col gap-2">
+                <span className="text-dark font-medium">Category:</span>
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(Number(e.target.value))}
+                  className="border border-dark/20 rounded-md p-2 focus:outline-none focus:border-dark transition-all"
+                >
+                  <option value={""} disabled>
+                    Select a category
+                  </option>
+                  {
+                    allCategories.map((cat)=>(
+                      <option key={cat.id} value={cat.id}>{cat.name}</option>
+                    ))
+                  }
+                  </select>
+              </label>
                 <label className="flex flex-col gap-2">
                   <span className="text-dark font-medium">
                     Quantity(min 1):
