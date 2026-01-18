@@ -8,6 +8,7 @@ import { IndianRupee, Mail, Pencil, PhoneCall, Pin, User } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { use, useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
+import { set } from "zod";
 
 export default function Page({
   params,
@@ -34,11 +35,17 @@ export default function Page({
 
   const edit = searchParams.get("edit") === "true";
   const [allCategories, setAllCategories] = useState<any[]>([]);
+
   const { loading, user } = useAuth();
 
   const [buyer, setBuyer] = useState<any>();
   const [fetchingBuyer, setFetchingBuyer] = useState(false);
   const [madeOffer, setMadeOffer] = useState(false);
+
+  const [hasOffer, setHasOffer] = useState(false);
+  const [fetchingOffer, setFetchingOffer] = useState(false);
+
+  const router = useRouter();
 
   const fetchCategories = async () => {
     try {
@@ -52,7 +59,6 @@ export default function Page({
   useEffect(() => {
     fetchCategories();
   }, []);
-  const router = useRouter();
 
   useEffect(() => {
     const getPost = async () => {
@@ -77,11 +83,34 @@ export default function Page({
         setLoading(false);
       }
     };
+    const getOffer = async () => {
+      try {
+        setFetchingOffer(true);
+        const res = await axios.post(`/api/v1/offer/check`, { postId: postId });
+        if (res.data.status === "success") {
+          setHasOffer(res.data.hasOffer);
+        }
+        if(res.data.hasOffer){
+          setFetchingBuyer(true);
+          const buyer = await axios.get(`/api/v1/user/${res.data.offer.post.userId}`);
+          if(buyer.data.status === "success"){
+            setBuyer(buyer.data.buyer);
+          }
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setFetchingOffer(false);
+        setFetchingBuyer(false);
+      }
+    };
     getPost();
+    getOffer();
     if (edit) {
       setCanEdit(true);
     }
   }, []);
+
   const handlePost = async () => {
     if (!title || !description || !details || !quantity || !budget) {
       toast.error("Please fill all the fields!");
@@ -137,11 +166,18 @@ export default function Page({
       toast.error("You can't make an offer for your own post");
       return;
     }
+    if(hasOffer){
+      toast.error("You already have an offer for this post");
+      return;
+    }
     try {
       setFetchingBuyer(true);
-      const buyerId = (
-        await axios.post(`/api/v1/post/getUser`, { postId: postId })
-      ).data?.user;
+      const offer = await axios.post(`/api/v1/offer/make`, { postId: postId });
+      if (offer.data.status === "failed") {
+        toast.error(offer.data.message);
+        return;
+      }
+      const buyerId = offer.data.buyerId;
       const res = await axios.get(`/api/v1/user/${buyerId}`);
       if (res.data.status === "failed") {
         toast.error("Failed to fetch buyer's details");
@@ -149,6 +185,7 @@ export default function Page({
       }
       setBuyer(res.data.buyer);
       setMadeOffer(true);
+      setHasOffer(true);
     } catch (err) {
       toast.error("Failed to fetch buyer's details");
       console.error(err);
@@ -232,7 +269,7 @@ export default function Page({
                       <Spinner light={false} />
                     </div>
                   ) : (
-                    !madeOffer &&<button
+                    !madeOffer && !hasOffer &&<button
                       onClick={handleMakeOffer}
                       className="flex w-fit hover:bg-transparent text-white hover:text-dark transition-all duration-300 cursor-pointer justify-center items-center gap-2 px-4 py-2 rounded border bg-dark font-medium"
                     >
@@ -241,7 +278,7 @@ export default function Page({
                   )}
                 </div>
                 {
-                  buyer && (
+                  buyer && hasOffer && (
                     <>
                     <div className="flex flex-col border p-3 gap-2">
                       <h1 className="font-bold text-center text-xl">Buyer's Details:</h1>

@@ -85,23 +85,12 @@ model Offers{
   postId              Int       
   post                Posts       @relation(fields: [postId], references: [id])
 
-  offerDetails        String
-  offerPrice          Decimal
-
   userId              Int   
   user                User        @relation(fields: [userId], references: [id])
 
   createdAt           DateTime    @default(now())
   updatedAt           DateTime    @updatedAt
 
-  offerStatus         offerStatus
-
   isDeleted           Boolean?    @default(false)
   deletedAt           DateTime?
 }
-
-enum offerStatus {
-    ACCEPTED
-    PENDING
-    REJECTED
-  }

@@ -21,6 +21,7 @@ import axios from "axios";
 import ConfirmDelete from "./components/ConfirmDelete";
 import { SortIndicator } from "./components/SortIndicator";
 import ConfirmHide from "./components/ConfirmHide";
+import { toast, ToastContainer } from "react-toastify";
 
 interface Props {}
 
@@ -151,6 +152,10 @@ function Buyer() {
         );
 
         setHasMore(res.data.hasMore);
+        if(res.data.status === "failed"){
+          toast.error(res.data.message);
+          setRange(0);
+        }
       }
     } catch (err) {
       console.error(err);
@@ -226,6 +231,7 @@ function Buyer() {
 
   return (
     <>
+    <ToastContainer />
       <div className="flex flex-col md:flex-row gap-2 justify-between relative items-center">
         {deletePost && (
           <ConfirmDelete

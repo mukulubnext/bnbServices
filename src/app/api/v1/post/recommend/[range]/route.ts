@@ -7,7 +7,6 @@ export async function GET(
   ctx: { params: Promise<{ range: string }> }
 ) {
   const token = req.cookies.get("token")?.value;
-  console.log("Got req")
   if (!token) {
     return NextResponse.json({ status: "failed", message: "No token found" });
   }
@@ -25,7 +24,6 @@ export async function GET(
   const take = PAGE_SIZE;
 
   try {
-    // 1. Get user's interested categories
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
@@ -46,7 +44,6 @@ export async function GET(
 
     const categoryIds = user.interestedCategories.map(c => c.id);
 
-    // 2. Fetch recommended posts
     const posts = await prisma.posts.findMany({
       where: {
         isActive: true,
@@ -90,6 +87,7 @@ export async function GET(
     return NextResponse.json({
       status: "failed",
       message: "Something went wrong",
+
     });
   }
 }
