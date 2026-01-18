@@ -32,6 +32,7 @@ export default function Page({
   const [posting, setPosting] = useState(false);
   const [categoryName, setCategoryName] = useState("");
   const [category, setCategory] = useState<number | undefined>(undefined);
+  const [offers, setOffers] = useState<any[]>([]);
 
   const edit = searchParams.get("edit") === "true";
   const [allCategories, setAllCategories] = useState<any[]>([]);
@@ -76,6 +77,7 @@ export default function Page({
           setUpdatedAt(post.updatedAt);
           setCategoryName(post.category?.name);
           setCategory(post.category?.id);
+          setOffers(post.offers);
         }
       } catch {
         toast.error("Something went wrong!");
@@ -90,10 +92,12 @@ export default function Page({
         if (res.data.status === "success") {
           setHasOffer(res.data.hasOffer);
         }
-        if(res.data.hasOffer){
+        if (res.data.hasOffer) {
           setFetchingBuyer(true);
-          const buyer = await axios.get(`/api/v1/user/${res.data.offer.post.userId}`);
-          if(buyer.data.status === "success"){
+          const buyer = await axios.get(
+            `/api/v1/user/${res.data.offer.post.userId}`,
+          );
+          if (buyer.data.status === "success") {
             setBuyer(buyer.data.buyer);
           }
         }
@@ -166,7 +170,7 @@ export default function Page({
       toast.error("You can't make an offer for your own post");
       return;
     }
-    if(hasOffer){
+    if (hasOffer) {
       toast.error("You already have an offer for this post");
       return;
     }
@@ -189,14 +193,13 @@ export default function Page({
     } catch (err) {
       toast.error("Failed to fetch buyer's details");
       console.error(err);
-    }
-    finally{
+    } finally {
       setFetchingBuyer(false);
     }
-    console.log(buyer);
   };
+
   return (
-    <div className="flex py-[12vh] min-h-screen bg-light">
+    <div className="flex py-[12vh] flex-col min-h-screen bg-light">
       <Navbar solid />
       <LiquidGlassMenu />
       <ToastContainer />
@@ -269,35 +272,57 @@ export default function Page({
                       <Spinner light={false} />
                     </div>
                   ) : (
-                    !madeOffer && !hasOffer &&<button
-                      onClick={handleMakeOffer}
-                      className="flex w-fit hover:bg-transparent text-white hover:text-dark transition-all duration-300 cursor-pointer justify-center items-center gap-2 px-4 py-2 rounded border bg-dark font-medium"
-                    >
-                      Make Offer
-                    </button>
+                    !madeOffer &&
+                    !hasOffer && (
+                      <button
+                        onClick={handleMakeOffer}
+                        className="flex w-fit hover:bg-transparent text-white hover:text-dark transition-all duration-300 cursor-pointer justify-center items-center gap-2 px-4 py-2 rounded border bg-dark font-medium"
+                      >
+                        Make Offer
+                      </button>
+                    )
                   )}
                 </div>
-                {
-                  buyer && hasOffer && (
-                    <>
+                {buyer && hasOffer && (
+                  <>
                     <div className="flex flex-col border p-3 gap-2">
-                      <h1 className="font-bold text-center text-xl">Buyer's Details:</h1>
+                      <h1 className="font-bold text-center text-xl">
+                        Buyer's Details:
+                      </h1>
                       <div className="flex items-center gap-1">
-                        <span className="font-semibold flex items-center gap-1"><User size={16}/> Buyer: </span> {buyer.companyName}
+                        <span className="font-semibold flex items-center gap-1">
+                          <User size={16} /> Buyer:{" "}
+                        </span>{" "}
+                        {buyer.companyName}
                       </div>
                       <div className="flex items-center gap-1">
-                        <span className="font-semibold flex items-center gap-1"><PhoneCall size={16} /> Phone Number: </span> <a href={`tel:${buyer.phone}`} className="underline">{buyer.phone}</a>
+                        <span className="font-semibold flex items-center gap-1">
+                          <PhoneCall size={16} /> Phone Number:{" "}
+                        </span>{" "}
+                        <a href={`tel:${buyer.phone}`} className="underline">
+                          {buyer.phone}
+                        </a>
                       </div>
                       <div className="flex items-center gap-1">
-                        <span className="font-semibold flex items-center gap-1"><Mail size={16} /> Email: </span> <a href={`mail:${buyer.email}`} className="underline">{buyer.email}</a>
+                        <span className="font-semibold flex items-center gap-1">
+                          <Mail size={16} /> Email:{" "}
+                        </span>{" "}
+                        <a href={`mailto:${buyer.email}`} className="underline">
+                          {buyer.email}
+                        </a>
                       </div>
                       <div className="flex items-start gap-1">
-                        <span className="font-semibold flex items-center gap-1"><Pin size={16} /> Address: </span> <p>{buyer.address}, {buyer.city}, {buyer.state}, {buyer.zipCode}</p>
+                        <span className="font-semibold flex items-center gap-1">
+                          <Pin size={16} /> Address:{" "}
+                        </span>{" "}
+                        <p>
+                          {buyer.address}, {buyer.city}, {buyer.state},{" "}
+                          {buyer.zipCode}
+                        </p>
                       </div>
-                      
-                    </div></>
-                  )
-                }
+                    </div>
+                  </>
+                )}
               </>
             )}
           </>
@@ -421,6 +446,51 @@ export default function Page({
           )
         )}
       </div>
+      {user && user.role === "buyer" && (
+        <div className="bg-white gap-3 mt-4 px-[5%] md:px-12 text-dark md:w-[60vw] py-8 h-fit rounded-lg border border-dark flex flex-col w-[90vw] mx-auto">
+          <h1 className="text-xl font-bold">Offers</h1>
+          <div className="overflow-x-scroll w-full max-w-full">
+            <table className="bg-white shadow rounded-md w-full min-w-150 table-fixed">
+              <thead>
+                <tr>
+                  <th className="border">From</th>
+                  <th className="border">Date</th>
+                  <th className="border">Phone</th>
+                  <th className="border">Email</th>
+                </tr>
+              </thead>
+              <tbody>
+                {offers.map((offer) => (
+                  <tr
+                    key={offer.id}
+                    className="text-xs md:text-[14px] text-center"
+                  >
+                    <td className="border p-1">{offer.user.companyName}</td>
+                    <td className="border p-1">
+                      {new Intl.DateTimeFormat("en-GB", {
+                        dateStyle: "short",
+                      }).format(new Date(offer.createdAt))}
+                    </td>
+                    <td className="border p-1 break-all">
+                      <a className="underline break-all block" href={`tel:${offer.user.phone}`}>
+                        {offer.user.phone}
+                      </a>
+                    </td>
+                    <td className="border p-1 break-all">
+                      <a
+                        className="underline break-all block"
+                        href={`mailto:${offer.user.email}`}
+                      >
+                        {offer.user.email}
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

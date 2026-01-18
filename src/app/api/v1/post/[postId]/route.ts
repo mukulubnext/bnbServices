@@ -20,6 +20,25 @@ export async function GET(
       createdAt: true,
       updatedAt: true,
       category: true,
+      offers: {
+        select:{
+          id: true,
+          postId: true,
+          createdAt: true,
+          updatedAt: true,
+          user:{
+            select:{
+              id: true,
+              email: true,
+              phone:true,
+              companyName: true,
+            }
+          }
+        },
+        orderBy: {
+          createdAt: "asc",
+        }
+      }
     },
   });
   if (!post) {

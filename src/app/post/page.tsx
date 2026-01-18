@@ -22,6 +22,7 @@ const Page: NextPage<Props> = ({}) => {
   const [posting, setPosting] = useState(false);
   const [category, setCategory] = useState<number | undefined>(undefined);
   const [allCategories, setAllCategories] = useState<any[]>([]);
+  
   const router = useRouter();
   useEffect(() => {
     if (!loading && !user) {
