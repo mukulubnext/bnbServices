@@ -221,7 +221,7 @@ export default function PostDetails({ postId, setExpandPost }: Props) {
       </div>
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white overflow-y-scroll flex justify-center flex-col py-10 px-5 text-dark gap-4 w-[90vw] md:w-[60vw] h-fit rounded-lg mx-auto"
+        className="bg-white flex justify-center flex-col py-10 px-5 text-dark gap-4 w-[90vw] md:w-[60vw] h-fit rounded-lg mx-auto"
       >
         {isLoading ? (
           <div className="flex justify-center items-center">
@@ -349,7 +349,7 @@ export default function PostDetails({ postId, setExpandPost }: Props) {
           user &&
           user.role === "buyer" && (
             <>
-              <div className="overflow-y-scroll flex flex-col max-h-[80vh] gap-4 mt-6">
+              <div className="overflow-y-scroll md:overflow-y-auto flex flex-col max-h-[80vh] gap-4 mt-6">
                 <label className="flex flex-col gap-2">
                   <span className="text-dark font-medium">
                     Title (3-100 characters):
