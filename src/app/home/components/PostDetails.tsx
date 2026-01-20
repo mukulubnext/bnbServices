@@ -1,6 +1,4 @@
 "use client";
-import LiquidGlassMenu from "@/components/LiquidGlassMenu";
-import Navbar from "@/components/Navbar";
 import Spinner from "@/components/Spinner";
 import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
@@ -14,18 +12,19 @@ import {
   X,
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { use, useEffect, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
-import { set } from "zod";
+import React, {useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 interface Props {
   postId: number;
   setExpandPost: React.Dispatch<
     React.SetStateAction<number | null | undefined>
   >;
+  editPost: number | null | undefined;
+  setEditPost : React.Dispatch<React.SetStateAction<number | null | undefined>>;
 }
 
-export default function PostDetails({ postId, setExpandPost }: Props) {
+export default function PostDetails({ postId, setExpandPost, editPost, setEditPost }: Props) {
   const searchParams = useSearchParams();
   const [post, setPost] = useState<any>({});
   const [canEdit, setCanEdit] = useState(false);
@@ -69,6 +68,9 @@ export default function PostDetails({ postId, setExpandPost }: Props) {
 
   useEffect(() => {
     fetchCategories();
+    if(editPost === postId){
+      setCanEdit(true);
+    }
   }, []);
 
   useEffect(() => {
@@ -210,19 +212,20 @@ export default function PostDetails({ postId, setExpandPost }: Props) {
 
   return (
     <div
-      onClick={() => setExpandPost(null)}
+      onClick={() =>{ setExpandPost(null); setEditPost(null)}}
       className="flex z-100 absolute top-0 left-0 py-10 w-screen min-h-screen bg-black/80 flex-col"
     >
-      <div
-        onClick={() => setExpandPost(null)}
-        className="transition-all absolute top-10 left-[5%] p-2 flex justify-center items-center w-fit rounded-full"
-      >
-        <X className="cursor-pointer md:text-light text-dark" />
-      </div>
+      
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white flex justify-center flex-col py-10 px-5 text-dark gap-4 w-[90vw] md:w-[60vw] h-fit rounded-lg mx-auto"
+        className="bg-white flex justify-center relative flex-col py-10 px-5 text-dark gap-4 w-[90vw] md:w-[60vw] h-fit rounded-lg mx-auto"
       >
+        <div
+        onClick={() => { setExpandPost(null); setEditPost(null)}}
+        className="transition-all absolute hover:bg-dark/30 top-1 left-[1%] p-2 flex justify-center items-center w-fit rounded-full"
+      >
+        <X className="cursor-pointer text-dark" />
+      </div>
         {isLoading ? (
           <div className="flex justify-center items-center">
             <Spinner light={false} />

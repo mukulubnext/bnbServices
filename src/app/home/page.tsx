@@ -20,7 +20,6 @@ import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
 import ConfirmDelete from "./components/ConfirmDelete";
 import { SortIndicator } from "./components/SortIndicator";
-import ConfirmHide from "./components/ConfirmHide";
 import { toast, ToastContainer } from "react-toastify";
 import PostDetails from "./components/PostDetails";
 
@@ -83,12 +82,7 @@ function Buyer() {
   const [deletePostId, setDeletePostId] = useState(NaN);
   const [deletePostTitle, setDeletePostTitle] = useState("");
 
-  const [hidePost, setHidePost] = useState(false);
-  const [hidePostId, setHidePostId] = useState(NaN);
-  const [hidePostTitle, setHidePostTitle] = useState("");
-  const [isActive, setIsActive] = useState(true);
-
-  const [postRedirecting, setPostRedirecting] = useState(0);
+  const [editPost, setEditPost] = useState<number | null | undefined>();
 
   const [sort, setSort] = useState<{ key: SortKey; order: SortOrder }>({
     key: "date",
@@ -127,20 +121,11 @@ function Buyer() {
             ? a.offers.length - b.offers.length
             : b.offers.length - a.offers.length;
 
-        // case "active":
-        //   const val1 = a.isActive ? "Active" : "Inactive";
-        //   const val2 = b.isActive ? "Active" : "Inactive";
-        //   return order === "asc"
-        //     ? val1.localeCompare(val2)
-        //     : val2.localeCompare(val1);
-
         default:
           return 0;
       }
     });
   }, [posts, sort]);
-
-  const router = useRouter();
 
   const fetchPosts = async (r: number) => {
     setLoading(true);
@@ -233,7 +218,7 @@ function Buyer() {
     <>
       <ToastContainer />
       {expandPost && (
-        <PostDetails postId={expandPost} setExpandPost={setExpandPost} />
+        <PostDetails postId={expandPost} setExpandPost={setExpandPost} editPost={editPost} setEditPost={setEditPost} />
       )}
       <div className="flex flex-col md:flex-row gap-2 justify-between relative items-center">
         {deletePost && (
@@ -241,15 +226,6 @@ function Buyer() {
             postId={deletePostId}
             postTitle={deletePostTitle}
             setDeletePost={setDeletePost}
-            fetchPosts={fetchPosts}
-          />
-        )}
-        {hidePost && (
-          <ConfirmHide
-            isActive={true}
-            postId={hidePostId}
-            postTitle={hidePostTitle}
-            setHidePost={setHidePost}
             fetchPosts={fetchPosts}
           />
         )}
@@ -351,15 +327,10 @@ function Buyer() {
                     }}
                     className="text-black/90 cursor-pointer hover:bg-dark/5 transition-all duration-300 border-t border-b last:border-b-0 border-dark/20 even:bg-dark/2"
                   >
-                    {postRedirecting !== post.id ? (
-                      <td className="px-3 py-4 font-medium text-dark text-left">
-                        {post.title}
-                      </td>
-                    ) : (
-                      <td className="px-3 py-4 text-left">
-                        <Spinner light={false} />
-                      </td>
-                    )}
+                    <td className="px-3 py-4 font-medium text-dark text-left">
+                      {post.title}
+                    </td>
+
                     <td className="px-3 py-4 text-dark/70">
                       {new Intl.DateTimeFormat("en-GB", {
                         dateStyle: "short",
@@ -392,17 +363,13 @@ function Buyer() {
                     </td>
                     <td className="flex px-3 py-4 justify-center">
                       <EllipsisComp
-                        isActive={post.isActive}
                         postId={post.id}
                         setDeletePost={setDeletePost}
                         setDeletePostId={setDeletePostId}
                         setDeletePostTitle={setDeletePostTitle}
                         deletePostTitle={deletePostTitle}
-                        setHidePost={setHidePost}
-                        setHidePostId={setHidePostId}
-                        setHidePostTitle={setHidePostTitle}
-                        hidePostTitle={hidePostTitle}
-                        setIsActive={setIsActive}
+                        setEditPost={setEditPost}
+                        setExpandPost={setExpandPost}
                       />
                     </td>
                   </tr>
@@ -546,9 +513,9 @@ function Seller() {
         <h1 className="text-dark p-2 font-bold text-2xl">
           Posts you might be interested in
         </h1>
-      {expandPost && (
-        <PostDetails postId={expandPost} setExpandPost={setExpandPost} />
-      )}
+        {expandPost && (
+          <PostDetails postId={expandPost} setExpandPost={setExpandPost} editPost={null} setEditPost={()=>{}} />
+        )}
         <div className="overflow-x-auto">
           <table className="bg-white shadow rounded-md w-full min-w-200">
             <thead>
