@@ -32,10 +32,12 @@ const Page: NextPage<Props> = ({}) => {
 
   const [categories, setCategories] = useState<any[]>([]);
   const [interestedCategories, setInterestedCategories] = useState<number[]>(
-    []
+    [],
   );
 
   const [addCategory, setAddCategory] = useState(false);
+
+  const [updatingCategories, setUpdatingCategories] = useState(false);
 
   const router = useRouter();
   const { user, loading } = useAuth();
@@ -55,28 +57,29 @@ const Page: NextPage<Props> = ({}) => {
   };
 
   const handleSubmit = async () => {
-    try{
-      const res = await axios.put("/api/v1/category", {interestedCategories});
-      if(res.data.status === "success"){
+    try {
+      setUpdatingCategories(true);
+      const res = await axios.put("/api/v1/category", { interestedCategories });
+      if (res.data.status === "success") {
         toast.success("Interested Categories updated successfully!");
         setInterestedCategories([]);
         setAddCategory(false);
-      }
-      else{
+      } else {
         toast.error(res.data.message ?? "Something went wrong!");
       }
-    }
-    catch(err) {
+    } catch (err) {
       toast.error("Something went wrong!");
       console.error(err);
+    } finally {
+      setUpdatingCategories(false);
     }
-  }
+  };
 
   useEffect(() => {
     if (!user && !loading) {
       router.push("/signin");
     }
-    if(user){
+    if (user) {
       setInterestedCategories(user.interestedCategories);
     }
   }, [user, loading, router]);
@@ -231,14 +234,19 @@ const Page: NextPage<Props> = ({}) => {
                           <div className="border border-dark/20 rounded-md p-2 mt-1 flex flex-wrap gap-2">
                             {user.interestedCategories.length > 0 ? (
                               user.interestedCategories.map(
-                                (cat: { id: number; name: string, createdAt: Date, updatedAt: Date}) => (
+                                (cat: {
+                                  id: number;
+                                  name: string;
+                                  createdAt: Date;
+                                  updatedAt: Date;
+                                }) => (
                                   <span
                                     key={cat.id}
                                     className="bg-dark font-medium text-white px-3 py-1 rounded-full"
                                   >
                                     {cat.name}
                                   </span>
-                                )
+                                ),
                               )
                             ) : (
                               <div className="text-dark/60 text-sm">
@@ -253,28 +261,33 @@ const Page: NextPage<Props> = ({}) => {
                           />
                         )}
                       </div>
-                      {!addCategory ? <button
-                        onClick={() => setAddCategory(true)}
-                        className="flex justify-start cursor-pointer hover:text-dark hover:bg-white border transition-all items-center px-3 py-1 rounded w-fit bg-dark text-white font-medium"
-                      >
-                        <Plus size={20} /> Edit Categories
-                      </button>
-                    :
-                      <div className="flex items-center gap-2">
+                      {!addCategory ? (
                         <button
-                        onClick={handleSubmit}
-                        className="flex justify-start cursor-pointer hover:text-dark hover:bg-white border transition-all items-center px-3 py-1 rounded w-fit bg-dark text-white font-medium"
-                      >
-                        Submit
-                      </button>
-                      <button
-                        onClick={() => setAddCategory(false)}
-                        className="flex justify-start cursor-pointer hover:text-red-500 hover:bg-white border transition-all items-center px-3 py-1 rounded w-fit bg-red-500 text-white font-medium"
-                      >
-                        Cancel
-                      </button>
-                      </div>
-                    }
+                          onClick={() => setAddCategory(true)}
+                          className="flex justify-start cursor-pointer hover:text-dark hover:bg-white border transition-all items-center px-3 py-1 rounded w-fit bg-dark text-white font-medium"
+                        >
+                          <Plus size={20} /> Edit Categories
+                        </button>
+                      ) : updatingCategories ? (
+                        <div>
+                          <Spinner light={false} />
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={handleSubmit}
+                            className="flex justify-start cursor-pointer hover:text-dark hover:bg-white border transition-all items-center px-3 py-1 rounded w-fit bg-dark text-white font-medium"
+                          >
+                            Submit
+                          </button>
+                          <button
+                            onClick={() => setAddCategory(false)}
+                            className="flex justify-start cursor-pointer hover:text-red-500 hover:bg-white border transition-all items-center px-3 py-1 rounded w-fit bg-red-500 text-white font-medium"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
