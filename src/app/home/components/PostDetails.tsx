@@ -4,19 +4,29 @@ import Navbar from "@/components/Navbar";
 import Spinner from "@/components/Spinner";
 import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
-import { IndianRupee, Mail, Pencil, PhoneCall, Pin, User } from "lucide-react";
+import {
+  IndianRupee,
+  Mail,
+  Pencil,
+  PhoneCall,
+  Pin,
+  User,
+  X,
+} from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { use, useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { set } from "zod";
 
-export default function Page({
-  params,
-}: {
-  params: Promise<{ postId: number }>;
-}) {
+interface Props {
+  postId: number;
+  setExpandPost: React.Dispatch<
+    React.SetStateAction<number | null | undefined>
+  >;
+}
+
+export default function PostDetails({ postId, setExpandPost }: Props) {
   const searchParams = useSearchParams();
-  const postId = Number(use(params).postId);
   const [post, setPost] = useState<any>({});
   const [canEdit, setCanEdit] = useState(false);
   const [isLoading, setLoading] = useState(true);
@@ -199,11 +209,20 @@ export default function Page({
   };
 
   return (
-    <div className="flex py-[12vh] flex-col min-h-screen bg-light">
-      <Navbar solid />
-      <LiquidGlassMenu />
-      <ToastContainer />
-      <div className="bg-white gap-3 px-[5%] md:px-12 text-dark md:w-[60vw] py-8 h-fit rounded-lg border border-dark flex flex-col w-[90vw] mx-auto">
+    <div
+      onClick={() => setExpandPost(null)}
+      className="flex z-100 absolute top-0 left-0 py-10 w-screen min-h-screen bg-black/80 flex-col"
+    >
+      <div
+        onClick={() => setExpandPost(null)}
+        className="transition-all absolute top-10 left-[5%] p-2 flex justify-center items-center w-fit rounded-full"
+      >
+        <X className="cursor-pointer md:text-light text-dark" />
+      </div>
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-white overflow-y-scroll flex justify-center flex-col py-10 px-5 text-dark gap-4 w-[90vw] md:w-[60vw] h-fit rounded-lg mx-auto"
+      >
         {isLoading ? (
           <div className="flex justify-center items-center">
             <Spinner light={false} />
@@ -330,7 +349,7 @@ export default function Page({
           user &&
           user.role === "buyer" && (
             <>
-              <div className="flex flex-col gap-4 mt-6">
+              <div className="overflow-y-scroll flex flex-col max-h-[80vh] gap-4 mt-6">
                 <label className="flex flex-col gap-2">
                   <span className="text-dark font-medium">
                     Title (3-100 characters):
@@ -446,51 +465,6 @@ export default function Page({
           )
         )}
       </div>
-      {user && user.role === "buyer" && (
-        <div className="bg-white gap-3 mt-4 px-[5%] md:px-12 text-dark md:w-[60vw] py-8 h-fit rounded-lg border border-dark flex flex-col w-[90vw] mx-auto">
-          <h1 className="text-xl font-bold">Offers</h1>
-          <div className="overflow-x-scroll w-full max-w-full">
-            <table className="bg-white shadow rounded-md w-full min-w-150 table-fixed">
-              <thead>
-                <tr>
-                  <th className="border">From</th>
-                  <th className="border">Date</th>
-                  <th className="border">Phone</th>
-                  <th className="border">Email</th>
-                </tr>
-              </thead>
-              <tbody>
-                {offers.map((offer) => (
-                  <tr
-                    key={offer.id}
-                    className="text-xs md:text-[14px] text-center"
-                  >
-                    <td className="border p-1">{offer.user.companyName}</td>
-                    <td className="border p-1">
-                      {new Intl.DateTimeFormat("en-GB", {
-                        dateStyle: "short",
-                      }).format(new Date(offer.createdAt))}
-                    </td>
-                    <td className="border p-1 break-all">
-                      <a className="underline break-all block" href={`tel:${offer.user.phone}`}>
-                        {offer.user.phone}
-                      </a>
-                    </td>
-                    <td className="border p-1 break-all">
-                      <a
-                        className="underline break-all block"
-                        href={`mailto:${offer.user.email}`}
-                      >
-                        {offer.user.email}
-                      </a>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

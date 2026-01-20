@@ -22,6 +22,7 @@ import ConfirmDelete from "./components/ConfirmDelete";
 import { SortIndicator } from "./components/SortIndicator";
 import ConfirmHide from "./components/ConfirmHide";
 import { toast, ToastContainer } from "react-toastify";
+import PostDetails from "./components/PostDetails";
 
 interface Props {}
 
@@ -81,7 +82,7 @@ function Buyer() {
   const [deletePost, setDeletePost] = useState(false);
   const [deletePostId, setDeletePostId] = useState(NaN);
   const [deletePostTitle, setDeletePostTitle] = useState("");
-  
+
   const [hidePost, setHidePost] = useState(false);
   const [hidePostId, setHidePostId] = useState(NaN);
   const [hidePostTitle, setHidePostTitle] = useState("");
@@ -148,11 +149,11 @@ function Buyer() {
 
       if (res.data.status === "success") {
         setPosts((prev) =>
-          r === 1 ? res.data.posts : [...prev, ...res.data.posts]
+          r === 1 ? res.data.posts : [...prev, ...res.data.posts],
         );
 
         setHasMore(res.data.hasMore);
-        if(res.data.status === "failed"){
+        if (res.data.status === "failed") {
           toast.error(res.data.message);
           setRange(0);
         }
@@ -182,7 +183,7 @@ function Buyer() {
         (a: any, b: any) =>
           a.category &&
           b.category &&
-          a.category.name.localeCompare(b.category.name)
+          a.category.name.localeCompare(b.category.name),
       );
     sort.key === "category" &&
       sort.order === "desc" &&
@@ -190,10 +191,8 @@ function Buyer() {
         (a: any, b: any) =>
           a.category &&
           b.category &&
-          b.category.name.localeCompare(a.category.name)
+          b.category.name.localeCompare(a.category.name),
       );
-
-
 
     sort.key === "category" &&
       sort.order === "desc" &&
@@ -201,7 +200,7 @@ function Buyer() {
         (a: any, b: any) =>
           a.category &&
           b.category &&
-          b.category.name.localeCompare(a.category.name)
+          b.category.name.localeCompare(a.category.name),
       );
 
     sort.key === "offers" &&
@@ -228,10 +227,14 @@ function Buyer() {
       return { key, order: "asc" };
     });
   };
+  const [expandPost, setExpandPost] = useState<number | null>();
 
   return (
     <>
-    <ToastContainer />
+      <ToastContainer />
+      {expandPost && (
+        <PostDetails postId={expandPost} setExpandPost={setExpandPost} />
+      )}
       <div className="flex flex-col md:flex-row gap-2 justify-between relative items-center">
         {deletePost && (
           <ConfirmDelete
@@ -318,9 +321,7 @@ function Buyer() {
                     sort.key === "active" && "text-dark"
                   }`}
                 >
-                  <div className="flex items-center select-none">
-                    Status
-                  </div>
+                  <div className="flex items-center select-none">Status</div>
                 </th>
 
                 <th
@@ -330,7 +331,7 @@ function Buyer() {
                   }`}
                 >
                   <div className="flex items-center justify-center select-none">
-                    Offers
+                    Views
                     <SortIndicator
                       active={sort.key === "offers"}
                       order={sort.order}
@@ -346,8 +347,7 @@ function Buyer() {
                   <tr
                     key={post.id}
                     onClick={() => {
-                      router.push(`/post/${post.id}`);
-                      setPostRedirecting(post.id);
+                      setExpandPost(post.id);
                     }}
                     className="text-black/90 cursor-pointer hover:bg-dark/5 transition-all duration-300 border-t border-b last:border-b-0 border-dark/20 even:bg-dark/2"
                   >
@@ -375,7 +375,17 @@ function Buyer() {
                       )}
                     </td>
                     <td className="px-3 py-4 text-left font-medium text-dark">
-                      {post.isActive ? <div className="text-dark flex gap-1 items-center"><div className="w-2 h-2 rounded-full bg-dark"></div> Active</div> : <div className="text-red-500 flex gap-1 items-center"><div className="w-2 h-2 rounded-full bg-red-500"></div> Inactive</div>}
+                      {post.isActive ? (
+                        <div className="text-dark flex gap-1 items-center">
+                          <div className="w-2 h-2 rounded-full bg-dark"></div>{" "}
+                          Active
+                        </div>
+                      ) : (
+                        <div className="text-red-500 flex gap-1 items-center">
+                          <div className="w-2 h-2 rounded-full bg-red-500"></div>{" "}
+                          Inactive
+                        </div>
+                      )}
                     </td>
                     <td className="px-3 py-4 text-center font-bold text-dark">
                       {post.offers.length}
@@ -462,7 +472,6 @@ function Seller() {
     order: "desc",
   });
 
-
   const sortedPosts = useMemo(() => {
     const { key, order } = sort;
 
@@ -481,55 +490,53 @@ function Seller() {
         case "date":
         default:
           return order === "asc"
-            ? new Date(a.createdAt).getTime() -
-                new Date(b.createdAt).getTime()
-            : new Date(b.createdAt).getTime() -
-                new Date(a.createdAt).getTime();
+            ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+            : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       }
     });
   }, [posts, sort]);
 
   const handleSort = (key: SortKey) => {
-    setSort(prev =>
+    setSort((prev) =>
       prev.key === key
         ? { key, order: prev.order === "asc" ? "desc" : "asc" }
-        : { key, order: "asc" }
+        : { key, order: "asc" },
     );
   };
 
   const fetchPosts = async (r: number) => {
-  try {
-    if (r > 1) setLoadingMore(true);
-    else setLoading(true);
+    try {
+      if (r > 1) setLoadingMore(true);
+      else setLoading(true);
 
-    const res = await axios.get(`/api/v1/post/recommend/${r}`);
+      const res = await axios.get(`/api/v1/post/recommend/${r}`);
 
-    if (res.data.status === "success") {
-      setPosts(prev =>
-        r === 1 ? res.data.posts : [...prev, ...res.data.posts]
-      );
-      setHasMore(res.data.hasMore);
+      if (res.data.status === "success") {
+        setPosts((prev) =>
+          r === 1 ? res.data.posts : [...prev, ...res.data.posts],
+        );
+        setHasMore(res.data.hasMore);
+      }
+    } catch (err) {
+      console.error("Failed to fetch posts", err);
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
     }
-  } catch (err) {
-    console.error("Failed to fetch posts", err);
-  } finally {
-    setLoading(false);
-    setLoadingMore(false);
-  }
-};
+  };
 
+  useEffect(() => {
+    fetchPosts(1);
+  }, []);
 
-useEffect(() => {
-  fetchPosts(1);
-}, []);
+  const handleLoadMore = () => {
+    if (!hasMore || loadingMore) return;
+    const nextRange = range + 1;
+    setRange(nextRange);
+    fetchPosts(nextRange);
+  };
 
-const handleLoadMore = () => {
-  if (!hasMore || loadingMore) return;
-  const nextRange = range + 1;
-  setRange(nextRange);
-  fetchPosts(nextRange);
-};
-
+  const [expandPost, setExpandPost] = useState<number | null | undefined>();
 
   return (
     <>
@@ -539,7 +546,9 @@ const handleLoadMore = () => {
         <h1 className="text-dark p-2 font-bold text-2xl">
           Posts you might be interested in
         </h1>
-
+      {expandPost && (
+        <PostDetails postId={expandPost} setExpandPost={setExpandPost} />
+      )}
         <div className="overflow-x-auto">
           <table className="bg-white shadow rounded-md w-full min-w-200">
             <thead>
@@ -595,10 +604,10 @@ const handleLoadMore = () => {
 
             {!loading ? (
               <tbody>
-                {sortedPosts.map(post => (
+                {sortedPosts.map((post) => (
                   <tr
                     key={post.id}
-                    onClick={() => router.push(`/post/${post.id}`)}
+                    onClick={() => setExpandPost(post.id)}
                     className="text-black/90 cursor-pointer hover:bg-dark/5 transition-all duration-300 border-t border-b last:border-b-0 border-dark/20 even:bg-dark/2"
                   >
                     <td className="p-3 font-medium text-dark">{post.title}</td>
