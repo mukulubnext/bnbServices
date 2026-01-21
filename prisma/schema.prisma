@@ -48,12 +48,8 @@ model Posts {
   id                  Int         @id @default(autoincrement()) @unique
   title               String
   description         String
-  details             String
-  quantity            Int         @default(1)
-  budget              Decimal     @default(0)
 
-  categoryId          Int?
-  category            Category?    @relation(fields: [categoryId], references: [id])
+  items               Item[]
 
   userId              Int
   user                User        @relation(fields: [userId], references: [id])
@@ -74,7 +70,6 @@ model Category{
   name                String      @unique
 
   users               User[]
-  posts               Posts[]
 
   createdAt           DateTime    @default(now())
   updatedAt           DateTime    @updatedAt
@@ -93,4 +88,16 @@ model Offers{
 
   isDeleted           Boolean?    @default(false)
   deletedAt           DateTime?
+}
+model Item{
+  id                  Int         @id @default(autoincrement())
+
+  categoryId          Int
+
+  details             String
+  quantity            Int         @default(1)
+  budget              Decimal
+  
+  postId              Int
+  post                Posts       @relation(fields: [postId], references: [id])
 }
