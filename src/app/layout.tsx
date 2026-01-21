@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "BNB Services",
-  description: "",
+  description: "Marketplace to sell and buy Boxes and Bottles.",
 };
 
 export default function RootLayout({
