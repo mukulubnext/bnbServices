@@ -7,92 +7,80 @@ import axios from "axios";
 import { IndianRupee, Plus, X } from "lucide-react";
 import { NextPage } from "next";
 import { useRouter } from "next/navigation";
-import { JSX, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import Item from "./components/Item";
 
-interface Props {}
+interface ItemData {
+  categoryId: number | undefined;
+  details: string;
+  quantity: number;
+  budget: number;
+}
 
-const Page: NextPage<Props> = ({}) => {
+const Page: NextPage = () => {
   const { user, loading } = useAuth();
+  const router = useRouter();
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [details, setDetails] = useState("");
-  const [quantity, setQuantity] = useState(1);
-  const [budget, setBudget] = useState(0);
   const [posting, setPosting] = useState(false);
-  const [category, setCategory] = useState<number | undefined>(undefined);
   const [allCategories, setAllCategories] = useState<any[]>([]);
 
-  const [ind, setInd] = useState(1);
-  const [items, setItems] = useState<JSX.Element[]>([]);
+  const [itemsData, setItemsData] = useState<ItemData[]>([
+    { categoryId: undefined, details: "", quantity: 1, budget: 0 },
+  ]);
 
-  const router = useRouter();
   useEffect(() => {
-    if (!loading && !user) {
-      router.push("/signin");
-    }
+    if (!loading && !user) router.push("/signin");
   }, [user, loading, router]);
 
-  const fetchCategories = async () => {
-    try {
-      const res = await axios.get("/api/v1/category");
-      setAllCategories(res.data.categories);
-    } catch (err) {
-      console.error(err);
-    }
+  useEffect(() => {
+    axios
+      .get("/api/v1/category")
+      .then((res) => setAllCategories(res.data.categories))
+      .catch(console.error);
+  }, []);
+
+  const handleAddItem = () => {
+    setItemsData((prev) => [
+      ...prev,
+      { categoryId: undefined, details: "", quantity: 1, budget: 0 },
+    ]);
   };
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  useEffect(() => {
-    setItems([<Item allCategories={allCategories} />]);
-  }, []);
-
   const handlePost = async () => {
-    setPosting(true);
-    const body = {
-      title,
-      description,
-      details,
-      quantity,
-      budget,
-      category,
-    };
-    if (!title || !description || !details || !quantity || !budget) {
+    const filtered = itemsData.filter(
+      (i) => i.categoryId && i.quantity > 0 && i.budget > 0
+    );
+
+    if (!title || !description || filtered.length === 0) {
       toast.error("Please fill all the fields!");
-      setPosting(false);
       return;
     }
+
+    setPosting(true);
+
     try {
-      const res = await axios.post("/api/v1/post/create", body);
+      const res = await axios.post("/api/v1/post/create", {
+        title,
+        description,
+        itemsData: filtered,
+      });
+
       if (res.data.status === "success") {
         toast.success("Post created successfully!");
         setTitle("");
         setDescription("");
-        setDetails("");
-        setQuantity(1);
-        setBudget(0);
-        setCategory(undefined);
+        setItemsData([{ categoryId: 0, details: "", quantity: 1, budget: 0 }]);
       } else {
         toast.error(res.data.message);
       }
-    } catch (err) {
-      console.log(err);
+    } catch {
       toast.error("Something went wrong!");
     } finally {
       setPosting(false);
     }
-  };
-
-  const handleAddItem = () => {
-    setItems((prev) => [
-      ...prev,
-      <Item allCategories={allCategories}/>,
-    ]);
-    setInd(ind + 1);
   };
 
   return (
@@ -100,84 +88,94 @@ const Page: NextPage<Props> = ({}) => {
       <Navbar solid />
       <LiquidGlassMenu />
       <ToastContainer />
+
       {!loading && user && user.role === "buyer" ? (
         <div className="bg-white py-10 flex p-6 flex-col min-h-[80vh] w-[90vw] md:w-[60vw] border border-dark rounded-lg mx-auto">
           <h1 className="text-dark font-semibold text-3xl">
             Add a requirement
           </h1>
-          <div>
-            <div className="flex flex-col gap-4 mt-6">
-              <label className="flex flex-col gap-2">
-                <span className="text-dark font-medium">
-                  Title (3-100 characters):
-                </span>
-                <input
-                  type="text"
-                  placeholder="Cartons"
-                  value={title}
-                  minLength={3}
-                  maxLength={100}
-                  onChange={(e) => setTitle(e.target.value)}
-                  className="border border-dark/20 rounded-md p-2 focus:outline-none focus:border-dark transition-all"
-                />
-              </label>
-              <label className="flex flex-col gap-2">
-                <span className="text-dark font-medium">
-                  Description (3-1000 characters):
-                </span>
-                <textarea
-                  value={description}
-                  minLength={3}
-                  contentEditable={true}
-                  maxLength={1000}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Need high quality cartons for packaging of Wooden Artifacts"
-                  className="border border-dark/20 rounded-md p-2 h-32 focus:outline-none focus:border-dark transition-all"
-                />
-              </label>
-              <div>
-                <div className="flex flex-col gap-3">
-                  {items.map((item, index) => (
+
+          <div className="flex flex-col gap-4 mt-6">
+            {/* title */}
+            <label className="flex flex-col gap-2">
+              <span className="text-dark font-medium">Title</span>
+              <input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Cartons"
+                className="border border-dark/20 rounded-md p-2"
+              />
+            </label>
+
+            {/* description */}
+            <label className="flex flex-col gap-2">
+              <span className="text-dark font-medium">Description</span>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Need high quality cartons for packaging of Wooden Artifacts"
+                className="border border-dark/20 rounded-md p-2 h-32"
+              />
+            </label>
+
+            {/* items */}
+            <div className="flex flex-col gap-3">
+              {itemsData.map((item, index) => (
+                <div
+                  key={index}
+                  className="not-last:border-b group border-dark/40"
+                >
+                  <div className="flex justify-between group-only:hidden items-center">
+                    <span className="text-dark font-bold">{index + 1}.</span>
+
                     <div
-                      key={index}
-                      className="not-last:border-b group border-dark/40 "
+                      onClick={() =>
+                        setItemsData((prev) =>
+                          prev.filter((_, i) => i !== index)
+                        )
+                      }
+                      className={`text-red-500 flex justify-between items-center cursor-pointer hover:bg-highlight transition-all duration-300 p-1 rounded-full ${
+                        index === 0 && "hidden"
+                      }`}
                     >
-                      <div className={`flex justify-between group-only:hidden items-center`}>
-                        <span className="text-dark font-bold">{index+1}.</span>
-                        <div
-                        onClick={()=>{
-                          const filtered = items.filter((_,i)=> i!==index);
-                          setItems(filtered);
-                        }}
-                        className={`text-red-500 flex justify-between items-center cursor-pointer hover:bg-highlight transition-all duration-300 p-1 top-0 rounded-full ${index === 0 && "hidden"}`}>
-                          <X size={16} />
-                        </div>
-                      </div>
-                      {item}
+                      <X size={16} />
                     </div>
-                  ))}
+                  </div>
+
+                  <Item
+                    value={item}
+                    allCategories={allCategories}
+                    onChange={(updated) => {
+                      setItemsData((prev) => {
+                        const copy = [...prev];
+                        copy[index] = updated;
+                        return copy;
+                      });
+                    }}
+                  />
                 </div>
-                <button
-                  onClick={handleAddItem}
-                  className="bg-dark gap-2 border hover:text-dark hover:bg-white transition-all duration-300 cursor-pointer text-white font-bold flex justify-center items-center w-full py-2 px-3"
-                >
-                  <Plus /> Add Item
-                </button>
-              </div>
-              {!posting ? (
-                <button
-                  type="submit"
-                  onClick={() => handlePost()}
-                  className="bg-dark text-highlight font-bold py-2 hover:bg-transparent border border-dark hover:text-dark transition-all duration-300 rounded-lg mt-4 w-fit px-6"
-                >
-                  Post
-                </button>
-              ) : (
-                <div className="text-highlight font-bold py-2 hover:bg-transparent border border-dark transition-all duration-300 rounded-lg mt-4 w-fit px-8">
-                  <Spinner light={false} />
-                </div>
-              )}
+              ))}
             </div>
+
+            <button
+              onClick={handleAddItem}
+              className="bg-dark gap-2 border hover:text-dark hover:bg-white transition-all duration-300 cursor-pointer text-white font-bold flex justify-center items-center w-full py-2 px-3"
+            >
+              <Plus /> Add Item
+            </button>
+
+            {!posting ? (
+              <button
+                onClick={handlePost}
+                className="bg-dark text-highlight font-bold py-2 hover:bg-transparent border border-dark hover:text-dark transition-all duration-300 rounded-lg mt-4 w-fit px-6"
+              >
+                Post
+              </button>
+            ) : (
+              <div className="text-highlight font-bold py-2 border border-dark rounded-lg mt-4 w-fit px-8">
+                <Spinner light={false} />
+              </div>
+            )}
           </div>
         </div>
       ) : (

@@ -29,8 +29,8 @@ export async function GET(
         title: true,
         isActive: true,
         createdAt: true,
-        category: true,
         offers: true,
+        items: true,
       },
       orderBy: {
         createdAt: "desc",
