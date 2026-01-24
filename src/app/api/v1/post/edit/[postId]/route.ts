@@ -20,7 +20,7 @@ const reqBody = z.object({
 
 export async function PUT(
   req: NextRequest,
-  ctx: { params: { postId: string } },
+  ctx: { params: Promise<{ postId: string }> },
 ) {
   try {
     /* ---------- auth ---------- */

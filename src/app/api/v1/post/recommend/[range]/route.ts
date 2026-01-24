@@ -6,7 +6,7 @@ const PAGE_SIZE = 10;
 
 export async function GET(
   req: NextRequest,
-  ctx: { params: { range: string } },
+  ctx: { params: Promise<{ range: string }> },
 ) {
   try {
     const token = req.cookies.get("token")?.value;
@@ -26,7 +26,7 @@ export async function GET(
     }
 
     const userId = decrypted.id;
-    const range = Math.max(Number(ctx.params.range) || 1, 1);
+    const range = Math.max(Number((await ctx.params).range) || 1, 1);
 
     const skip = (range - 1) * PAGE_SIZE;
     const take = PAGE_SIZE;
