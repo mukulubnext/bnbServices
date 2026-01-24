@@ -14,31 +14,25 @@ export async function GET(
       id: true,
       title: true,
       description: true,
-      details: true,
-      quantity: true,
-      budget: true,
       createdAt: true,
       updatedAt: true,
-      category: true,
-      offers: {
-        select:{
+      items: {
+        where: { isDeleted: false },
+        select: {
           id: true,
-          postId: true,
+          category: {
+            select:{
+              name: true
+            }
+          },
+          categoryId: true,
+          quantity: true,
+          budget: true,
+          details: true,
           createdAt: true,
           updatedAt: true,
-          user:{
-            select:{
-              id: true,
-              email: true,
-              phone:true,
-              companyName: true,
-            }
-          }
         },
-        orderBy: {
-          createdAt: "asc",
-        }
-      }
+      },
     },
   });
   if (!post) {

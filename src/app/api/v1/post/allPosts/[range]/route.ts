@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   req: NextRequest,
-  ctx: { params: Promise<{ range: string }> }
+  ctx: { params: Promise<{ range: string }> },
 ) {
   const token = req.cookies.get("token")?.value;
   if (!token) {
@@ -30,7 +30,21 @@ export async function GET(
         isActive: true,
         createdAt: true,
         offers: true,
-        items: true,
+        items: {
+          select: {
+            id: true,
+            category: {
+              select: {
+                name: true,
+              },
+            },
+            quantity: true,
+            budget: true,
+            details: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",
@@ -47,7 +61,8 @@ export async function GET(
       posts: posts,
       hasMore: skip + take < total,
     });
-  } catch {
+  } catch(err) {
+    console.error(err);
     return NextResponse.json({
       status: "failed",
       message: "Something went wrong",

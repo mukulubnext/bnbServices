@@ -1,4 +1,5 @@
 "use client";
+import Item from "@/app/post/components/Item";
 import Spinner from "@/components/Spinner";
 import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
@@ -8,12 +9,20 @@ import {
   Pencil,
   PhoneCall,
   Pin,
+  Plus,
   User,
   X,
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, {useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+
+interface ItemData {
+  categoryId: number | undefined;
+  details: string;
+  quantity: number;
+  budget: number;
+}
 
 interface Props {
   postId: number;
@@ -21,27 +30,29 @@ interface Props {
     React.SetStateAction<number | null | undefined>
   >;
   editPost: number | null | undefined;
-  setEditPost : React.Dispatch<React.SetStateAction<number | null | undefined>>;
+  setEditPost: React.Dispatch<React.SetStateAction<number | null | undefined>>;
 }
 
-export default function PostDetails({ postId, setExpandPost, editPost, setEditPost }: Props) {
-  const searchParams = useSearchParams();
-  const [post, setPost] = useState<any>({});
-  const [canEdit, setCanEdit] = useState(false);
-  const [isLoading, setLoading] = useState(true);
-  const [title, setTitle] = useState("");
+export default function PostDetails({
+  postId,
+  setExpandPost,
+  editPost,
+  setEditPost,
+}: Props) {
 
+  const searchParams = useSearchParams();
+
+  const [post, setPost] = useState<any>({});
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+
+  const [offers, setOffers] = useState<any[]>([]);
+  const [items, setItems] = useState<ItemData[]>([]);
   const [createdAt, setCreatedAt] = useState("");
   const [updatedAt, setUpdatedAt] = useState("");
 
-  const [description, setDescription] = useState("");
-  const [details, setDetails] = useState("");
-  const [quantity, setQuantity] = useState<number>(1);
-  const [budget, setBudget] = useState<number>(0);
-  const [posting, setPosting] = useState(false);
-  const [categoryName, setCategoryName] = useState("");
-  const [category, setCategory] = useState<number | undefined>(undefined);
-  const [offers, setOffers] = useState<any[]>([]);
+  const [canEdit, setCanEdit] = useState(false);
+  const [isLoading, setLoading] = useState(true);
 
   const edit = searchParams.get("edit") === "true";
   const [allCategories, setAllCategories] = useState<any[]>([]);
@@ -51,6 +62,8 @@ export default function PostDetails({ postId, setExpandPost, editPost, setEditPo
   const [buyer, setBuyer] = useState<any>();
   const [fetchingBuyer, setFetchingBuyer] = useState(false);
   const [madeOffer, setMadeOffer] = useState(false);
+
+  const [posting, setPosting] = useState(false);
 
   const [hasOffer, setHasOffer] = useState(false);
   const [fetchingOffer, setFetchingOffer] = useState(false);
@@ -68,7 +81,7 @@ export default function PostDetails({ postId, setExpandPost, editPost, setEditPo
 
   useEffect(() => {
     fetchCategories();
-    if(editPost === postId){
+    if (editPost === postId) {
       setCanEdit(true);
     }
   }, []);
@@ -82,13 +95,9 @@ export default function PostDetails({ postId, setExpandPost, editPost, setEditPo
           setPost(post);
           setTitle(post.title);
           setDescription(post.description);
-          setDetails(post.details);
-          setQuantity(Number(post.quantity));
-          setBudget(Number(post.budget));
+          setItems(post.items);
           setCreatedAt(post.createdAt);
           setUpdatedAt(post.updatedAt);
-          setCategoryName(post.category?.name);
-          setCategory(post.category?.id);
           setOffers(post.offers);
         }
       } catch {
@@ -98,6 +107,7 @@ export default function PostDetails({ postId, setExpandPost, editPost, setEditPo
       }
     };
     const getOffer = async () => {
+      if (user.role === "buyer") return;
       try {
         setFetchingOffer(true);
         const res = await axios.post(`/api/v1/offer/check`, { postId: postId });
@@ -128,35 +138,44 @@ export default function PostDetails({ postId, setExpandPost, editPost, setEditPo
   }, []);
 
   const handlePost = async () => {
-    if (!title || !description || !details || !quantity || !budget) {
+    if (!title || !description || !items.length) {
       toast.error("Please fill all the fields!");
-      setPosting(false);
       return;
     }
-    if (
+
+    const itemsData: ItemData[] = items.map((item) => ({
+      categoryId: item.categoryId,
+      details: item.details,
+      quantity: Number(item.quantity),
+      budget: Number(item.budget),
+    }));
+
+    const isSamePost =
       title === post.title &&
       description === post.description &&
-      details === post.details &&
-      quantity === post.quantity &&
-      budget === post.budget
-    ) {
+      JSON.stringify(itemsData) === JSON.stringify(post.items);
+
+    if (isSamePost) {
       setCanEdit(false);
       return;
     }
+
     try {
       setPosting(true);
+
       const res = await axios.put(`/api/v1/post/edit/${postId}`, {
         title,
         description,
-        details,
-        quantity,
-        budget,
-        category,
+        items: itemsData,
       });
+
       if (res.data.status === "success") {
-        toast.success("Post updated successfully!");
+        toast.success("Post updated successfully! Refresh to see changes.");
         setPost(res.data.post);
         setCanEdit(false);
+        setTitle(post.title);
+        setDescription(post.description);
+        setItems(post.items);
       } else {
         toast.error(res.data.message);
       }
@@ -166,15 +185,11 @@ export default function PostDetails({ postId, setExpandPost, editPost, setEditPo
       setPosting(false);
     }
   };
+
   const handleCancel = () => {
     setCanEdit(false);
     setTitle(post.title);
     setDescription(post.description);
-    setDetails(post.details);
-    setQuantity(post.quantity);
-    setBudget(post.budget);
-    setCategory(post.category?.id);
-    setCategoryName(post.category?.name);
   };
 
   const handleMakeOffer = async () => {
@@ -209,23 +224,33 @@ export default function PostDetails({ postId, setExpandPost, editPost, setEditPo
       setFetchingBuyer(false);
     }
   };
-
+  const handleAddItem = () => {
+    setItems((prev) => [
+      ...prev,
+      { categoryId: undefined, details: "", quantity: 1, budget: 0 },
+    ]);
+  };
   return (
     <div
-      onClick={() =>{ setExpandPost(null); setEditPost(null)}}
+      onClick={() => {
+        setExpandPost(null);
+        setEditPost(null);
+      }}
       className="flex z-100 absolute top-0 left-0 py-10 w-screen min-h-screen bg-black/80 flex-col"
     >
-      
       <div
         onClick={(e) => e.stopPropagation()}
         className="bg-white flex justify-center relative flex-col py-10 px-5 text-dark gap-4 w-[90vw] md:w-[60vw] h-fit rounded-lg mx-auto"
       >
         <div
-        onClick={() => { setExpandPost(null); setEditPost(null)}}
-        className="transition-all absolute hover:bg-dark/30 top-1 left-[1%] p-2 flex justify-center items-center w-fit rounded-full"
-      >
-        <X className="cursor-pointer text-dark" />
-      </div>
+          onClick={() => {
+            setExpandPost(null);
+            setEditPost(null);
+          }}
+          className="transition-all absolute hover:bg-dark/30 top-1 left-[1%] p-2 flex justify-center items-center w-fit rounded-full"
+        >
+          <X className="cursor-pointer text-dark" />
+        </div>
         {isLoading ? (
           <div className="flex justify-center items-center">
             <Spinner light={false} />
@@ -256,11 +281,6 @@ export default function PostDetails({ postId, setExpandPost, editPost, setEditPo
                 )}
               </div>
             </div>
-            {categoryName && (
-              <div className="flex justify-center text-xs items-center px-3 py-1 font-medium text-white bg-dark w-fit rounded-full">
-                {categoryName}
-              </div>
-            )}
             <hr className="text-dark/50" />
             <p className="whitespace-pre-wrap">
               <span className="font-semibold">Description:</span>
@@ -268,17 +288,31 @@ export default function PostDetails({ postId, setExpandPost, editPost, setEditPo
               {description}
             </p>
             <hr className="text-dark/50" />
-            <p>
-              <span className="font-semibold">Details:</span> {details}
-            </p>
-            <hr className="text-dark/50" />
-            <p>
-              <span className="font-semibold">Quantity:</span> {quantity}
-            </p>
-            <hr className="text-dark/50" />
-            <p>
-              <span className="font-semibold">Budget:</span> {budget}
-            </p>
+            <div>
+              <span className="font-semibold">Items:</span>
+              {post.items.map((item: any, i: number) => (
+                <div
+                  key={i}
+                  className="flex justify-between not-last:border-b border-dark/20 py-2 px-3 gap-2"
+                >
+                  <div>
+                    <h1 className="font-semibold text-lg">
+                      {i + 1}. {item.category.name}
+                    </h1>
+                    <p>{item.details}</p>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <p className="flex items-center font-medium">
+                      <IndianRupee size={16} /> {item.budget}
+                    </p>
+                    <p className="flex items-center gap-1 justify-end font-medium">
+                      <span className="font-medium">Quantity: </span>{" "}
+                      {item.quantity}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
             {user && user.role === "buyer" ? (
               <button
                 onClick={() => setCanEdit(true)}
@@ -381,66 +415,52 @@ export default function PostDetails({ postId, setExpandPost, editPost, setEditPo
                     className="border border-dark/20 rounded-md p-2 h-32 focus:outline-none focus:border-dark transition-all"
                   />
                 </label>
-                <label className="flex flex-col gap-2">
-                  <span className="text-dark font-medium">
-                    More Details(max 200 characters):
-                  </span>
-                  <input
-                    type="text"
-                    maxLength={200}
-                    value={details}
-                    onChange={(e) => setDetails(e.target.value)}
-                    placeholder="Size, Material, Type etc."
-                    className="border border-dark/20 rounded-md p-2 focus:outline-none focus:border-dark transition-all"
-                  />
-                </label>
-                <label className="flex flex-col gap-2">
-                  <span className="text-dark font-medium">Category:</span>
-                  <select
-                    value={category}
-                    onChange={(e) => setCategory(Number(e.target.value))}
-                    className="border border-dark/20 rounded-md p-2 focus:outline-none focus:border-dark transition-all"
-                  >
-                    <option value={""} disabled>
-                      Select a category
-                    </option>
-                    {allCategories.map((cat) => (
-                      <option key={cat.id} value={cat.id}>
-                        {cat.name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="flex flex-col gap-2">
-                  <span className="text-dark font-medium">
-                    Quantity(min 1):
-                  </span>
-                  <input
-                    value={quantity}
-                    onChange={(e) => setQuantity(e.target.valueAsNumber)}
-                    type="number"
-                    min={1}
-                    placeholder="1, 5, 10, 100 etc."
-                    className="border border-dark/20 rounded-md p-2 focus:outline-none focus:border-dark transition-all"
-                  />
-                </label>
-                <label className="flex flex-col gap-2">
-                  <span className="text-dark font-medium">Budget:</span>
-                  <div className="relative w-full flex items-center">
-                    <input
-                      type="number"
-                      value={budget}
-                      min={0}
-                      onChange={(e) => setBudget(e.target.valueAsNumber)}
-                      placeholder="Budget for whole order (in INR)"
-                      className="border pl-8 border-dark/20 rounded-md p-2 w-full focus:outline-none focus:border-dark transition-all"
-                    />
-                    <IndianRupee
-                      size={16}
-                      className="absolute text-dark left-2"
-                    />
-                  </div>
-                </label>
+                <div className="flex flex-col gap-3">
+                  {items.map((item, index) => (
+                    <div
+                      key={index}
+                      className="not-last:border-b group border-dark/40"
+                    >
+                      <div className="flex justify-between group-only:hidden items-center">
+                        <span className="text-dark font-bold">
+                          {index + 1}.
+                        </span>
+
+                        <div
+                          onClick={() =>
+                            setItems((prev) =>
+                              prev.filter((_, i) => i !== index),
+                            )
+                          }
+                          className={`text-red-500 flex justify-between items-center cursor-pointer hover:bg-highlight transition-all duration-300 p-1 rounded-full ${
+                            index === 0 && "hidden"
+                          }`}
+                        >
+                          <X size={16} />
+                        </div>
+                      </div>
+
+                      <Item
+                        value={item}
+                        allCategories={allCategories}
+                        onChange={(updated) => {
+                          setItems((prev) => {
+                            const copy = [...prev];
+                            copy[index] = updated;
+                            return copy;
+                          });
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                <button
+                  onClick={handleAddItem}
+                  className="bg-dark gap-2 border hover:text-dark hover:bg-white transition-all duration-300 cursor-pointer text-white font-bold flex justify-center items-center w-full py-2 px-3"
+                >
+                  <Plus /> Add Item
+                </button>
                 {!posting ? (
                   <div className="flex flex-col md:flex-row md:gap-2">
                     <button

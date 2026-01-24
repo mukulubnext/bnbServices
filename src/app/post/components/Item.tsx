@@ -1,5 +1,6 @@
 import { IndianRupee } from "lucide-react";
 import { NextPage } from "next";
+import { useEffect } from "react";
 
 interface ItemData {
   categoryId: number | undefined;
@@ -18,7 +19,6 @@ const Item: NextPage<Props> = ({ value, allCategories, onChange }) => {
   const update = (patch: Partial<ItemData>) => {
     onChange({ ...value, ...patch });
   };
-
   return (
     <div className="py-3 pb-10 relative text-sm md:text-[16px] flex flex-col gap-2">
       <div className="flex flex-col md:flex-row gap-2 justify-center md:gap-[10%] items-center">

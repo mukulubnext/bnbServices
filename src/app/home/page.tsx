@@ -218,7 +218,12 @@ function Buyer() {
     <>
       <ToastContainer />
       {expandPost && (
-        <PostDetails postId={expandPost} setExpandPost={setExpandPost} editPost={editPost} setEditPost={setEditPost} />
+        <PostDetails
+          postId={expandPost}
+          setExpandPost={setExpandPost}
+          editPost={editPost}
+          setEditPost={setEditPost}
+        />
       )}
       <div className="flex flex-col md:flex-row gap-2 justify-between relative items-center">
         {deletePost && (
@@ -284,20 +289,12 @@ function Buyer() {
                   }`}
                 >
                   <div className="flex items-center select-none">
-                    Category
+                    Items
                     <SortIndicator
                       active={sort.key === "category"}
                       order={sort.order}
                     />
                   </div>
-                </th>
-
-                <th
-                  className={`p-3 cursor-pointer text-left ${
-                    sort.key === "active" && "text-dark"
-                  }`}
-                >
-                  <div className="flex items-center select-none">Status</div>
                 </th>
 
                 <th
@@ -336,32 +333,27 @@ function Buyer() {
                         dateStyle: "short",
                       }).format(new Date(post.createdAt))}
                     </td>
-                    <td className="px-3 py-4">
-                      {post.category ? (
-                        <div className="py-1 px-3 bg-dark text-white font-medium text-sm w-fit rounded-full">
-                          {post.category.name}
-                        </div>
-                      ) : (
-                        <p className="text-black/50">no category</p>
-                      )}
+                    <td className="px-3 py-4 bottom-1 relative flex gap-2 items-center text-dark/70">
+                      <span className={`flex gap-2 relative max-w-50 items-center no-scrollbar ${post.items.length > 2 ? " overflow-x-scroll": ""}`}>
+                        {post.items.length ? (
+                          post.items.map((item: any) => (
+                            <div
+                            key={item.id}
+                            className="py-1 px-3 bg-dark text-white font-medium text-nowrap text-sm w-fit rounded-full"
+                            >
+                              {item.category.name}
+                            </div>
+                          ))
+                        ) : (
+                          <p className="text-black/50">no items</p>
+                        )}
+                      </span>
                     </td>
-                    <td className="px-3 py-4 text-left font-medium text-dark">
-                      {post.isActive ? (
-                        <div className="text-dark flex gap-1 items-center">
-                          <div className="w-2 h-2 rounded-full bg-dark"></div>{" "}
-                          Active
-                        </div>
-                      ) : (
-                        <div className="text-red-500 flex gap-1 items-center">
-                          <div className="w-2 h-2 rounded-full bg-red-500"></div>{" "}
-                          Inactive
-                        </div>
-                      )}
-                    </td>
+
                     <td className="px-3 py-4 text-center font-bold text-dark">
                       {post.offers.length}
                     </td>
-                    <td className="flex px-3 py-4 justify-center">
+                    <td className="flex px-3 py-4 top-1 relative justify-center">
                       <EllipsisComp
                         postId={post.id}
                         setDeletePost={setDeletePost}
@@ -514,7 +506,12 @@ function Seller() {
           Posts you might be interested in
         </h1>
         {expandPost && (
-          <PostDetails postId={expandPost} setExpandPost={setExpandPost} editPost={null} setEditPost={()=>{}} />
+          <PostDetails
+            postId={expandPost}
+            setExpandPost={setExpandPost}
+            editPost={null}
+            setEditPost={() => {}}
+          />
         )}
         <div className="overflow-x-auto">
           <table className="bg-white shadow rounded-md w-full min-w-200">

@@ -8,7 +8,16 @@
 }
 *{
   scroll-behavior: smooth;
+  /* border: red 1px solid; */
 }
 .scrollBar{
   scrollbar-color: transparent transparent;
+}
+.no-scrollbar {
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;     /* IE & old Edge */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;                /* Chrome, Safari */
 }
