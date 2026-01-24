@@ -2,28 +2,35 @@ import prisma from "@/lib/prisma";
 import { decrypt } from "@/lib/sessions";
 import { NextRequest, NextResponse } from "next/server";
 
+const PAGE_SIZE = 10;
+
 export async function GET(
   req: NextRequest,
-  ctx: { params: Promise<{ range: string }> }
+  ctx: { params: { range: string } },
 ) {
-  const token = req.cookies.get("token")?.value;
-  if (!token) {
-    return NextResponse.json({ status: "failed", message: "No token found" });
-  }
-
-  const decrypted = await decrypt(token);
-  if (!decrypted) {
-    return NextResponse.json({ status: "failed", message: "Invalid token" });
-  }
-
-  const userId = decrypted.id;
-  const range = Number((await ctx.params).range);
-  const PAGE_SIZE = 10;
-
-  const skip = (range - 1) * PAGE_SIZE;
-  const take = PAGE_SIZE;
-
   try {
+    const token = req.cookies.get("token")?.value;
+    if (!token) {
+      return NextResponse.json(
+        { status: "failed", message: "No token found" },
+        { status: 401 },
+      );
+    }
+
+    const decrypted = await decrypt(token);
+    if (!decrypted) {
+      return NextResponse.json(
+        { status: "failed", message: "Invalid token" },
+        { status: 401 },
+      );
+    }
+
+    const userId = decrypted.id;
+    const range = Math.max(Number(ctx.params.range) || 1, 1);
+
+    const skip = (range - 1) * PAGE_SIZE;
+    const take = PAGE_SIZE;
+
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
@@ -37,44 +44,61 @@ export async function GET(
       return NextResponse.json({
         status: "success",
         posts: [],
-        hasMore: false,
         total: 0,
+        hasMore: false,
       });
     }
 
-    const categoryIds = user.interestedCategories.map(c => c.id);
+    const categoryIds = user.interestedCategories.map((c) => c.id);
 
-    const posts = await prisma.posts.findMany({
-      where: {
-        isActive: true,
-        isDeleted: false,
-        categoryId: {
-          in: categoryIds,
+    const whereClause = {
+      isActive: true,
+      isDeleted: false,
+      items: {
+        some: {
+          categoryId: {
+            in: categoryIds,
+          },
         },
       },
-      select: {
-        id: true,
-        title: true,
-        createdAt: true,
-        category: true,
-        offers: true,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-      skip,
-      take,
-    });
+    };
 
-    const total = await prisma.posts.count({
-      where: {
-        isActive: true,
-        isDeleted: false,
-        categoryId: {
-          in: categoryIds,
+    const [posts, total] = await Promise.all([
+      prisma.posts.findMany({
+        where: whereClause,
+        orderBy: { createdAt: "desc" },
+        skip,
+        take,
+        select: {
+          id: true,
+          title: true,
+          createdAt: true,
+          items: {
+            where: { isDeleted: false },
+            select: {
+              id: true,
+              category: {
+                select: {
+                  name: true,
+                },
+              },
+              categoryId: true,
+              quantity: true,
+              budget: true,
+              details: true,
+              createdAt: true,
+              updatedAt: true,
+            },
+          },
+          offers: {
+            select: {
+              id: true,
+            },
+          },
         },
-      },
-    });
+      }),
+      prisma.posts.count({ where: whereClause }),
+    ]);
 
     return NextResponse.json({
       status: "success",
@@ -84,10 +108,9 @@ export async function GET(
     });
   } catch (err) {
     console.error(err);
-    return NextResponse.json({
-      status: "failed",
-      message: "Something went wrong",
-
-    });
+    return NextResponse.json(
+      { status: "failed", message: "Something went wrong" },
+      { status: 500 },
+    );
   }
 }

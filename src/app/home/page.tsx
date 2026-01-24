@@ -409,18 +409,13 @@ type Post = {
   title: string;
   createdAt: string;
   category?: { name: string };
+  items: any[];
 };
-
-type Cursor = {
-  createdAt: string;
-  id: number;
-} | null;
 
 function Seller() {
   const router = useRouter();
 
   const [posts, setPosts] = useState<Post[]>([]);
-  const [cursor, setCursor] = useState<Cursor>(null);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -554,7 +549,7 @@ function Seller() {
                   }`}
                 >
                   <div className="flex items-center select-none">
-                    Category
+                    Items
                     <SortIndicator
                       active={sort.key === "category"}
                       order={sort.order}
@@ -580,14 +575,21 @@ function Seller() {
                         dateStyle: "short",
                       }).format(new Date(post.createdAt))}
                     </td>
-                    <td className="p-3">
-                      {post.category ? (
-                        <span className="px-3 py-1 bg-dark text-white rounded-full text-sm">
-                          {post.category.name}
-                        </span>
-                      ) : (
-                        <span className="text-dark/40">No category</span>
-                      )}
+                    <td className="px-3 py-4 bottom-1 relative flex gap-2 items-center text-dark/70">
+                      <span className={`flex gap-2 relative max-w-50 items-center no-scrollbar ${post.items.length > 2 ? " overflow-x-scroll": ""}`}>
+                        {post.items.length ? (
+                          post.items.map((item: any) => (
+                            <div
+                            key={item.id}
+                            className="py-1 px-3 bg-dark text-white font-medium text-nowrap text-sm w-fit rounded-full"
+                            >
+                              {item.category.name}
+                            </div>
+                          ))
+                        ) : (
+                          <p className="text-black/50">no items</p>
+                        )}
+                      </span>
                     </td>
                     <td className="p-3 text-center">
                       <button className="text-white bg-dark py-1 px-3 rounded border hover:text-dark hover:bg-transparent cursor-pointer transition-all duration-300">
