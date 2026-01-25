@@ -51,6 +51,8 @@ export async function GET(req: NextRequest) {
         gstNumber: true,
         interestedCategories: true,
         companyWebsite: true,
+        tokens: true,
+        payments: true,
     }
   });
 

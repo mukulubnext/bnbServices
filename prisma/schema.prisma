@@ -39,9 +39,30 @@ model User {
   
   posts                 Posts[]   
   offers                Offers[]
+
+  tokens                Int         @default(0)
+  payments              Payment[]
   
   createdAt             DateTime     @default(now())
   updatedAt             DateTime     @updatedAt
+}
+
+model Payment {
+  id                  String         @id @default(cuid()) @unique
+  userId              Int
+  user                User           @relation(fields: [userId], references: [id])
+  amount              Decimal
+  token               Int
+  provider            String
+  providerOrderId     String         @unique
+  status              PaymentStatus
+  createdAt           DateTime       @default(now())
+}
+
+enum PaymentStatus{
+  PENDING
+  SUCCESS
+  FAILED
 }
 
 model Posts {

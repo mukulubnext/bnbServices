@@ -9,6 +9,7 @@ import {
   Building,
   CircleUserRound,
   Coins,
+  History,
   LockKeyhole,
   Mail,
   MapPin,
@@ -16,6 +17,7 @@ import {
   Plus,
   Tag,
   Users,
+  Wallet,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -235,16 +237,14 @@ const Page: NextPage<Props> = ({}) => {
                         {!addCategory ? (
                           <div className="border border-dark/20 rounded-md p-2 mt-1 flex flex-wrap gap-2">
                             {user.interestedCategories.length > 0 ? (
-                              user.interestedCategories.map(
-                                (cat: any) => (
-                                  <span
-                                    key={cat.id}
-                                    className="bg-dark font-medium text-white px-3 py-1 rounded-full"
-                                  >
-                                    {cat.name}
-                                  </span>
-                                ),
-                              )
+                              user.interestedCategories.map((cat: any) => (
+                                <span
+                                  key={cat.id}
+                                  className="bg-dark font-medium text-white px-3 py-1 rounded-full"
+                                >
+                                  {cat.name}
+                                </span>
+                              ))
                             ) : (
                               <div className="text-dark/60 text-sm">
                                 No categories selected
@@ -289,35 +289,59 @@ const Page: NextPage<Props> = ({}) => {
                   </div>
                 )}
                 {selected === 3 && user.role === "seller" && (
-                  <div className="flex flex-col gap-6">
-                    <h1 className="font-semibold text-dark flex items-center gap-2 text-2xl">
-                      <Coins /> Transactions
-                    </h1>
-
-                    {/* <div className="flex flex-col gap-4">
-                  {user.transactions.length === 0 ? (
-                    <p className="text-dark/70">No transactions available.</p>
-                  ) : (
-                    <table className="w-full border-collapse">
-                      <thead>
-                        <tr>
-                          <th className="border border-dark/20 p-2 text-left">Date</th>
-                          <th className="border border-dark/20 p-2 text-left">Title</th>
-                          <th className="border border-dark/20 p-2 text-left">Amount</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {user.transactions.map((transaction, index) => (
-                          <tr key={index}>
-                            <td className="border border-dark/20 p-2">{transaction.date}</td>
-                            <td className="border border-dark/20 p-2">{transaction.title}</td>
-                            <td className={`border border-dark/20 p-2 ${transaction.status === "debited" ? "text-red-400": "text-green-400"}`}>{transaction.status==="debited" ? "-" : "+"}{transaction.amount}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  )}
-                </div> */}
+                    <div className="flex flex-col gap-4">
+                      <div className="flex flex-col gap-2">
+                        <div className="flex flex-col justify-start items-center gap-2">
+                          <p className="font-semibold text-xl flex items-center gap-2 text-dark/70">
+                            Tokens
+                          </p>
+                          <div className="border flex max-w-100 justify-center items-center gap-3 w-full text-center border-dark/60 text-dark text-3xl font-bold rounded-md p-2 mt-1">
+                            <Coins />
+                            {user.tokens ?? 0}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-2 justify-center w-full items-center md:flex-row">
+                        <button className="text-white w-full flex justify-center items-center gap-4 bg-dark py-2 px-5 max-w-100 rounded font-medium border border-dark hover:text-dark hover:bg-white transition-all cursor-pointer">
+                        <Plus /> Add Tokens
+                      </button>
+                      <button className="text-white w-full flex justify-center items-center gap-4 bg-dark py-2 px-5 max-w-100 rounded font-medium border border-dark hover:text-dark hover:bg-white transition-all cursor-pointer">
+                        <History/> Offer History
+                      </button>
+                      </div>
+                      <div className="flex flex-col gap-3">
+                        <h1 className="font-bold text-dark text-xl mt-4 md:text-2xl">
+                          Wallet History
+                        </h1>
+                        <div className="w-full h-[50vh] border border-dark/40 rounded-lg">
+                          {!user.payments || user.payments.length === 0 ? (
+                            <div className="flex h-full relative bottom-[5%] text-black/40 justify-center items-center">
+                              No previous record.
+                            </div>
+                          )
+                        :
+                        (
+                          <table className="w-full border-collapse">
+                            <thead>
+                              <tr>
+                                <th className="border border-dark/20 p-2 text-left">Date</th>
+                                <th className="border border-dark/20 p-2 text-left">Amount</th>
+                                <th className="border border-dark/20 p-2 text-left">Status</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {user.payments.map((payment: any, index: any) => (
+                                <tr key={index}>
+                                  <td className="border border-dark/20 p-2">{payment.createdAt}</td>
+                                  <td className="border border-dark/20 p-2">{payment.amount}</td>
+                                  <td className={`border border-dark/20 p-2 ${payment.status === "success" ? "text-green-400": "text-red-400"}`}>{payment.status==="success" ? "Success" : "Failed"}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                            </table>
+                        )}
+                        </div>
+                      </div>
                   </div>
                 )}
               </div>
