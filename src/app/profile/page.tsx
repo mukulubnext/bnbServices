@@ -40,7 +40,7 @@ const Page: NextPage<Props> = ({}) => {
   const [updatingCategories, setUpdatingCategories] = useState(false);
 
   const router = useRouter();
-  const { user, loading } = useAuth();
+  const { user, loading, refresh } = useAuth();
 
   const handleSignout = async () => {
     setSigningOut(true);
@@ -59,10 +59,12 @@ const Page: NextPage<Props> = ({}) => {
   const handleSubmit = async () => {
     try {
       setUpdatingCategories(true);
+      console.log(interestedCategories);
       const res = await axios.put("/api/v1/category", { interestedCategories });
       if (res.data.status === "success") {
         toast.success("Interested Categories updated successfully!");
         setInterestedCategories([]);
+        refresh();
         setAddCategory(false);
       } else {
         toast.error(res.data.message ?? "Something went wrong!");
@@ -234,12 +236,7 @@ const Page: NextPage<Props> = ({}) => {
                           <div className="border border-dark/20 rounded-md p-2 mt-1 flex flex-wrap gap-2">
                             {user.interestedCategories.length > 0 ? (
                               user.interestedCategories.map(
-                                (cat: {
-                                  id: number;
-                                  name: string;
-                                  createdAt: Date;
-                                  updatedAt: Date;
-                                }) => (
+                                (cat: any) => (
                                   <span
                                     key={cat.id}
                                     className="bg-dark font-medium text-white px-3 py-1 rounded-full"

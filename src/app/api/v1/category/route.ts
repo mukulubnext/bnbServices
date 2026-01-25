@@ -48,7 +48,7 @@ export async function PUT(req: NextRequest){
             where: {id: id},
             data: {
                 interestedCategories: {
-                    connect: interestedCategories?.map((cat)=>(
+                    set: interestedCategories?.map((cat)=>(
                         {id: cat.id, name: cat.name}
                     ))
                 }
