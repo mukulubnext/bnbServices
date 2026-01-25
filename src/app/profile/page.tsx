@@ -104,12 +104,12 @@ const Page: NextPage<Props> = ({}) => {
                     <h1 className="font-semibold text-dark text-2xl">
                       Account Details
                     </h1>
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-4 text-black/50">
                       <div>
                         <p className="font-medium flex items-center gap-2 text-dark/70">
                           <Mail /> Email:
                         </p>
-                        <div className="border overflow-clip border-dark/20 rounded-md p-2 mt-1">
+                        <div className="border cursor-not-allowed overflow-clip border-dark/20 rounded-md p-2 mt-1">
                           {user.email}
                         </div>
                       </div>
@@ -117,7 +117,7 @@ const Page: NextPage<Props> = ({}) => {
                         <p className="font-medium flex items-center gap-2 text-dark/70">
                           <Phone /> Phone Number:
                         </p>
-                        <div className="border border-dark/20 rounded-md p-2 mt-1">
+                        <div className="border cursor-not-allowed border-dark/20 rounded-md p-2 mt-1">
                           {user.phone}
                         </div>
                       </div>
@@ -125,7 +125,7 @@ const Page: NextPage<Props> = ({}) => {
                         <p className="font-medium flex items-center gap-2 text-dark/70">
                           <LockKeyhole /> Password:
                         </p>
-                        <div className="border border-dark/20 rounded-md p-2 mt-1">
+                        <div className="border cursor-not-allowed border-dark/20 rounded-md p-2 mt-1">
                           {"********"}
                         </div>
                       </div>
@@ -226,7 +226,7 @@ const Page: NextPage<Props> = ({}) => {
                     </h1>
 
                     <div className="flex flex-col gap-4">
-                      <div className="gap-2 flex flex-col">
+                      <div className="gap-2 flex flex-col text-sm md:text-[16px]">
                         <p className="font-medium flex items-center gap-2 text-dark/70">
                           <Tag /> Interested Service Categories:
                         </p>
@@ -264,7 +264,7 @@ const Page: NextPage<Props> = ({}) => {
                       {!addCategory ? (
                         <button
                           onClick={() => setAddCategory(true)}
-                          className="flex justify-start cursor-pointer hover:text-dark hover:bg-white border transition-all items-center px-3 py-1 rounded w-fit bg-dark text-white font-medium"
+                          className="flex justify-start cursor-pointer hover:text-dark hover:bg-white border transition-all items-center px-3 py-1 rounded text-sm md:text-[16px] w-fit bg-dark text-white font-medium"
                         >
                           <Plus size={20} /> Edit Categories
                         </button>
@@ -276,13 +276,13 @@ const Page: NextPage<Props> = ({}) => {
                         <div className="flex items-center gap-2">
                           <button
                             onClick={handleSubmit}
-                            className="flex justify-start cursor-pointer hover:text-dark hover:bg-white border transition-all items-center px-3 py-1 rounded w-fit bg-dark text-white font-medium"
+                            className="flex justify-start cursor-pointer hover:text-dark hover:bg-white border transition-all items-center px-3 py-1 rounded text-sm md:text-[16px] w-fit bg-dark text-white font-medium"
                           >
                             Submit
                           </button>
                           <button
                             onClick={() => setAddCategory(false)}
-                            className="flex justify-start cursor-pointer hover:text-red-500 hover:bg-white border transition-all items-center px-3 py-1 rounded w-fit bg-red-500 text-white font-medium"
+                            className="flex justify-start cursor-pointer hover:text-red-500 hover:bg-white border transition-all items-center px-3 text-sm md:text-[16px] py-1 rounded w-fit bg-red-500 text-white font-medium"
                           >
                             Cancel
                           </button>

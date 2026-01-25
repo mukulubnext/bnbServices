@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Spinner from "./Spinner";
 import { useAuth } from "@/context/AuthContext";
-import logo from "../../public/Green.png";
+import N from "../../public/N.png";
 import Image from "next/image";
 
 interface Props {
@@ -46,10 +46,9 @@ const Navbar: NextPage<Props> = ({ solid, userProp }: Props) => {
         href={user ? "/home" : "/"}
         className="flex justify-center group items-center gap-2 cursor-pointer"
       >
-        <div className="w-10 h-10 rounded-full flex items-center justify-center group-hover:rotate-12 transition-transform shadow-lg bg-light text-dark">
-          <Image src={logo} className="w-full h-full rounded-full" alt="logo" />
-        </div>
-        <span className="text-xl font-bold tracking-tight">Boxes n Bottles</span>
+        <h1 className="text-light flex gap-1 justify-center items-center md:text-2xl font-bold">
+        Boxes <span><Image className="md:w-10 md:h-10 w-8 h-8 rounded" src={N} alt="n" /></span> Bottles
+      </h1>
       </Link>
       <div className={`hidden md:flex justify-center items-center gap-8`}>
         {navlinks.map((d, i) => (

@@ -1,15 +1,18 @@
 import { NextPage } from "next";
-import N from "@/../public/N.png"
+import logo from "@/../public/Green.png"
 import Image from "next/image";
 
 interface Props {}
 
 const Footer: NextPage<Props> = ({}) => {
   return (
-    <footer className="py-8 md:py-5 bg-dark border-t border-white/5 flex-col text-center flex justify-center items-center">
-      <h1 className="text-light flex gap-1 justify-center items-center md:text-2xl font-bold">
-        Boxes <span><Image className="md:w-10 md:h-10 w-8 h-8" src={N} alt="n" /></span> Bottles
-      </h1>
+    <footer className="py-8 md:py-5 bg-dark border-t border-white/5 text-center flex flex-col justify-center items-center">
+      <div className="flex justify-center items-center gap-1">
+        <Image className="md:w-24 md:h-24 w-14 h-14" src={logo} alt="logo" />
+        <h1 className="font-bold text-highlight text-xl md:text-3xl">
+          Boxes n Bottles
+        </h1>
+      </div>
       <p className="text-xs text-muted">
         © 2026 Boxes n Bottles. All rights reserved.
       </p>

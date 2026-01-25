@@ -68,7 +68,7 @@ const Page: NextPage<Props> = ({}) => {
               <div className="w-full flex justify-center flex-col">
                 <label
                   htmlFor="email"
-                  className="font-medium text-xl text-dark"
+                  className="font-medium md:text-xl text-dark"
                 >
                   Email Address
                 </label>
@@ -78,14 +78,14 @@ const Page: NextPage<Props> = ({}) => {
                     onChange={(e) => setEmail(e.target.value)}
                     type="email"
                     id="email"
-                    className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
+                    className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-sm md:text-lg bg-white p-4 w-full"
                   />
                 </div>
               </div>
               <div className="w-full flex justify-center flex-col">
                 <label
                   htmlFor="password"
-                  className="font-medium text-xl text-dark"
+                  className="font-medium md:text-xl text-dark"
                 >
                   Password
                 </label>
@@ -95,7 +95,7 @@ const Page: NextPage<Props> = ({}) => {
                     onChange={(e) => setPassword(e.target.value)}
                     type={showPass ? "text" : "password"}
                     id="password"
-                    className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-lg bg-white p-4 w-full"
+                    className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-sm md:text-lg bg-white p-4 w-full"
                   />
                   <button
                     onClick={() => setShowPass((e) => !e)}
@@ -127,12 +127,12 @@ const Page: NextPage<Props> = ({}) => {
               {!isLoading ? (
                 <button
                   onClick={handleSubmit}
-                  className="text-xl my-6 font-bold rounded-lg text-highlight bg-dark w-full py-4 hover:ring-1 ring-dark hover:bg-light transition-all duration-300 hover:text-dark"
+                  className="md:text-xl my-6 font-bold rounded-lg text-highlight bg-dark w-full py-4 hover:ring-1 ring-dark hover:bg-light transition-all duration-300 hover:text-dark"
                 >
                   Submit
                 </button>
               ) : (
-                <button className="text-xl my-6 font-bold bg-muted flex justify-center items-center w-full py-4 ring-1 ring-dark transition-all duration-300 hover:text-dark">
+                <button className="md:text-xl my-6 font-bold bg-muted flex justify-center items-center w-full py-4 ring-1 ring-dark transition-all duration-300 hover:text-dark">
                   <Spinner light={false} />
                 </button>
               )}
