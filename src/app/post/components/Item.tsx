@@ -66,7 +66,7 @@ const Item: NextPage<Props> = ({ value, allCategories, onChange }) => {
         </label>
 
         <label className="flex flex-col gap-2 w-full">
-          <span className="text-dark font-medium">Budget</span>
+          <span className="text-dark font-medium">Estimated Price / Unit</span>
           <div className="relative flex items-center">
             <input
               type="number"

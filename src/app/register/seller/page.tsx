@@ -34,7 +34,7 @@ const StepContext = createContext<StepContextType | null>(null);
 const role = "seller";
 
 const Page: NextPage<Props> = ({}) => {
-  const [stepNumber, setStepNumber] = useState(1);
+  const [stepNumber, setStepNumber] = useState(3);
   const [data, setData] = useState<any>({});
   const { user, loading } = useAuth();
   const router = useRouter();

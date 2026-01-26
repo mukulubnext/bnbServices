@@ -25,6 +25,7 @@ import Spinner from "@/components/Spinner";
 import { toast, ToastContainer } from "react-toastify";
 import { useAuth } from "@/context/AuthContext";
 import InterestedCategories from "@/components/InterestedCategories";
+import Link from "next/link";
 
 interface Props {}
 
@@ -302,9 +303,9 @@ const Page: NextPage<Props> = ({}) => {
                         </div>
                       </div>
                       <div className="flex flex-col gap-2 justify-center w-full items-center md:flex-row">
-                        <button className="text-white w-full flex justify-center items-center gap-4 bg-dark py-2 px-5 max-w-100 rounded font-medium border border-dark hover:text-dark hover:bg-white transition-all cursor-pointer">
+                        <Link href="/buy-tokens" className="text-white w-full flex justify-center items-center gap-4 bg-dark py-2 px-5 max-w-100 rounded font-medium border border-dark hover:text-dark hover:bg-white transition-all cursor-pointer">
                         <Plus /> Add Tokens
-                      </button>
+                      </Link>
                       <button className="text-white w-full flex justify-center items-center gap-4 bg-dark py-2 px-5 max-w-100 rounded font-medium border border-dark hover:text-dark hover:bg-white transition-all cursor-pointer">
                         <History/> Offer History
                       </button>

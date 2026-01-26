@@ -334,7 +334,7 @@ export default function PostDetails({
                         onClick={handleMakeOffer}
                         className="flex w-fit hover:bg-transparent text-white hover:text-dark transition-all duration-300 cursor-pointer justify-center items-center gap-2 px-4 py-2 rounded border bg-dark font-medium"
                       >
-                        Make Offer
+                        View Details
                       </button>
                     )
                   )}
