@@ -258,7 +258,10 @@ export default function PostDetails({
         ) : !canEdit ? (
           <>
             <div className="flex justify-between flex-col items-start md:flex-row md:items-center">
-              <h1 className="font-bold text-2xl md:text-4xl">{title}</h1>
+              <div>
+                <h1 className="font-bold text-2xl md:text-4xl">{title}</h1>
+                <p className="text-xs font-medium text-muted">{createdAt !== updatedAt && "(Edited)"}</p>
+              </div>
               <div>
                 <p className="text-xs">
                   Created at:{" "}
