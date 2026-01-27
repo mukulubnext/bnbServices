@@ -44,7 +44,7 @@ export default function Sidebar({ selected, setSelected, role }: SideBarProps) {
         >
             <Wallet />
           <p className="hidden sm:block text-nowrap sm:text-xs md:text-[16px]">
-            Wallet: <span>0 tokens</span>
+            Wallet: <span>0 credits</span>
           </p>
         </div>
       )}

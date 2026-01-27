@@ -294,7 +294,7 @@ const Page: NextPage<Props> = ({}) => {
                       <div className="flex flex-col gap-2">
                         <div className="flex flex-col justify-start items-center gap-2">
                           <p className="font-semibold text-xl flex items-center gap-2 text-dark/70">
-                            Tokens
+                            Credits
                           </p>
                           <div className="border flex max-w-100 justify-center items-center gap-3 w-full text-center border-dark/60 text-dark text-3xl font-bold rounded-md p-2 mt-1">
                             <Coins />
@@ -303,8 +303,8 @@ const Page: NextPage<Props> = ({}) => {
                         </div>
                       </div>
                       <div className="flex flex-col gap-2 justify-center w-full items-center md:flex-row">
-                        <Link href="/buy-tokens" className="text-white w-full flex justify-center items-center gap-4 bg-dark py-2 px-5 max-w-100 rounded font-medium border border-dark hover:text-dark hover:bg-white transition-all cursor-pointer">
-                        <Plus /> Add Tokens
+                        <Link href="/buy-credits" className="text-white w-full flex justify-center items-center gap-4 bg-dark py-2 px-5 max-w-100 rounded font-medium border border-dark hover:text-dark hover:bg-white transition-all cursor-pointer">
+                        <Plus /> Add Credits
                       </Link>
                       <button className="text-white w-full flex justify-center items-center gap-4 bg-dark py-2 px-5 max-w-100 rounded font-medium border border-dark hover:text-dark hover:bg-white transition-all cursor-pointer">
                         <History/> Offer History
