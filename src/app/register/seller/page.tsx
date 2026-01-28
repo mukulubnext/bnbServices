@@ -34,7 +34,7 @@ const StepContext = createContext<StepContextType | null>(null);
 const role = "seller";
 
 const Page: NextPage<Props> = ({}) => {
-  const [stepNumber, setStepNumber] = useState(3);
+  const [stepNumber, setStepNumber] = useState(1);
   const [data, setData] = useState<any>({});
   const { user, loading } = useAuth();
   const router = useRouter();
@@ -99,6 +99,7 @@ function Register() {
   const [confirmMailOTP, setconfirmMailOTP] = useState(false);
   const [confirmPhoneOTP, setConfirmPhoneOTP] = useState(false);
   const { stepNumber, setStepNumber, data, setData } = context;
+  const [sellerType, setSellerType] = useState<"manufacturer"|"supplier">("manufacturer");
   const [isLoading, setLoading] = useState(false);
 
   const handleSendEmailOTP = () => {
@@ -143,6 +144,7 @@ function Register() {
         isEmailVerified: confirmMailOTP,
         isPhoneVerified: confirmPhoneOTP,
         role: role,
+        sellerType: sellerType,
       };
       setData((e: any) => ({ ...e, ...body }));
       setStepNumber(2);
@@ -303,6 +305,18 @@ function Register() {
             >
               {showConfirm ? <EyeClosed size={32} /> : <Eye size={32} />}
             </button>
+          </div>
+        </div>
+        <div className="flex justify-start gap-2 w-full items-center">
+          <p className="text-dark font-semibold">Choose your seller type:</p>
+          <div className="flex justify-center items-center gap-2">
+             <button onClick={()=> setSellerType("manufacturer")} className={`flex justify-center items-center ${sellerType === "manufacturer" ? "bg-dark text-white" : "text-dark"} transition-all duration-300 font-bold py-2 px-4 rounded-lg`}>
+              Manufacturer
+             </button>
+             <p className="text-lg text-dark">/</p>
+             <button onClick={()=> setSellerType("supplier")} className={`flex justify-center items-center ${sellerType === "supplier" ? "bg-dark text-white" : "text-dark"} transition-all duration-300 font-bold py-2 px-4 rounded-lg`}>
+              Supplier
+             </button>
           </div>
         </div>
         {!isLoading ? (

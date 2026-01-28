@@ -134,6 +134,14 @@ const Page: NextPage<Props> = ({}) => {
                           {"********"}
                         </div>
                       </div>
+                      <div className="flex justify-start items-center gap-2">
+                        <p className="font-medium flex items-center gap-2 text-dark/70">
+                          Seller Type:
+                        </p>
+                        <div className="border text-dark/70 w-fit bg-white px-3 py-1 capitalize font-medium rounded-md">
+                          {user.sellerType}
+                        </div>
+                      </div>
                       <button className="text-white bg-dark py-2 px-5 w-fit rounded font-medium border border-dark hover:text-dark hover:bg-white transition-all cursor-pointer">
                         Change Password
                       </button>
@@ -162,7 +170,7 @@ const Page: NextPage<Props> = ({}) => {
                     <h1 className="font-semibold text-dark text-2xl">
                       Company Details
                     </h1>
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col text-black/50 gap-4">
                       <div>
                         <p className="font-medium flex items-center gap-2 text-dark/70">
                           <Building /> Company Name:

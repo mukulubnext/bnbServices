@@ -16,6 +16,7 @@ export async function POST(req: NextRequest) {
     isPhoneVerified: z.boolean(),
     phone: z.string().regex(/^[0-9]{10}$/),
     role: z.enum(["buyer", "seller"]),
+    sellerType: z.enum(["manufacturer", "supplier"]).optional(),
     companyName: z.string().min(3).max(50),
     address: z.string().min(3).max(100),
     city: z.string().min(3).max(50),
@@ -53,6 +54,7 @@ export async function POST(req: NextRequest) {
       gstNumber,
       interestedCategories,
       companyWebsite,
+      sellerType,
     } = reqBody.parse(await req.json());
     if (!isEmailVerified || !isPhoneVerified) {
       return NextResponse.json({
@@ -95,6 +97,7 @@ export async function POST(req: NextRequest) {
         pastLegalExplanation: pastLegalExplanation,
         gstNumber: gstNumber,
         companyWebsite: companyWebsite,
+        sellerType: sellerType,
         interestedCategories: {
           connect: interestedCategories?.map((cat)=>(
             {id: cat.id, name: cat.name}
@@ -102,7 +105,6 @@ export async function POST(req: NextRequest) {
         }
       },
     });
-    console.log(user);
     return NextResponse.json({
       status: "success",
       message: "User created successfully!",

@@ -53,6 +53,7 @@ export async function GET(req: NextRequest) {
         companyWebsite: true,
         tokens: true,
         payments: true,
+        sellerType: true,
     }
   });
 
