@@ -134,14 +134,16 @@ const Page: NextPage<Props> = ({}) => {
                           {"********"}
                         </div>
                       </div>
-                      <div className="flex justify-start items-center gap-2">
-                        <p className="font-medium flex items-center gap-2 text-dark/70">
-                          Seller Type:
-                        </p>
-                        <div className="border text-dark/70 w-fit bg-white px-3 py-1 capitalize font-medium rounded-md">
-                          {user.sellerType}
+                      {user.role === "seller" && (
+                        <div className="flex justify-start items-center gap-2">
+                          <p className="font-medium flex items-center gap-2 text-dark/70">
+                            Seller Type:
+                          </p>
+                          <div className="border text-dark/70 w-fit bg-white px-3 py-1 capitalize font-medium rounded-md">
+                            {user.sellerType}
+                          </div>
                         </div>
-                      </div>
+                      )}
                       <button className="text-white bg-dark py-2 px-5 w-fit rounded font-medium border border-dark hover:text-dark hover:bg-white transition-all cursor-pointer">
                         Change Password
                       </button>
@@ -298,59 +300,76 @@ const Page: NextPage<Props> = ({}) => {
                   </div>
                 )}
                 {selected === 3 && user.role === "seller" && (
-                    <div className="flex flex-col gap-4">
-                      <div className="flex flex-col gap-2">
-                        <div className="flex flex-col justify-start items-center gap-2">
-                          <p className="font-semibold text-xl flex items-center gap-2 text-dark/70">
-                            Credits
-                          </p>
-                          <div className="border flex max-w-100 justify-center items-center gap-3 w-full text-center border-dark/60 text-dark text-3xl font-bold rounded-md p-2 mt-1">
-                            <Coins />
-                            {user.tokens ?? 0}
-                          </div>
+                  <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-2">
+                      <div className="flex flex-col justify-start items-center gap-2">
+                        <p className="font-semibold text-xl flex items-center gap-2 text-dark/70">
+                          Credits
+                        </p>
+                        <div className="border flex max-w-100 justify-center items-center gap-3 w-full text-center border-dark/60 text-dark text-3xl font-bold rounded-md p-2 mt-1">
+                          <Coins />
+                          {user.tokens ?? 0}
                         </div>
                       </div>
-                      <div className="flex flex-col gap-2 justify-center w-full items-center md:flex-row">
-                        <Link href="/buy-credits" className="text-white w-full flex justify-center items-center gap-4 bg-dark py-2 px-5 max-w-100 rounded font-medium border border-dark hover:text-dark hover:bg-white transition-all cursor-pointer">
+                    </div>
+                    <div className="flex flex-col gap-2 justify-center w-full items-center md:flex-row">
+                      <Link
+                        href="/buy-credits"
+                        className="text-white w-full flex justify-center items-center gap-4 bg-dark py-2 px-5 max-w-100 rounded font-medium border border-dark hover:text-dark hover:bg-white transition-all cursor-pointer"
+                      >
                         <Plus /> Add Credits
                       </Link>
-                      <button className="text-white w-full flex justify-center items-center gap-4 bg-dark py-2 px-5 max-w-100 rounded font-medium border border-dark hover:text-dark hover:bg-white transition-all cursor-pointer">
-                        <History/> Offer History
-                      </button>
-                      </div>
-                      <div className="flex flex-col gap-3">
-                        <h1 className="font-bold text-dark text-xl mt-4 md:text-2xl">
-                          Wallet History
-                        </h1>
-                        <div className="w-full h-[50vh] border border-dark/40 rounded-lg">
-                          {!user.payments || user.payments.length === 0 ? (
-                            <div className="flex h-full relative bottom-[5%] text-black/40 justify-center items-center">
-                              No previous record.
-                            </div>
-                          )
-                        :
-                        (
+                      <Link href={"/offer-history"} className="text-white w-full flex justify-center items-center gap-4 bg-dark py-2 px-5 max-w-100 rounded font-medium border border-dark hover:text-dark hover:bg-white transition-all cursor-pointer">
+                        <History /> Offer History
+                      </Link>
+                    </div>
+                    <div className="flex flex-col gap-3">
+                      <h1 className="font-bold text-dark text-xl mt-4 md:text-2xl">
+                        Wallet History
+                      </h1>
+                      <div className="w-full h-[50vh] border border-dark/40 rounded-lg">
+                        {!user.payments || user.payments.length === 0 ? (
+                          <div className="flex h-full relative bottom-[5%] text-black/40 justify-center items-center">
+                            No previous record.
+                          </div>
+                        ) : (
                           <table className="w-full border-collapse">
                             <thead>
                               <tr>
-                                <th className="border border-dark/20 p-2 text-left">Date</th>
-                                <th className="border border-dark/20 p-2 text-left">Amount</th>
-                                <th className="border border-dark/20 p-2 text-left">Status</th>
+                                <th className="border border-dark/20 p-2 text-left">
+                                  Date
+                                </th>
+                                <th className="border border-dark/20 p-2 text-left">
+                                  Amount
+                                </th>
+                                <th className="border border-dark/20 p-2 text-left">
+                                  Status
+                                </th>
                               </tr>
                             </thead>
                             <tbody>
                               {user.payments.map((payment: any, index: any) => (
                                 <tr key={index}>
-                                  <td className="border border-dark/20 p-2">{payment.createdAt}</td>
-                                  <td className="border border-dark/20 p-2">{payment.amount}</td>
-                                  <td className={`border border-dark/20 p-2 ${payment.status === "success" ? "text-green-400": "text-red-400"}`}>{payment.status==="success" ? "Success" : "Failed"}</td>
+                                  <td className="border border-dark/20 p-2">
+                                    {payment.createdAt}
+                                  </td>
+                                  <td className="border border-dark/20 p-2">
+                                    {payment.amount}
+                                  </td>
+                                  <td
+                                    className={`border border-dark/20 p-2 ${payment.status === "success" ? "text-green-400" : "text-red-400"}`}
+                                  >
+                                    {payment.status === "success"
+                                      ? "Success"
+                                      : "Failed"}
+                                  </td>
                                 </tr>
                               ))}
                             </tbody>
-                            </table>
+                          </table>
                         )}
-                        </div>
                       </div>
+                    </div>
                   </div>
                 )}
               </div>

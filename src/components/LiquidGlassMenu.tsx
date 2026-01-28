@@ -78,7 +78,7 @@ export default function LiquidGlassMenu() {
           </>
         ) : !loading && user && user.role === "seller" ? (
           <>
-            {pathname === "/transactions" ? (
+            {pathname === "/offer-history" ? (
               <LiquidGlassCard
                 blurIntensity="sm"
                 draggable={false}
@@ -87,21 +87,21 @@ export default function LiquidGlassMenu() {
                 className="md:w-16 cursor-pointer md:h-16 w-12 h-12 rounded-full"
               >
                 <Link
-                  href={"/transactions"}
+                  href={"/offer-history"}
                   className="relative z-30 flex items-center justify-center text-dark text-2xl w-full h-full "
                 >
                   <History className="w-6 h-6 md:w-8 md:h-8 hover:scale-105" />
-                  <span className="sr-only">Transactions</span>
+                  <span className="sr-only">Offer History</span>
                 </Link>
               </LiquidGlassCard>
             ) : (
               <div className="md:w-16 cursor-pointer md:h-16 w-12 h-12 rounded-full  ">
                 <Link
-                  href={"/transactions"}
+                  href={"/offer-history"}
                   className="relative z-30 flex items-center justify-center text-dark text-2xl w-full h-full "
                 >
                   <History className="w-6 h-6 md:w-8 md:h-8 hover:scale-105" />
-                  <span className="sr-only">Transactions</span>
+                  <span className="sr-only">Offer History</span>
                 </Link>
               </div>
             )}
