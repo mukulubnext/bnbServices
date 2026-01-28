@@ -22,6 +22,7 @@ import ConfirmDelete from "./components/ConfirmDelete";
 import { SortIndicator } from "./components/SortIndicator";
 import { toast, ToastContainer } from "react-toastify";
 import PostDetails from "./components/PostDetails";
+import AllItems from "./components/AllItems";
 
 interface Props {}
 
@@ -81,6 +82,8 @@ function Buyer() {
   const [deletePost, setDeletePost] = useState(false);
   const [deletePostId, setDeletePostId] = useState(NaN);
   const [deletePostTitle, setDeletePostTitle] = useState("");
+  
+  const [items, setItems] = useState<any[] | null>();
 
   const [editPost, setEditPost] = useState<number | null | undefined>();
 
@@ -217,6 +220,9 @@ function Buyer() {
   return (
     <>
       <ToastContainer />
+      {
+        items && <AllItems items={items} setItems={setItems}/>
+      }
       {expandPost && (
         <PostDetails
           postId={expandPost}
@@ -334,16 +340,22 @@ function Buyer() {
                       }).format(new Date(post.createdAt))}
                     </td>
                     <td className="px-3 py-4 bottom-1 relative flex gap-2 items-center text-dark/70">
-                      <span className={`flex gap-2 relative max-w-50 items-center no-scrollbar ${post.items.length > 2 ? " overflow-x-scroll": ""}`}>
+                      <span className={`flex gap-2 relative max-w-50 items-center`}>
                         {post.items.length ? (
-                          post.items.map((item: any) => (
-                            <div
-                            key={item.id}
-                            className="py-1 px-3 bg-dark text-white font-medium text-nowrap text-sm w-fit rounded-full"
-                            >
-                              {item.category.name}
-                            </div>
-                          ))
+                          // post.items.map((item: any) => (
+                          //   <div
+                          //   key={item.id}
+                          //   className="py-1 px-3 bg-dark text-white font-medium text-nowrap text-sm w-fit rounded-full"
+                          //   >
+                          //     {item.category.name}
+                          //   </div>
+                          // ))
+                          <div onClick={(e)=>{
+                            e.stopPropagation()
+                            setItems(post.items)
+                          }} className="text-sm px-3 py-1 active:scale-95 active:-translate-y-0.5 border font-medium rounded transition-all select-none hover:-translate-y-1 duration-300 cursor-pointer">
+                              View Items
+                          </div>
                         ) : (
                           <p className="text-black/50">no items</p>
                         )}
