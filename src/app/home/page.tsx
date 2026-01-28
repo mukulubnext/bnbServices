@@ -432,6 +432,7 @@ function Seller() {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [range, setRange] = useState(1);
+  const [items, setItems] = useState<any[] | null>();
 
   const [sort, setSort] = useState<{ key: SortKey; order: SortOrder }>({
     key: "date",
@@ -507,7 +508,9 @@ function Seller() {
   return (
     <>
       <hr className="text-dark/22" />
-
+      {
+        items && <AllItems items={items} setItems={setItems}/>
+      }
       <div>
         <h1 className="text-dark p-2 font-bold text-2xl">
           Posts you might be interested in
@@ -590,14 +593,12 @@ function Seller() {
                     <td className="px-3 py-4 bottom-1 relative flex gap-2 items-center text-dark/70">
                       <span className={`flex gap-2 relative max-w-50 items-center no-scrollbar ${post.items.length > 2 ? " overflow-x-scroll": ""}`}>
                         {post.items.length ? (
-                          post.items.map((item: any) => (
-                            <div
-                            key={item.id}
-                            className="py-1 px-3 bg-dark text-white font-medium text-nowrap text-sm w-fit rounded-full"
-                            >
-                              {item.category.name}
-                            </div>
-                          ))
+                          <div onClick={(e)=>{
+                            e.stopPropagation()
+                            setItems(post.items)
+                          }} className="text-sm px-3 py-1 active:scale-95 active:-translate-y-0.5 border font-medium rounded transition-all select-none hover:-translate-y-1 duration-300 cursor-pointer">
+                              View Items
+                          </div>
                         ) : (
                           <p className="text-black/50">no items</p>
                         )}
