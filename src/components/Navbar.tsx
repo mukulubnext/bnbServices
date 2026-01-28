@@ -56,9 +56,6 @@ const Navbar: NextPage<Props> = ({ solid, userProp }: Props) => {
         ))}
       </div>
       <div className="hidden md:flex justify-center items-center gap-4">
-        <button className="p-2 hover:bg-highlight/10 transition-all duration-300 rounded-full ">
-          <Search size={20} />
-        </button>
         {!loading ? (
           !user ? (
             <>

@@ -23,6 +23,7 @@ import { SortIndicator } from "./components/SortIndicator";
 import { toast, ToastContainer } from "react-toastify";
 import PostDetails from "./components/PostDetails";
 import AllItems from "./components/AllItems";
+import { useDebounce } from "@/hooks/useDebounce";
 
 interface Props {}
 
@@ -433,6 +434,8 @@ function Seller() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [range, setRange] = useState(1);
   const [items, setItems] = useState<any[] | null>();
+  const [q, setQ] = useState("");
+  const debounced = useDebounce(q, 500);
 
   const [sort, setSort] = useState<{ key: SortKey; order: SortOrder }>({
     key: "date",
@@ -492,9 +495,6 @@ function Seller() {
     }
   };
 
-  useEffect(() => {
-    fetchPosts(1);
-  }, []);
 
   const handleLoadMore = () => {
     if (!hasMore || loadingMore) return;
@@ -505,13 +505,39 @@ function Seller() {
 
   const [expandPost, setExpandPost] = useState<number | null | undefined>();
 
+  useEffect(() => {
+  if (!debounced || debounced.length < 2) {
+    fetchPosts(1);
+    return;
+  }
+
+  const fetchResults = async () => {
+    try{
+      setLoading(true);
+      const res = await axios.post(
+      `/api/v1/post/search`, {q: debounced}
+    );
+    setPosts(res.data.data);
+    }
+    catch(err){
+      console.error(err);
+    }
+    finally{
+      setLoading(false);
+    }
+  };
+
+  fetchResults();
+}, [debounced]);
+
+
   return (
     <>
       <hr className="text-dark/22" />
       {
         items && <AllItems items={items} setItems={setItems}/>
       }
-      <div>
+      <div className="flex flex-col gap-2">
         <h1 className="text-dark p-2 font-bold text-2xl">
           Posts you might be interested in
         </h1>
@@ -523,6 +549,10 @@ function Seller() {
             setEditPost={() => {}}
           />
         )}
+        <div className="relative md:w-fit w-full">
+          <Search size={20} className="absolute text-dark top-1/2 -translate-y-1/2 right-2" />
+          <input type="text" onChange={(e)=> setQ(e.target.value)} className="border max-w-full w-180 focus:outline-0 border-dark/50 px-2 py-1 bg-white text-dark placeholder:text-dark/40 rounded" placeholder="Search" />
+        </div>
         <div className="overflow-x-auto">
           <table className="bg-white shadow rounded-md w-full min-w-200">
             <thead>
