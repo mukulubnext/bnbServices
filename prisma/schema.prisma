@@ -133,3 +133,26 @@ model Item{
   createdAt           DateTime    @default(now())
   updatedAt           DateTime    @updatedAt @default(now())
 }
+model OTP {
+  id            Int        @id @default(autoincrement())
+  identifier    String     // email OR phone
+  channel       OTPChannel
+  purpose       OTPPurpose
+  otpHash       String
+  attemptsLeft  Int        @default(5)
+  expiresAt     DateTime
+  createdAt     DateTime   @default(now())
+
+  @@index([identifier, channel, purpose])
+}
+
+enum OTPChannel {
+  EMAIL
+  PHONE
+}
+
+enum OTPPurpose {
+  LOGIN
+  SIGNUP
+  RESET_PASSWORD
+}
