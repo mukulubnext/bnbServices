@@ -13,7 +13,13 @@ import {
   X,
 } from "lucide-react";
 import { NextPage } from "next";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  use,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import RegisterStep from "../components/RegisterStep";
 import Link from "next/link";
 import axios from "axios";
@@ -22,6 +28,7 @@ import Spinner from "@/components/Spinner";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import InterestedCategories from "@/components/InterestedCategories";
+import { usePersistedState } from "@/hooks/usePersistedState";
 
 interface Props {}
 
@@ -96,29 +103,82 @@ export default Page;
 function Register() {
   const context = useContext(StepContext);
   if (!context) return null;
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [email, setEmail] = usePersistedState("register_email", "");
+  const [phone, setPhone] = usePersistedState("register_phone", "");
+  const [password, setPassword] = usePersistedState("register_password", "");
+  const [confirmPassword, setConfirmPassword] = usePersistedState(
+    "register_confirmPassword",
+    "",
+  );
+
+  const [sentMailOTP, setSentMailOTP] = usePersistedState(
+    "register_sentMailOTP",
+    false,
+  );
+
+  const [confirmMailOTP, setConfirmMailOTP] = usePersistedState(
+    "register_confirmMailOTP",
+    false,
+  );
+
   const [phoneOTP, setPhoneOTP] = useState("");
   const [emailOTP, setEmailOTP] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [sentMailOTP, setSentMailOTP] = useState(false);
   const [sentPhoneOTP, setSentPhoneOTP] = useState(false);
-  const [confirmMailOTP, setConfirmMailOTP] = useState(false);
   const [confirmPhoneOTP, setConfirmPhoneOTP] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [sendingMailOTP, setSendingMailOTP] = useState(false);
+  const [confirmingMailOTP, setConfirmingMailOTP] = useState(false);
   const { stepNumber, setStepNumber, setData } = context;
 
-  const handleSendMailOTP = () => {
-    setSentMailOTP(true);
+  const handleSendMailOTP = async () => {
+    try {
+      setSendingMailOTP(true);
+      if (!email) {
+        toast.error("Please enter email.");
+        setSentMailOTP(false);
+        return;
+      }
+      const res = await axios.post("/api/v1/otp/email", { email: email });
+      if (res.data.status === "success") {
+        toast.success("OTP sent successfully.");
+        setSentMailOTP(true);
+      } else {
+        toast.error(res.data.message);
+        setSentMailOTP(false);
+      }
+    } catch (err) {
+      toast.error("Something went wrong.");
+      setSentMailOTP(false);
+    } finally {
+      setSendingMailOTP(false);
+    }
   };
   const handleSendPhoneOTP = () => {
     setSentPhoneOTP(true);
   };
-  const handleConfirmMailOTP = () => {
-    setConfirmMailOTP(true);
+  const handleConfirmMailOTP = async () => {
+    try {
+      setConfirmingMailOTP(true);
+      const res = await axios.post("/api/v1/otp/email/verify", {
+        email: email,
+        otp: emailOTP,
+      });
+      if (res.data.status === "success") {
+        toast.success("OTP verified successfully.");
+        setConfirmMailOTP(true);
+      } else {
+        toast.error(res.data.message);
+        setConfirmMailOTP(false);
+      }
+    } catch (err) {
+      toast.error("Something went wrong.");
+      setConfirmMailOTP(false);
+    } finally {
+      setConfirmingMailOTP(false);
+    }
   };
   const handleConfirmPhoneOTP = () => {
     setConfirmPhoneOTP(true);
@@ -179,12 +239,18 @@ function Register() {
               id="email"
               className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
             />
-            {!sentMailOTP && (
-              <button
-                onClick={handleSendMailOTP}
-                className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-sm md:text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
-              >
-                Send OTP
+            {!sendingMailOTP ? (
+              !sentMailOTP && (
+                <button
+                  onClick={handleSendMailOTP}
+                  className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-sm md:text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
+                >
+                  Send OTP
+                </button>
+              )
+            ) : (
+              <button className="h-full cursor-not-allowed transition-all duration-300 rounded-md border border-dark absolute text-sm md:text-lg bg-white px-6 right-0 font-bold text-white">
+                <Spinner light={false} />
               </button>
             )}
             {confirmMailOTP && (
@@ -203,16 +269,27 @@ function Register() {
               <input
                 value={emailOTP}
                 onChange={(e) => setEmailOTP(e.target.value)}
-                type="email"
-                id="email"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]"
+                maxLength={6}
                 className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
               />
-              <button
-                onClick={handleConfirmMailOTP}
-                className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
-              >
-                <Check />
-              </button>
+              {!confirmingMailOTP ? (
+                <button
+                  onClick={handleConfirmMailOTP}
+                  className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
+                >
+                  <Check />
+                </button>
+              ) : (
+                <button
+                  onClick={handleConfirmMailOTP}
+                  className="h-full cursor-pointer transition-all duration-300 rounded-md border border-dark absolute text-lg bg-white px-6 right-0 font-bold text-white"
+                >
+                  <Spinner light={false} />
+                </button>
+              )}
             </div>
           </div>
         )}
@@ -342,16 +419,37 @@ function Profile() {
   const context = useContext(StepContext);
   if (!context) return null;
   const { stepNumber, setStepNumber, setData } = context;
-  const [companyName, setCompanyName] = useState("");
-  const [addressLine1, setAddressLine1] = useState("");
-  const [addressLine2, setAddressLine2] = useState("");
-  const [city, setCity] = useState("");
-  const [stateName, setStateName] = useState("");
-  const [zipCode, setZipCode] = useState("");
-  const [inceptionDate, setInceptionDate] = useState("");
-  const [employeeCount, setEmployeeCount] = useState("");
-  const [pastLegalAction, setPastLegalAction] = useState(false);
-  const [pastLegalExplanation, setPastLegalExplanation] = useState("");
+  const [companyName, setCompanyName] = usePersistedState(
+    "register_companyName",
+    "",
+  );
+  const [addressLine1, setAddressLine1] = usePersistedState(
+    "register_addressLine1",
+    "",
+  );
+  const [addressLine2, setAddressLine2] = usePersistedState(
+    "register_addressLine2",
+    "",
+  );
+  const [city, setCity] = usePersistedState("register_city", "");
+  const [stateName, setStateName] = usePersistedState("register_stateName", "");
+  const [zipCode, setZipCode] = usePersistedState("register_zipCode", "");
+  const [inceptionDate, setInceptionDate] = usePersistedState(
+    "register_inceptionDate",
+    "",
+  );
+  const [employeeCount, setEmployeeCount] = usePersistedState(
+    "register_employeeCount",
+    "",
+  );
+  const [pastLegalAction, setPastLegalAction] = usePersistedState(
+    "register_pastLegalAction",
+    false,
+  );
+  const [pastLegalExplanation, setPastLegalExplanation] = usePersistedState(
+    "register_pastLegalExplanation",
+    "",
+  );
 
   const handleSubmit = () => {
     if (
@@ -610,6 +708,9 @@ function AdditionalInfo() {
 
       if (res.data.status === "success") {
         toast.success("Registered successfully!");
+        Object.keys(localStorage)
+          .filter((k) => k.startsWith("register_"))
+          .forEach((k) => localStorage.removeItem(k));
         window.location.href = `/signin`;
       } else {
         toast.error(res.data.message ?? "Something went wrong!");
@@ -620,8 +721,6 @@ function AdditionalInfo() {
       setLoading(false);
     }
   };
-
-  
 
   return (
     <>
@@ -635,7 +734,10 @@ function AdditionalInfo() {
           <label className="font-medium text-xl text-dark">
             Interested Categories
           </label>
-          <InterestedCategories interestedCategories={interestedCategories} setInterestedCategories={setInterestedCategories} />
+          <InterestedCategories
+            interestedCategories={interestedCategories}
+            setInterestedCategories={setInterestedCategories}
+          />
         </div>
 
         {/* ADDRESS */}

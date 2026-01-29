@@ -20,6 +20,7 @@ import Spinner from "@/components/Spinner";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import InterestedCategories from "@/components/InterestedCategories";
+import { usePersistedState } from "@/hooks/usePersistedState";
 
 interface Props {}
 
@@ -86,30 +87,84 @@ export default Page;
 function Register() {
   const context = useContext(StepContext);
   if (!context) return null;
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [phoneOTP, setPhoneOTP] = useState("");
-  const [emailOTP, setEmailOTP] = useState("");
+  const [email, setEmail] = usePersistedState("register_seller_email", "");
+  const [phone, setPhone] = usePersistedState("register_seller_phone", "");
+  const [password, setPassword] = usePersistedState(
+    "register_seller_password",
+    "",
+  );
+  const [confirmPassword, setConfirmPassword] = usePersistedState(
+    "register_seller_confirmPassword",
+    "",
+  );
+  const [phoneOTP, setPhoneOTP] = usePersistedState(
+    "register_seller_phoneOTP",
+    "",
+  );
+  const [emailOTP, setEmailOTP] = usePersistedState(
+    "register_seller_emailOTP",
+    "",
+  );
   const [showPass, setShowPass] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [sentEmailOTP, setSentEmailOTP] = useState(false);
+  const [sendingMailOTP, setSendingMailOTP] = useState(false);
+  const [confirmingMailOTP, setConfirmingMailOTP] = useState(false);
   const [sentPhoneOTP, setSentPhoneOTP] = useState(false);
-  const [confirmMailOTP, setconfirmMailOTP] = useState(false);
+  const [confirmMailOTP, setConfirmMailOTP] = useState(false);
   const [confirmPhoneOTP, setConfirmPhoneOTP] = useState(false);
   const { stepNumber, setStepNumber, data, setData } = context;
-  const [sellerType, setSellerType] = useState<"manufacturer"|"supplier">("manufacturer");
+  const [sellerType, setSellerType] = useState<"manufacturer" | "supplier">(
+    "manufacturer",
+  );
   const [isLoading, setLoading] = useState(false);
 
-  const handleSendEmailOTP = () => {
-    setSentEmailOTP(true);
+  const handleSendMailOTP = async () => {
+    try {
+      setSendingMailOTP(true);
+      if (!email) {
+        toast.error("Please enter email.");
+        setSentEmailOTP(false);
+        return;
+      }
+      const res = await axios.post("/api/v1/otp/email", { email: email });
+      if (res.data.status === "success") {
+        toast.success("OTP sent successfully.");
+        setSentEmailOTP(true);
+      } else {
+        toast.error(res.data.message);
+        setSentEmailOTP(false);
+      }
+    } catch (err) {
+      toast.error("Something went wrong.");
+      setSentEmailOTP(false);
+    } finally {
+      setSendingMailOTP(false);
+    }
   };
   const handleSendPhoneOTP = () => {
     setSentPhoneOTP(true);
   };
-  const handleconfirmMailOTP = () => {
-    setconfirmMailOTP(true);
+  const handleconfirmMailOTP = async () => {
+    try {
+      setConfirmingMailOTP(true);
+      const res = await axios.post("/api/v1/otp/email/verify", {
+        email: email,
+        otp: emailOTP,
+      });
+      if (res.data.status === "success") {
+        toast.success("OTP verified successfully.");
+        setConfirmMailOTP(true);
+      } else {
+        toast.error(res.data.message);
+        setConfirmMailOTP(false);
+      }
+    } catch (err) {
+      toast.error("Something went wrong.");
+      setConfirmMailOTP(false);
+    } finally {
+      setConfirmingMailOTP(false);
+    }
   };
   const handleConfirmPhoneOTP = () => {
     setConfirmPhoneOTP(true);
@@ -171,12 +226,18 @@ function Register() {
               id="email"
               className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
             />
-            {!sentEmailOTP && (
-              <button
-                onClick={handleSendEmailOTP}
-                className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-sm md:text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
-              >
-                Send OTP
+            {!sendingMailOTP ? (
+              !sentEmailOTP && (
+                <button
+                  onClick={handleSendMailOTP}
+                  className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-sm md:text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
+                >
+                  Send OTP
+                </button>
+              )
+            ) : (
+              <button className="h-full cursor-not-allowed transition-all duration-300 rounded-md border border-dark absolute text-sm md:text-lg bg-white px-6 right-0 font-bold text-white">
+                <Spinner light={false} />
               </button>
             )}
             {confirmMailOTP && (
@@ -310,13 +371,19 @@ function Register() {
         <div className="flex justify-start gap-2 w-full items-center">
           <p className="text-dark font-semibold">Choose your seller type:</p>
           <div className="flex justify-center items-center gap-2">
-             <button onClick={()=> setSellerType("manufacturer")} className={`flex justify-center items-center ${sellerType === "manufacturer" ? "bg-dark text-white" : "text-dark"} transition-all duration-300 font-bold py-2 px-4 rounded-lg`}>
+            <button
+              onClick={() => setSellerType("manufacturer")}
+              className={`flex justify-center items-center ${sellerType === "manufacturer" ? "bg-dark text-white" : "text-dark"} transition-all duration-300 font-bold py-2 px-4 rounded-lg`}
+            >
               Manufacturer
-             </button>
-             <p className="text-lg text-dark">/</p>
-             <button onClick={()=> setSellerType("supplier")} className={`flex justify-center items-center ${sellerType === "supplier" ? "bg-dark text-white" : "text-dark"} transition-all duration-300 font-bold py-2 px-4 rounded-lg`}>
+            </button>
+            <p className="text-lg text-dark">/</p>
+            <button
+              onClick={() => setSellerType("supplier")}
+              className={`flex justify-center items-center ${sellerType === "supplier" ? "bg-dark text-white" : "text-dark"} transition-all duration-300 font-bold py-2 px-4 rounded-lg`}
+            >
               Supplier
-             </button>
+            </button>
           </div>
         </div>
         {!isLoading ? (
@@ -350,17 +417,47 @@ function Profile() {
   if (!context) return null;
 
   const { stepNumber, setStepNumber, data, setData } = context;
-  const [companyName, setCompanyName] = useState("");
-  const [gstNumber, setGstNumber] = useState("");
-  const [addressLine1, setAddressLine1] = useState("");
-  const [addressLine2, setAddressLine2] = useState("");
-  const [city, setCity] = useState("");
-  const [stateName, setStateName] = useState("");
-  const [zipCode, setZipCode] = useState("");
-  const [inceptionDate, setInceptionDate] = useState("");
-  const [employeeCount, setEmployeeCount] = useState("");
-  const [pastLegalAction, setPastLegalAction] = useState(false);
-  const [pastLegalExplanation, setPastLegalExplanation] = useState("");
+  const [companyName, setCompanyName] = usePersistedState(
+    "register_seller_companyName",
+    "",
+  );
+  const [gstNumber, setGstNumber] = usePersistedState(
+    "register_seller_gstNumber",
+    "",
+  );
+  const [addressLine1, setAddressLine1] = usePersistedState(
+    "register_seller_addressLine1",
+    "",
+  );
+  const [addressLine2, setAddressLine2] = usePersistedState(
+    "register_seller_addressLine2",
+    "",
+  );
+  const [city, setCity] = usePersistedState("register_seller_city", "");
+  const [stateName, setStateName] = usePersistedState(
+    "register_seller_stateName",
+    "",
+  );
+  const [zipCode, setZipCode] = usePersistedState(
+    "register_seller_zipCode",
+    "",
+  );
+  const [inceptionDate, setInceptionDate] = usePersistedState(
+    "register_seller_inceptionDate",
+    "",
+  );
+  const [employeeCount, setEmployeeCount] = usePersistedState(
+    "register_seller_employeeCount",
+    "",
+  );
+  const [pastLegalAction, setPastLegalAction] = usePersistedState(
+    "register_seller_pastLegalAction",
+    false,
+  );
+  const [pastLegalExplanation, setPastLegalExplanation] = usePersistedState(
+    "register_seller_pastLegalExplanation",
+    "",
+  );
 
   const handleSubmit = () => {
     if (
@@ -602,9 +699,7 @@ function Profile() {
 }
 
 function AdditionalInfo() {
-  const [interestedCategories, setInterestedCategories] = useState<any[]>(
-    []
-  );
+  const [interestedCategories, setInterestedCategories] = useState<any[]>([]);
   const [isLoading, setLoading] = useState(false);
   const [website, setWebsite] = useState("");
   const context = useContext(StepContext);
@@ -657,7 +752,10 @@ function AdditionalInfo() {
           <label className="font-medium text-xl text-dark">
             Interested Categories
           </label>
-          <InterestedCategories interestedCategories={interestedCategories} setInterestedCategories={setInterestedCategories} />
+          <InterestedCategories
+            interestedCategories={interestedCategories}
+            setInterestedCategories={setInterestedCategories}
+          />
         </div>
 
         {/* ADDRESS */}
