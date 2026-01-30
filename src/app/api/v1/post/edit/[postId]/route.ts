@@ -81,6 +81,7 @@ export async function PUT(
               },
             },
             quantity: true,
+            subCategory: true,
             budget: true,
             details: true,
             categoryId: true,

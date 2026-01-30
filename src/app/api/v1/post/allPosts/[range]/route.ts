@@ -35,15 +35,10 @@ export async function GET(
             id: true,
             category: {
               select: {
-                name: true,
-                subCategories: {
-                  select: {
-                    id: true,
-                    name: true,
-                  },
-                }
+                name: true
               },
             },
+            subCategory: true,
             quantity: true,
             budget: true,
             details: true,
