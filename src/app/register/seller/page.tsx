@@ -260,12 +260,21 @@ function Register() {
                 id="email"
                 className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
               />
-              <button
-                onClick={handleconfirmMailOTP}
-                className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
-              >
-                <Check />
-              </button>
+              {!confirmingMailOTP ? (
+                <button
+                  onClick={handleconfirmMailOTP}
+                  className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
+                >
+                  <Check />
+                </button>
+              ) : (
+                <button
+                  onClick={handleconfirmMailOTP}
+                  className="h-full cursor-pointer transition-all duration-300 rounded-md border border-dark absolute text-lg bg-white px-6 right-0 font-bold text-white"
+                >
+                  <Spinner light={false} />
+                </button>
+              )}
             </div>
           </div>
         )}

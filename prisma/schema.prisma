@@ -36,6 +36,7 @@ model User {
   gstNumber             String?     @unique
   
   interestedCategories  Category[]
+  interestedSubCategories SubCategory[]
   companyWebsite        String?
   
   posts                 Posts[]   
@@ -94,10 +95,23 @@ model Category{
   users               User[]
   items               Item[]
 
-  subcategories       String[]
+  subCategories       SubCategory[]
 
   createdAt           DateTime    @default(now())
   updatedAt           DateTime    @updatedAt
+}
+model SubCategory{
+  id                  Int         @id @default(autoincrement())
+
+  categoryId          Int
+  category            Category    @relation(fields: [categoryId], references: [id])
+
+  name                String
+  items               Item[]
+
+  users               User[]
+
+  @@unique([categoryId, name])
 }
 model Offers{
   id                  Int         @id @default(autoincrement())
@@ -119,6 +133,9 @@ model Item{
 
   categoryId          Int
   category            Category    @relation(fields: [categoryId], references: [id])
+
+  subCategoryId       Int?
+  subCategory         SubCategory? @relation(fields: [subCategoryId], references: [id])
 
   details             String
   quantity            Int         @default(1)
