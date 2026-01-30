@@ -13,6 +13,7 @@ const reqBody = z.object({
         details: z.string().max(200),
         quantity: z.number().min(1),
         budget: z.number().min(1),
+        subcategoryId: z.number().min(1),
       }),
     )
     .min(1),
@@ -101,6 +102,7 @@ export async function PUT(
         quantity: item.quantity,
         budget: item.budget,
         postId,
+        subCategoryId: item.subcategoryId,
       })),
     });
 

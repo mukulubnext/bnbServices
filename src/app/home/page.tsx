@@ -323,7 +323,7 @@ function Buyer() {
             </thead>
             {!loading ? (
               <tbody>
-                {sortedPosts.sort().map((post: any) => (
+                {sortedPosts.length ? sortedPosts.sort().map((post: any) => (
                   <tr
                     key={post.id}
                     onClick={() => {
@@ -378,7 +378,14 @@ function Buyer() {
                       />
                     </td>
                   </tr>
-                ))}
+                ))
+                :
+                (
+                  <div className="bg-white text-center relative md:left-15/10 py-5 w-full">
+                    <p className="text-center text-dark/50">No posts made</p>
+                  </div>
+                )
+              }
                 {hasMore && (
                   <tr>
                     {loadingMore ? (

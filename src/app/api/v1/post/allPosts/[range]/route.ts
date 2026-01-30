@@ -36,6 +36,12 @@ export async function GET(
             category: {
               select: {
                 name: true,
+                subCategories: {
+                  select: {
+                    id: true,
+                    name: true,
+                  },
+                }
               },
             },
             quantity: true,

@@ -16,6 +16,7 @@ interface ItemData {
   details: string;
   quantity: number;
   budget: number;
+  subcategoryId: number | undefined;
 }
 
 const Page: NextPage = () => {
@@ -28,7 +29,7 @@ const Page: NextPage = () => {
   const [allCategories, setAllCategories] = useState<any[]>([]);
 
   const [itemsData, setItemsData] = useState<ItemData[]>([
-    { categoryId: undefined, details: "", quantity: 1, budget: 0 },
+    { categoryId: undefined, details: "", quantity: 1, budget: 0, subcategoryId: undefined },
   ]);
 
   useEffect(() => {
@@ -38,20 +39,23 @@ const Page: NextPage = () => {
   useEffect(() => {
     axios
       .get("/api/v1/category")
-      .then((res) => setAllCategories(res.data.categories))
+      .then((res) => {
+        setAllCategories(res.data.categories)
+        console.log(res.data)
+      })
       .catch(console.error);
   }, []);
 
   const handleAddItem = () => {
     setItemsData((prev) => [
       ...prev,
-      { categoryId: undefined, details: "", quantity: 1, budget: 0 },
+      { categoryId: undefined, details: "", quantity: 1, budget: 0, subcategoryId: undefined },
     ]);
   };
 
   const handlePost = async () => {
     const filtered = itemsData.filter(
-      (i) => i.categoryId && i.quantity > 0 && i.budget > 0
+      (i) => i.categoryId && i.quantity > 0 && i.budget > 0 && i.subcategoryId
     );
 
     if (!title || !description || filtered.length === 0) {
@@ -72,7 +76,7 @@ const Page: NextPage = () => {
         toast.success("Post created successfully!");
         setTitle("");
         setDescription("");
-        setItemsData([{ categoryId: 0, details: "", quantity: 1, budget: 0 }]);
+        setItemsData([{ categoryId: 0, details: "", quantity: 1, budget: 0, subcategoryId: undefined }]);
       } else {
         toast.error(res.data.message);
       }

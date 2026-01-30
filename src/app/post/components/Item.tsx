@@ -7,6 +7,7 @@ interface ItemData {
   details: string;
   quantity: number;
   budget: number;
+  subcategoryId: number | undefined;
 }
 
 interface Props {
@@ -27,7 +28,7 @@ const Item: NextPage<Props> = ({ value, allCategories, onChange }) => {
           <select
             value={value.categoryId ?? ""}
             onChange={(e) => update({ categoryId: Number(e.target.value) })}
-            className="border border-dark/20 w-full rounded-md p-2"
+            className="border border-dark/20 w-full focus:outline-0 rounded-md p-2"
           >
             <option value="" disabled>
               Select an item
@@ -39,7 +40,25 @@ const Item: NextPage<Props> = ({ value, allCategories, onChange }) => {
             ))}
           </select>
         </label>
+        <label>
+          <span>Item Category:</span>
+          <select
+            value={value.subcategoryId ?? ""}
+            onChange={(e) => update({ subcategoryId: Number(e.target.value) })}
+            className="border border-dark/20 w-full focus:outline-0 rounded-md p-2"
+          >
+            <option value="" disabled>
+              {value.categoryId ? "Select a category" : "Select an item first"}
+            </option>
+            {value.categoryId && allCategories[value.categoryId-1].subCategories.map((cat: any) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+        </label>
 
+      </div>
         <label className="flex flex-col gap-2 w-full">
           <span className="text-dark font-medium">Details</span>
           <input
@@ -49,7 +68,6 @@ const Item: NextPage<Props> = ({ value, allCategories, onChange }) => {
             className="border border-dark/20 rounded-md w-full p-2"
           />
         </label>
-      </div>
 
       <div className="flex justify-center gap-[10%] items-center">
         <label className="flex flex-col gap-2 w-full">

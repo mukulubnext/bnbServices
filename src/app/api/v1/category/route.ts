@@ -9,6 +9,12 @@ export async function GET(req: NextRequest) {
       select: {
         id: true,
         name: true,
+        subCategories: {
+            select: {
+                id: true,
+                name: true,
+            }
+        }
       },
     });
     return NextResponse.json({ status: "success", categories });

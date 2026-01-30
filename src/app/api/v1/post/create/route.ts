@@ -9,6 +9,7 @@ const schema = z.object({
   itemsData: z.array(
     z.object({
       categoryId: z.number().min(1),
+      subcategoryId: z.number().min(1),
       details: z.string().max(200),
       quantity: z.number().min(1),
       budget: z.number().min(1),
@@ -42,6 +43,7 @@ export async function POST(req: NextRequest) {
         quantity: item.quantity,
         budget: item.budget,
         postId: post.id,
+        subCategoryId: item.subcategoryId
       })),
     });
 
