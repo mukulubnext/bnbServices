@@ -172,12 +172,14 @@ export default function PostDetails({
       });
 
       if (res.data.status === "success") {
-        toast.success("Post updated successfully! Refresh to see changes.");
+        toast.success("Post updated successfully!");
         setPost(res.data.post);
         setCanEdit(false);
         setTitle(post.title);
         setDescription(post.description);
         setItems(post.items);
+        setEditPost(null);
+        setExpandPost(null);
       } else {
         toast.error(res.data.message);
       }
