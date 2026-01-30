@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   req: NextRequest,
-  ctx: { params: Promise<{ postId: string }> }
+  ctx: { params: Promise<{ postId: string }> },
 ) {
   const postId = Number((await ctx.params).postId);
 
@@ -21,12 +21,13 @@ export async function GET(
         select: {
           id: true,
           category: {
-            select:{
+            select: {
               name: true,
-            }
+            },
           },
           categoryId: true,
           subCategory: true,
+          subCategoryId: true,
           quantity: true,
           budget: true,
           details: true,

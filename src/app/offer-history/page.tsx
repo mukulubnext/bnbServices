@@ -61,7 +61,7 @@ const Page: NextPage<Props> = ({}) => {
           </div>
         ) : offers.length === 0 ? (
           <div className="flex justify-center items-center">
-            <p className="text-dark text-center">No offers yet</p>
+            <p className="text-dark/40 font-medium text-center">No offers yet</p>
           </div>
         ) : (
           <table>

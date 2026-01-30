@@ -22,7 +22,7 @@ interface ItemData {
   details: string;
   quantity: number;
   budget: number;
-  subcategoryId: number | undefined;
+  subCategoryId: number | undefined;
 }
 
 interface Props {
@@ -149,7 +149,7 @@ export default function PostDetails({
       details: item.details,
       quantity: Number(item.quantity),
       budget: Number(item.budget),
-      subcategoryId: item.subcategoryId
+      subCategoryId: item.subCategoryId
     }));
 
     const isSamePost =
@@ -229,7 +229,7 @@ export default function PostDetails({
   const handleAddItem = () => {
     setItems((prev) => [
       ...prev,
-      { categoryId: undefined, details: "", quantity: 1, budget: 0, subcategoryId: undefined },
+      { categoryId: undefined, details: "", quantity: 1, budget: 0, subCategoryId: undefined },
     ]);
   };
   return (

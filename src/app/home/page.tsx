@@ -1,13 +1,8 @@
 "use client";
 import Navbar from "@/components/Navbar";
 import {
-  ArrowUpDown,
-  Eye,
-  EyeOff,
-  Loader,
   Pencil,
   Search,
-  Trash2,
 } from "lucide-react";
 import { NextPage } from "next";
 import { useEffect, useMemo, useState } from "react";

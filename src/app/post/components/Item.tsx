@@ -7,7 +7,7 @@ interface ItemData {
   details: string;
   quantity: number;
   budget: number;
-  subcategoryId: number | undefined;
+  subCategoryId: number | undefined;
 }
 
 interface Props {
@@ -43,8 +43,8 @@ const Item: NextPage<Props> = ({ value, allCategories, onChange }) => {
         <label className="flex flex-col gap-2 w-full">
           <span>Item Category:</span>
           <select
-            value={value.subcategoryId ?? ""}
-            onChange={(e) => update({ subcategoryId: Number(e.target.value) })}
+            value={value.subCategoryId ?? ""}
+            onChange={(e) => update({ subCategoryId: Number(e.target.value) })}
             className="border border-dark/20 w-full focus:outline-0 rounded-md p-2"
           >
             <option value="" disabled>

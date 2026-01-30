@@ -35,10 +35,11 @@ export async function GET(
             id: true,
             category: {
               select: {
-                name: true
+                name: true,
               },
             },
             subCategory: true,
+            subCategoryId: true,
             quantity: true,
             budget: true,
             details: true,
@@ -62,7 +63,7 @@ export async function GET(
       posts: posts,
       hasMore: skip + take < total,
     });
-  } catch(err) {
+  } catch (err) {
     console.error(err);
     return NextResponse.json({
       status: "failed",
