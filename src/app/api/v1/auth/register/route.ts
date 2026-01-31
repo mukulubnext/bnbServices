@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import * as z from "zod";
 import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
+import InterestedCategories from "@/components/InterestedCategories";
 
 export async function POST(req: NextRequest) {
   const reqBody = z.object({
@@ -31,6 +32,10 @@ export async function POST(req: NextRequest) {
       id: z.number(),
       name: z.string()
     })),
+    interestedSubCategories: z.array(z.object({
+      id: z.number(),
+      name: z.string()
+    })),
     companyWebsite: z.url().optional(),
   });
 
@@ -53,6 +58,7 @@ export async function POST(req: NextRequest) {
       pastLegalExplanation,
       gstNumber,
       interestedCategories,
+      interestedSubCategories,
       companyWebsite,
       sellerType,
     } = reqBody.parse(await req.json());
@@ -100,6 +106,11 @@ export async function POST(req: NextRequest) {
         sellerType: sellerType,
         interestedCategories: {
           connect: interestedCategories?.map((cat)=>(
+            {id: cat.id, name: cat.name}
+          ))
+        },
+        interestedSubCategories: {
+          connect: interestedSubCategories?.map((cat)=>(
             {id: cat.id, name: cat.name}
           ))
         }

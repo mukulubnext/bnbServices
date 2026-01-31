@@ -32,9 +32,13 @@ export async function PUT(req: NextRequest){
             id: z.number(),
             name: z.string()
         })),
+        interestedSubCategories: z.array(z.object({
+            id: z.number(),
+            name: z.string()
+        })),
     })
     try{
-        const {interestedCategories} = reqBody.parse(await req.json())
+        const {interestedCategories, interestedSubCategories} = reqBody.parse(await req.json())
         const token = req.cookies.get("token")?.value;
         if(!token){
             return NextResponse.json({status: "failed", message: "Unauthorized"}, {status: 401})
@@ -55,6 +59,11 @@ export async function PUT(req: NextRequest){
             data: {
                 interestedCategories: {
                     set: interestedCategories?.map((cat)=>(
+                        {id: cat.id, name: cat.name}
+                    ))
+                },
+                interestedSubCategories: {
+                    set: interestedSubCategories?.map((cat)=>(
                         {id: cat.id, name: cat.name}
                     ))
                 }

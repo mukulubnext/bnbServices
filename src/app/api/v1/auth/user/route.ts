@@ -49,7 +49,19 @@ export async function GET(req: NextRequest) {
         pastLegalAction: true,
         pastLegalExplanation: true,
         gstNumber: true,
-        interestedCategories: true,
+        interestedCategories: {
+          select: {
+            id: true,
+            name: true,
+          }
+        },
+        interestedSubCategories: {
+          select: {
+            id: true,
+            categoryId: true,
+            name: true,
+          }
+        },
         companyWebsite: true,
         tokens: true,
         payments: true,

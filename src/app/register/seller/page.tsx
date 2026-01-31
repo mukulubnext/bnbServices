@@ -725,8 +725,10 @@ function AdditionalInfo() {
       toast.error("Please enter full website url with https:// or http://");
       return;
     }
+    const interestedSubCategories = interestedCategories.flatMap((cat)=>cat.subCategories);
     const body = {
       interestedCategories: interestedCategories,
+      interestedSubCategories: interestedSubCategories,
       companyWebsite: website,
     };
     const payload = {
@@ -766,8 +768,6 @@ function AdditionalInfo() {
             setInterestedCategories={setInterestedCategories}
           />
         </div>
-
-        {/* ADDRESS */}
         <div className="w-full flex flex-col">
           <label className="font-medium text-xl text-dark">
             Link for company website

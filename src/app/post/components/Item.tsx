@@ -41,7 +41,7 @@ const Item: NextPage<Props> = ({ value, allCategories, onChange }) => {
           </select>
         </label>
         <label className="flex flex-col gap-2 w-full">
-          <span>Item Category:</span>
+          <span className="text-dark font-medium">Item Category:</span>
           <select
             value={value.subCategoryId ?? ""}
             onChange={(e) => update({ subCategoryId: Number(e.target.value) })}

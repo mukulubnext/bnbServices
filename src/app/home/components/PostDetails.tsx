@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
 import {
   IndianRupee,
+  LinkIcon,
   Mail,
   Pencil,
   PhoneCall,
@@ -382,6 +383,14 @@ export default function PostDetails({
                           {buyer.address}, {buyer.city}, {buyer.state},{" "}
                           {buyer.zipCode}
                         </p>
+                      </div>
+                      <div className="flex items-start gap-1">
+                        <span className="font-semibold flex items-center gap-1">
+                          <LinkIcon size={16} /> Website:{" "}
+                        </span>{" "}
+                        <a href={buyer.companyWebsite} target="_blank" className="underline hover:no-underline">
+                          {buyer.companyWebsite}
+                        </a>
                       </div>
                     </div>
                   </>

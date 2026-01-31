@@ -26,17 +26,14 @@ import { toast, ToastContainer } from "react-toastify";
 import { useAuth } from "@/context/AuthContext";
 import InterestedCategories from "@/components/InterestedCategories";
 import Link from "next/link";
+import { int } from "zod";
 
 interface Props {}
 
 const Page: NextPage<Props> = ({}) => {
   const [selected, setSelected] = useState<number>(0);
   const [signingOut, setSigningOut] = useState(false);
-
-  const [categories, setCategories] = useState<any[]>([]);
-  const [interestedCategories, setInterestedCategories] = useState<number[]>(
-    [],
-  );
+  const [editableCategories, setEditableCategories] = useState<any[]>([]);
 
   const [addCategory, setAddCategory] = useState(false);
 
@@ -58,23 +55,29 @@ const Page: NextPage<Props> = ({}) => {
       setSigningOut(false);
     }
   };
-
   const handleSubmit = async () => {
     try {
       setUpdatingCategories(true);
-      console.log(interestedCategories);
-      const res = await axios.put("/api/v1/category", { interestedCategories });
+
+      const payload = {
+        interestedCategories: editableCategories.map((cat) => ({id: cat.id, name:cat.name})),
+        interestedSubCategories: editableCategories.flatMap((cat) =>
+          cat.subCategories.map((sub: any) => ({id: sub.id, name:sub.name})),
+        ),
+      };
+
+      const res = await axios.put("/api/v1/category", payload);
+
       if (res.data.status === "success") {
         toast.success("Interested Categories updated successfully!");
-        setInterestedCategories([]);
         refresh();
         setAddCategory(false);
       } else {
         toast.error(res.data.message ?? "Something went wrong!");
       }
     } catch (err) {
-      toast.error("Something went wrong!");
       console.error(err);
+      toast.error("Something went wrong!");
     } finally {
       setUpdatingCategories(false);
     }
@@ -83,9 +86,18 @@ const Page: NextPage<Props> = ({}) => {
   useEffect(() => {
     if (!user && !loading) {
       router.push("/signin");
+      return;
     }
+
     if (user) {
-      setInterestedCategories(user.interestedCategories);
+      const prepared = user.interestedCategories.map((cat: any) => ({
+        ...cat,
+        subCategories: user.interestedSubCategories.filter(
+          (sub: any) => sub.categoryId === cat.id,
+        ),
+      }));
+
+      setEditableCategories(prepared);
     }
   }, [user, loading, router]);
 
@@ -248,12 +260,28 @@ const Page: NextPage<Props> = ({}) => {
                         {!addCategory ? (
                           <div className="border border-dark/20 rounded-md p-2 mt-1 flex flex-wrap gap-2">
                             {user.interestedCategories.length > 0 ? (
-                              user.interestedCategories.map((cat: any) => (
+                              editableCategories.map((cat: any) => (
                                 <span
                                   key={cat.id}
-                                  className="bg-dark font-medium text-white px-3 py-1 rounded-full"
+                                  className="bg-dark flex-wrap font-bold text-light px-3 py-1 rounded-full"
                                 >
-                                  {cat.name}
+                                  {cat.name}:{" "}
+                                  {cat.subCategories.map(
+                                    (subCat: any) =>
+                                      subCat.categoryId === cat.id && (
+                                        <span
+                                          className="group px-0.5 text-sm"
+                                          key={subCat.id}
+                                        >
+                                          <span className="font-medium text-white">
+                                            {subCat.name}
+                                          </span>
+                                          <span className="group-last:hidden">
+                                            ,
+                                          </span>
+                                        </span>
+                                      ),
+                                  )}
                                 </span>
                               ))
                             ) : (
@@ -264,8 +292,8 @@ const Page: NextPage<Props> = ({}) => {
                           </div>
                         ) : (
                           <InterestedCategories
-                            interestedCategories={interestedCategories}
-                            setInterestedCategories={setInterestedCategories}
+                            interestedCategories={editableCategories}
+                            setInterestedCategories={setEditableCategories}
                           />
                         )}
                       </div>
@@ -319,7 +347,10 @@ const Page: NextPage<Props> = ({}) => {
                       >
                         <Plus /> Add Credits
                       </Link>
-                      <Link href={"/offer-history"} className="text-white w-full flex justify-center items-center gap-4 bg-dark py-2 px-5 max-w-100 rounded font-medium border border-dark hover:text-dark hover:bg-white transition-all cursor-pointer">
+                      <Link
+                        href={"/offer-history"}
+                        className="text-white w-full flex justify-center items-center gap-4 bg-dark py-2 px-5 max-w-100 rounded font-medium border border-dark hover:text-dark hover:bg-white transition-all cursor-pointer"
+                      >
                         <History /> Offer History
                       </Link>
                     </div>

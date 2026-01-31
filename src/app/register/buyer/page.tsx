@@ -676,8 +676,8 @@ function Profile() {
 }
 
 function AdditionalInfo() {
-  const [interestedCategories, setInterestedCategories] = useState<any[]>([]);
-  const [website, setWebsite] = useState("");
+  const [interestedCategories, setInterestedCategories] = usePersistedState<any[]>( "register_seller_interestedCategories", []);
+  const [website, setWebsite] = usePersistedState("register_seller_website", "");
 
   const [isLoading, setLoading] = useState(false);
   const context = useContext(StepContext);
@@ -695,8 +695,10 @@ function AdditionalInfo() {
       toast.error("Please enter full website url with https:// or http://");
       return;
     }
+    const interestedSubCategories = interestedCategories.flatMap((cat)=>cat.subCategories);
     const body = {
       interestedCategories: interestedCategories,
+      interestedSubCategories: interestedSubCategories,
       companyWebsite: website,
     };
     const payload = {

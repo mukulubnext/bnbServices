@@ -7,7 +7,7 @@ import axios from "axios";
 import { IndianRupee, Plus, X } from "lucide-react";
 import { NextPage } from "next";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import Item from "./components/Item";
 
@@ -24,7 +24,9 @@ const Page: NextPage = () => {
   const router = useRouter();
 
   const [title, setTitle] = useState("");
+  const titleRef = useRef<HTMLInputElement>(null);
   const [description, setDescription] = useState("");
+  const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const [posting, setPosting] = useState(false);
   const [allCategories, setAllCategories] = useState<any[]>([]);
 
@@ -105,6 +107,13 @@ const Page: NextPage = () => {
               <input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
+                ref={titleRef}
+                onKeyDown={(e)=>{
+                  if(e.key==="Enter"){
+                    e.preventDefault();
+                    descriptionRef.current?.focus();
+                  }
+                }}
                 placeholder="Cartons"
                 className="border border-dark/20 rounded-md p-2"
               />
@@ -115,6 +124,7 @@ const Page: NextPage = () => {
               <span className="text-dark font-medium">Description</span>
               <textarea
                 value={description}
+                ref={descriptionRef}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Need high quality cartons for packaging of Wooden Artifacts"
                 className="border border-dark/20 rounded-md p-2 h-32"

@@ -7,7 +7,7 @@ import { Eye, EyeClosed, LogIn } from "lucide-react";
 import { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 
 interface Props {}
@@ -20,6 +20,8 @@ const Page: NextPage<Props> = ({}) => {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const {user, loading, refresh} = useAuth();
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const submitRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
       if (!loading && user) {
         router.push("/home");
@@ -75,6 +77,12 @@ const Page: NextPage<Props> = ({}) => {
                 <div className="flex justify-center relative items-center w-full">
                   <input
                     value={email}
+                    onKeyDown={(e)=>{
+                      if(e.key==="Enter"){
+                        e.preventDefault();
+                        passwordRef.current?.focus();
+                      }
+                    }}  
                     onChange={(e) => setEmail(e.target.value)}
                     type="email"
                     id="email"
@@ -92,9 +100,16 @@ const Page: NextPage<Props> = ({}) => {
                 <div className="flex justify-center relative items-center w-full">
                   <input
                     value={password}
+                    ref={passwordRef}
                     onChange={(e) => setPassword(e.target.value)}
                     type={showPass ? "text" : "password"}
                     id="password"
+                    onKeyDown={(e)=>{
+                      if(e.key==="Enter"){
+                        e.preventDefault();
+                        submitRef.current?.click();
+                      }
+                    }}
                     className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-sm md:text-lg bg-white p-4 w-full"
                   />
                   <button
@@ -127,6 +142,7 @@ const Page: NextPage<Props> = ({}) => {
               {!isLoading ? (
                 <button
                   onClick={handleSubmit}
+                  ref={submitRef}
                   className="md:text-xl my-6 font-bold rounded-lg text-highlight bg-dark w-full py-4 hover:ring-1 ring-dark hover:bg-light transition-all duration-300 hover:text-dark"
                 >
                   Submit

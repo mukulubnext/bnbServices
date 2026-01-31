@@ -376,9 +376,9 @@ function Buyer() {
                 ))
                 :
                 (
-                  <div className="bg-white text-center relative md:left-15/10 py-5 w-full">
-                    <p className="text-center text-dark/50">No posts made</p>
-                  </div>
+                  <tr className="bg-white text-center w-full">
+                    <p className="text-center pt-2 pb-5 relative md:left-15/10 text-dark/50">No posts made</p>
+                  </tr>
                 )
               }
                 {hasMore && (
