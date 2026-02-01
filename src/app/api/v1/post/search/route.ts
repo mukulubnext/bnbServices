@@ -61,7 +61,23 @@ export async function POST(req: NextRequest) {
             },
           },
 
-          // Category name + item details combination
+          // Item subcategory name
+          {
+            items: {
+              some: {
+                category: {
+                  subCategories: {
+                    some: {
+                      name: {
+                        contains: search,
+                        mode: "insensitive",
+                      },
+                    }
+                  }
+                },
+              },
+            },
+          },
           {
             items: {
               some: {
