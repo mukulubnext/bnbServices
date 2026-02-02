@@ -101,7 +101,7 @@ const InterestedCategories: NextPage<Props> = ({
           <div
             onClick={(e) => e.stopPropagation()}
             style={{ scrollbarWidth: "thin" }}
-            className="bg-white gap-2 flex flex-col overflow-y-scroll max-h-40"
+            className="bg-white gap-2 flex flex-col overflow-y-scroll max-h-100"
           >
             {categories ? (
               categories.map((cat) => {

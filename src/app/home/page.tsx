@@ -439,35 +439,43 @@ function Seller() {
   const [q, setQ] = useState("");
   const debounced = useDebounce(q, 500);
 
-  const [sort, setSort] = useState<{ key: SortKey; order: SortOrder }>({
-    key: "date",
-    order: "desc",
-  });
+  const [sort, setSort] = useState<{
+  key: SortKey | null;
+  order: SortOrder;
+}>({
+  key: null,
+  order: "asc",
+});
 
   const sortedPosts = useMemo(() => {
-    const { key, order } = sort;
+  if (!sort.key) return posts;
 
-    return [...posts].sort((a, b) => {
-      switch (key) {
-        case "title":
-          return order === "asc"
-            ? a.title.localeCompare(b.title)
-            : b.title.localeCompare(a.title);
+  const { key, order } = sort;
 
-        case "category":
-          return order === "asc"
-            ? (a.category?.name ?? "").localeCompare(b.category?.name ?? "")
-            : (b.category?.name ?? "").localeCompare(a.category?.name ?? "");
+  return [...posts].sort((a, b) => {
+    switch (key) {
+      case "title":
+        return order === "asc"
+          ? a.title.localeCompare(b.title)
+          : b.title.localeCompare(a.title);
 
-        case "date":
-        default:
-          return order === "asc"
-            ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-            : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      }
-    });
-  }, [posts, sort]);
+      case "category":
+        return order === "asc"
+          ? (a.category?.name ?? "").localeCompare(b.category?.name ?? "")
+          : (b.category?.name ?? "").localeCompare(a.category?.name ?? "");
 
+      case "date":
+        return order === "asc"
+          ? new Date(a.createdAt).getTime() -
+              new Date(b.createdAt).getTime()
+          : new Date(b.createdAt).getTime() -
+              new Date(a.createdAt).getTime();
+
+      default:
+        return 0;
+    }
+  });
+}, [posts, sort]);
   const handleSort = (key: SortKey) => {
     setSort((prev) =>
       prev.key === key

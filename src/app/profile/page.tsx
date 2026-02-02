@@ -15,6 +15,7 @@ import {
   MapPin,
   Phone,
   Plus,
+  ScrollTextIcon,
   Tag,
   Users,
   Wallet,
@@ -156,9 +157,9 @@ const Page: NextPage<Props> = ({}) => {
                           </div>
                         </div>
                       )}
-                      <button className="text-white bg-dark py-2 px-5 w-fit rounded font-medium border border-dark hover:text-dark hover:bg-white transition-all cursor-pointer">
+                      <Link href={"/change-password"} className="text-white bg-dark py-2 px-5 w-fit rounded font-medium border border-dark hover:text-dark hover:bg-white transition-all cursor-pointer">
                         Change Password
-                      </button>
+                      </Link>
                       <div className="absolute bottom-10 left-1/2 -translate-x-1/2">
                         {!signingOut ? (
                           <button
@@ -189,7 +190,7 @@ const Page: NextPage<Props> = ({}) => {
                         <p className="font-medium flex items-center gap-2 text-dark/70">
                           <Building /> Company Name:
                         </p>
-                        <div className="border border-dark/20 rounded-md p-2 mt-1">
+                        <div className="border cursor-not-allowed border-dark/20 rounded-md p-2 mt-1">
                           {user.companyName}
                         </div>
                       </div>
@@ -198,7 +199,7 @@ const Page: NextPage<Props> = ({}) => {
                           <p className="font-medium flex items-center gap-2 text-dark/70">
                             <Building /> GST Number:
                           </p>
-                          <div className="border border-dark/20 rounded-md p-2 mt-1">
+                          <div className="border cursor-not-allowed border-dark/20 rounded-md p-2 mt-1">
                             {user.gstNumber}
                           </div>
                         </div>
@@ -207,7 +208,7 @@ const Page: NextPage<Props> = ({}) => {
                         <p className="font-medium flex items-center gap-2 text-dark/70">
                           <MapPin /> Address:
                         </p>
-                        <div className="border border-dark/20 rounded-md p-2 mt-1">
+                        <div className="border cursor-not-allowed border-dark/20 rounded-md p-2 mt-1">
                           {user.address}
                         </div>
                       </div>
@@ -215,15 +216,15 @@ const Page: NextPage<Props> = ({}) => {
                         <p className="font-medium flex items-center gap-2 text-dark/70">
                           <MapPin /> City:
                         </p>
-                        <div className="border border-dark/20 rounded-md p-2 mt-1">
+                        <div className="border cursor-not-allowed border-dark/20 rounded-md p-2 mt-1">
                           {user.city}
                         </div>
                       </div>
                       <div>
-                        <p className="font-medium flex items-center gap-2 text-dark/70">
+                        <p className="font-medium cursor-not-allowed flex items-center gap-2 text-dark/70">
                           <MapPin /> State:
                         </p>
-                        <div className="border border-dark/20 rounded-md p-2 mt-1">
+                        <div className="border cursor-not-allowed border-dark/20 rounded-md p-2 mt-1">
                           {user.state}
                         </div>
                       </div>
@@ -231,7 +232,7 @@ const Page: NextPage<Props> = ({}) => {
                         <p className="font-medium flex items-center gap-2 text-dark/70">
                           <MapPin /> Pin Code:
                         </p>
-                        <div className="border border-dark/20 rounded-md p-2 mt-1">
+                        <div className="border cursor-not-allowed border-dark/20 rounded-md p-2 mt-1">
                           {user.zipCode}
                         </div>
                       </div>
@@ -239,7 +240,7 @@ const Page: NextPage<Props> = ({}) => {
                         <p className="font-medium flex items-center gap-2 text-dark/70">
                           <Users /> Employee Count:
                         </p>
-                        <div className="border border-dark/20 rounded-md p-2 mt-1">
+                        <div className="border cursor-not-allowed border-dark/20 rounded-md p-2 mt-1">
                           {user.employeeCount}
                         </div>
                       </div>
@@ -351,7 +352,7 @@ const Page: NextPage<Props> = ({}) => {
                         href={"/offer-history"}
                         className="text-white w-full flex justify-center items-center gap-4 bg-dark py-2 px-5 max-w-100 rounded font-medium border border-dark hover:text-dark hover:bg-white transition-all cursor-pointer"
                       >
-                        <History /> Offer History
+                        <ScrollTextIcon /> Offer History
                       </Link>
                     </div>
                     <div className="flex flex-col gap-3">

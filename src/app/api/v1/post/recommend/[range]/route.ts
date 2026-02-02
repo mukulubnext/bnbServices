@@ -9,6 +9,7 @@ export async function GET(
   ctx: { params: Promise<{ range: string }> },
 ) {
   try {
+    // ---------------- AUTH ----------------
     const token = req.cookies.get("token")?.value;
     if (!token) {
       return NextResponse.json(
@@ -31,6 +32,7 @@ export async function GET(
     const skip = (range - 1) * PAGE_SIZE;
     const take = PAGE_SIZE;
 
+    // ---------------- USER INTERESTS ----------------
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
@@ -40,65 +42,95 @@ export async function GET(
       },
     });
 
-    if (!user || user.interestedCategories.length === 0) {
-      return NextResponse.json({
-        status: "success",
-        posts: [],
-        total: 0,
-        hasMore: false,
-      });
-    }
+    const categoryIds = user?.interestedCategories.map((c) => c.id) ?? [];
 
-    const categoryIds = user.interestedCategories.map((c) => c.id);
+    // ---------------- COMMON SELECT ----------------
+    const postSelect = {
+      id: true,
+      title: true,
+      createdAt: true,
+      items: {
+        where: { isDeleted: false },
+        select: {
+          id: true,
+          categoryId: true,
+          quantity: true,
+          budget: true,
+          details: true,
+          createdAt: true,
+          updatedAt: true,
+          category: {
+            select: { name: true },
+          },
+          subCategory: {
+            select: { name: true },
+          },
+        },
+      },
+      offers: {
+        select: { id: true },
+      },
+    };
 
-    const whereClause = {
+    // ---------------- WHERE CLAUSES ----------------
+    const baseWhere = {
       isActive: true,
       isDeleted: false,
+    };
+
+    const interestedWhere = {
+      ...baseWhere,
       items: {
         some: {
-          categoryId: {
-            in: categoryIds,
-          },
+          categoryId: { in: categoryIds },
         },
       },
     };
 
-    const [posts, total] = await Promise.all([
+    const otherWhere = {
+      ...baseWhere,
+      items: {
+        some: {
+          categoryId: { notIn: categoryIds },
+        },
+      },
+    };
+
+    // ---------------- FETCH POSTS ----------------
+    const [
+      interestedPosts,
+      otherPosts,
+      interestedCount,
+      otherCount,
+    ] = await Promise.all([
       prisma.posts.findMany({
-        where: whereClause,
+        where: categoryIds.length ? interestedWhere : undefined,
         orderBy: { createdAt: "desc" },
         skip,
         take,
-        select: {
-          id: true,
-          title: true,
-          createdAt: true,
-          items: {
-            where: { isDeleted: false },
-            select: {
-              id: true,
-              category: {
-                select: {
-                  name: true,
-                },
-              },
-              categoryId: true,
-              quantity: true,
-              budget: true,
-              details: true,
-              createdAt: true,
-              updatedAt: true,
-            },
-          },
-          offers: {
-            select: {
-              id: true,
-            },
-          },
-        },
+        select: postSelect,
       }),
-      prisma.posts.count({ where: whereClause }),
+
+      prisma.posts.findMany({
+        where: categoryIds.length ? otherWhere : baseWhere,
+        orderBy: { createdAt: "desc" },
+        skip,
+        take,
+        select: postSelect,
+      }),
+
+      categoryIds.length
+        ? prisma.posts.count({ where: interestedWhere })
+        : prisma.posts.count({ where: baseWhere }),
+
+      categoryIds.length
+        ? prisma.posts.count({ where: otherWhere })
+        : 0,
     ]);
+
+    // ---------------- MERGE (PRIORITY ORDER) ----------------
+    const posts = [...interestedPosts, ...otherPosts];
+    const total = interestedCount + otherCount;
 
     return NextResponse.json({
       status: "success",

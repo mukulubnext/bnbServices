@@ -38,8 +38,11 @@ export async function GET(
                 name: true,
               },
             },
-            subCategory: true,
-            subCategoryId: true,
+            subCategory:{
+              select:{
+                name: true,
+              }
+            },
             quantity: true,
             budget: true,
             details: true,

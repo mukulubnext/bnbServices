@@ -31,6 +31,19 @@ async function main() {
         "Duplex Boxes",
       ],
     },
+    {
+      name: "Flexible Packaging Rolls & Films",
+      subCategories: [
+        "Plastic Films",
+        "Aluminum Foil Rolls",
+        "Laminated Films",
+        "Biodegradable Films",
+      ],
+    },
+    {
+      name: "Containers & Trays",
+      subCategories: ["Plastic", "Aluminum", "Paper", "Glass"],
+    },
   ];
 
   for (const category of data) {

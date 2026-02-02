@@ -2,7 +2,7 @@
 import { LiquidGlassCard } from "@/components/LiquidGlass";
 import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
-import { History, House, Phone, Plus, User } from "lucide-react";
+import { History, House, Phone, Plus, ScrollTextIcon, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -90,7 +90,7 @@ export default function LiquidGlassMenu() {
                   href={"/offer-history"}
                   className="relative z-30 flex items-center justify-center text-dark text-2xl w-full h-full "
                 >
-                  <History className="w-6 h-6 md:w-8 md:h-8 hover:scale-105" />
+                  <ScrollTextIcon className="w-6 h-6 md:w-8 md:h-8 hover:scale-105" />
                   <span className="sr-only">Offer History</span>
                 </Link>
               </LiquidGlassCard>
@@ -100,7 +100,7 @@ export default function LiquidGlassMenu() {
                   href={"/offer-history"}
                   className="relative z-30 flex items-center justify-center text-dark text-2xl w-full h-full "
                 >
-                  <History className="w-6 h-6 md:w-8 md:h-8 hover:scale-105" />
+                  <ScrollTextIcon className="w-6 h-6 md:w-8 md:h-8 hover:scale-105" />
                   <span className="sr-only">Offer History</span>
                 </Link>
               </div>
