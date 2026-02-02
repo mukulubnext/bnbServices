@@ -17,6 +17,7 @@ import {
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import ItemTable from "./ItemTable";
 
 interface ItemData {
   categoryId: number | undefined;
@@ -41,7 +42,6 @@ export default function PostDetails({
   editPost,
   setEditPost,
 }: Props) {
-
   const searchParams = useSearchParams();
 
   const [post, setPost] = useState<any>({});
@@ -86,6 +86,18 @@ export default function PostDetails({
     if (editPost === postId) {
       setCanEdit(true);
     }
+  }, []);
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setExpandPost(null);
+        setEditPost(null);
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
   }, []);
 
   useEffect(() => {
@@ -150,7 +162,7 @@ export default function PostDetails({
       details: item.details,
       quantity: Number(item.quantity),
       budget: Number(item.budget),
-      subCategoryId: item.subCategoryId
+      subCategoryId: item.subCategoryId,
     }));
 
     const isSamePost =
@@ -232,7 +244,13 @@ export default function PostDetails({
   const handleAddItem = () => {
     setItems((prev) => [
       ...prev,
-      { categoryId: undefined, details: "", quantity: 1, budget: 0, subCategoryId: undefined },
+      {
+        categoryId: undefined,
+        details: "",
+        quantity: 1,
+        budget: 0,
+        subCategoryId: undefined,
+      },
     ]);
   };
   return (
@@ -265,7 +283,9 @@ export default function PostDetails({
             <div className="flex justify-between flex-col items-start md:flex-row md:items-center">
               <div>
                 <h1 className="font-bold text-2xl md:text-4xl">{title}</h1>
-                <p className="text-xs font-medium text-muted">{createdAt !== updatedAt && "(Edited)"}</p>
+                <p className="text-xs font-medium text-muted">
+                  {createdAt !== updatedAt && "(Edited)"}
+                </p>
               </div>
               <div>
                 <p className="text-xs">
@@ -298,28 +318,7 @@ export default function PostDetails({
             <hr className="text-dark/50" />
             <div>
               <span className="font-semibold">Items:</span>
-              {post.items.map((item: any, i: number) => (
-                <div
-                  key={i}
-                  className="flex justify-between not-last:border-b border-dark/20 py-2 px-3 gap-2"
-                >
-                  <div>
-                    <h1 className="font-semibold text-lg">
-                      {i + 1}. {item.category.name}: <span className="font-medium">{item.subCategory.name}</span>
-                    </h1>
-                    <p>{item.details}</p>
-                  </div>
-                  <div className="flex flex-col items-end">
-                    <p className="flex items-center font-medium">
-                      <IndianRupee size={16} /> {item.budget}
-                    </p>
-                    <p className="flex items-center gap-1 justify-end font-medium">
-                      <span className="font-medium">Quantity: </span>{" "}
-                      {item.quantity}
-                    </p>
-                  </div>
-                </div>
-              ))}
+              <ItemTable items={post.items} />
             </div>
             {user && user.role === "buyer" ? (
               <button
@@ -388,7 +387,11 @@ export default function PostDetails({
                         <span className="font-semibold flex items-center gap-1">
                           <LinkIcon size={16} /> Website:{" "}
                         </span>{" "}
-                        <a href={buyer.companyWebsite} target="_blank" className="underline hover:no-underline">
+                        <a
+                          href={buyer.companyWebsite}
+                          target="_blank"
+                          className="underline hover:no-underline"
+                        >
                           {buyer.companyWebsite}
                         </a>
                       </div>

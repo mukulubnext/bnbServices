@@ -8,11 +8,13 @@ interface Props {
     id: number;
     setSelected: React.Dispatch<React.SetStateAction<number>>;
     selected: number;
+    setCustom: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const TokenCard: NextPage<Props> = ({price, credits, id, setSelected, selected}) => {
+const TokenCard: NextPage<Props> = ({price, credits, id, setSelected, selected, setCustom}) => {
   return <div onClick={()=>{
     setSelected(id);
+    setCustom(0);
   }} className={`text-dark h-fit select-none rounded-md max-w-[90%] group relative border-2 flex w-50 md:min-w-75 transition-all duration-300 hover:text-white border-dark hover:bg-dark justify-center items-center flex-col gap-3 ${selected === id ? "bg-dark text-white hover:brightness-75" : "hover:bg-dark"}`}>
     <div className='flex w-full flex-col justify-center items-center pb-1 pt-3'>
         <Coins/> <h1 className='md:text-3xl text-lg font-medium'>{credits}</h1>

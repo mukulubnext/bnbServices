@@ -162,7 +162,13 @@ model OTP {
 
   @@index([identifier, channel, purpose])
 }
-
+model Credits{
+  id            Int        @id @default(autoincrement())
+  credits       Int
+  price         Decimal
+  isActive      Boolean    @default(true)
+  @@unique([credits, price])
+}
 enum OTPChannel {
   EMAIL
   PHONE

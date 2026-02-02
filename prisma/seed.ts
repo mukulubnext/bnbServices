@@ -45,7 +45,14 @@ async function main() {
       subCategories: ["Plastic", "Aluminum", "Paper", "Glass"],
     },
   ];
-
+  const credits = [
+    { credits: 200, price: 250 },
+    { credits: 500, price: 500 },
+    { credits: 1150, price: 1000 },
+    { credits: 2500, price: 2000 },
+    { credits: 6000, price: 4000},
+    { credits: 8000, price: 5000},
+  ]
   for (const category of data) {
     const createdCategory = await prisma.category.upsert({
       where: { name: category.name },
@@ -68,6 +75,14 @@ async function main() {
         },
       });
     }
+  }
+  for(const credit of credits){
+    await prisma.credits.create({
+      data: {
+        credits: credit.credits,
+        price: credit.price,
+      },
+    });
   }
 }
 
