@@ -2,20 +2,15 @@
 import Breadcrumbs from "@/components/Breadcrumbs";
 import {
   Check,
-  ChevronDown,
-  ChevronUp,
   Eye,
   EyeClosed,
   LinkIcon,
-  Search,
   ShoppingBag,
   Users,
-  X,
 } from "lucide-react";
 import { NextPage } from "next";
 import React, {
   createContext,
-  use,
   useContext,
   useEffect,
   useRef,
@@ -32,7 +27,7 @@ import InterestedCategories from "@/components/InterestedCategories";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { auth } from "@/lib/firebase";
-import { confPhoneOTP, sendPhoneOTP } from "@/lib/phoneotp";
+import { confPhoneOTP } from "@/lib/phoneotp";
 
 interface Props {}
 
@@ -43,7 +38,7 @@ type StepContextType = {
   setData: React.Dispatch<React.SetStateAction<any>>;
 };
 
-const StepContext = createContext<StepContextType | null>(null);
+export const StepContext = createContext<StepContextType | null>(null);
 const role = "buyer";
 
 const Page: NextPage<Props> = ({}) => {
@@ -65,8 +60,6 @@ const Page: NextPage<Props> = ({}) => {
           {!loading ? (
             <>
               {stepNumber === 1 && <Register />}
-              {stepNumber === 2 && <Profile />}
-              {stepNumber === 3 && <AdditionalInfo />}
               <div className="flex relative top-8 md:hidden justify-center items-center">
                 <RegisterStep active={stepNumber} invert={true} />
               </div>
@@ -135,7 +128,9 @@ function Register() {
   const [sendingPhoneOTP, setSendingPhoneOTP] = useState(false);
   const [confirmingMailOTP, setConfirmingMailOTP] = useState(false);
   const [confirmingPhoneOTP, setConfirmingPhoneOTP] = useState(false);
-  const { stepNumber, setStepNumber, setData } = context;
+  const [fireBaseId, setFireBaseId] = useState("");
+
+  const router = useRouter();
 
   const confirmationRef = useRef<any>(null);
   const recaptchaVerifierRef = useRef<RecaptchaVerifier | null>(null);
@@ -183,6 +178,7 @@ function Register() {
 
       if (res.data.status === "success") {
         setConfirmPhoneOTP(true);
+        setFireBaseId(res.data.firebaseUid);
         toast.success("Phone verified");
       }
     } catch {
@@ -241,7 +237,7 @@ function Register() {
   };
 
   const handleSubmit = async () => {
-    if (!email || !password || !phone || !role) {
+    if (!email || !password || !phone || !confirmPassword ) {
       toast.error("Please fill all the fields!");
       return;
     }
@@ -250,30 +246,33 @@ function Register() {
       return;
     }
     if (password === confirmPassword) {
-      setLoading(true);
-      const check = {
-        email: email,
-        phone: phone,
-      };
-      const res = await axios.post(`/api/v1/auth/checkExisting`, check);
-      if (res.data.status === "success") {
-        if (res.data.exists) {
-          toast.error("User already exists with this email/phone!");
-          setLoading(false);
-          return;
-        }
-      }
-      const body = {
+      try{
+        setLoading(true);
+      const res = await axios.post(`/api/v2/auth/register`, {
         email: email,
         password: password,
         phone: phone,
+        role: role,
         isEmailVerified: confirmMailOTP,
         isPhoneVerified: confirmPhoneOTP,
-        role: role,
-      };
-      setData((e: any) => ({ ...e, ...body }));
-      setStepNumber(2);
-    } else {
+        fireBaseId: fireBaseId,
+      });
+      if (res.data.status === "success") {
+          toast.success("Registered successfully!");
+          Object.keys(localStorage)
+            .filter((k) => k.startsWith("register_"))
+            .forEach((k) => localStorage.removeItem(k));
+          router.push("/profile/add-details");
+      }
+      }
+      catch(err:any){
+        toast.error(err.response?.data?.message || "Something went wrong!");
+      }
+      finally{
+        setLoading(false);
+      }
+    } 
+    else {
       toast.warning("Password and Confirm Password must be same");
     }
   };

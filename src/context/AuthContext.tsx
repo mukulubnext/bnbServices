@@ -2,7 +2,7 @@
 "use client";
 
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 
 type AuthContextType = {
@@ -17,21 +17,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-
+  const pathname = usePathname();
   const getUser = async () => {
-        try{
-            const res = await axios.get("/api/v1/auth/user");
-            if(res.data.status === "success"){
-                setUser(res.data.user);
-            }
-        }
-        catch(e){
-            console.log(e)
-        }
-        finally{
-            setLoading(false);
-        }
+    try {
+      const res = await axios.get("/api/v1/auth/user");
+      const u = res.data.user;
+      if (res.data.status === "success") {
+        setUser(res.data.user);
+      }
+      if (
+        !u.companyName ||
+        !u.address ||
+        !u.city ||
+        !u.state ||
+        !u.zipCode ||
+        !u.inceptionDate ||
+        !u.employeeCount
+      ) {
+        router.push("/profile/add-details");
+      }
+      if (u.role === "seller" && !u.gstNumber) {
+        router.push("/profile/add-details");
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
     }
+  };
 
   useEffect(() => {
     getUser();

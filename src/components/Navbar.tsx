@@ -77,7 +77,7 @@ const Navbar: NextPage<Props> = ({ solid, userProp }: Props) => {
               className="flex w-10 h-10 justify-center p-2.5 rounded-full text-sm bg-light text-dark font-bold transition-all transform hover:-translate-y-0.5 duration-300 shadow-md"
               href={"/profile"}
             >
-              {user.companyName[0]}
+              {user.email[0].toUpperCase()}
             </Link>
           )
         ) : (

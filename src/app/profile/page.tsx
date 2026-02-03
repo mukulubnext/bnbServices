@@ -7,9 +7,8 @@ import Sidebar from "./components/Sidebar";
 import { useEffect, useState } from "react";
 import {
   Building,
-  CircleUserRound,
   Coins,
-  History,
+  LinkIcon,
   LockKeyhole,
   Mail,
   MapPin,
@@ -17,8 +16,8 @@ import {
   Plus,
   ScrollTextIcon,
   Tag,
+  TriangleAlert,
   Users,
-  Wallet,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -27,7 +26,6 @@ import { toast, ToastContainer } from "react-toastify";
 import { useAuth } from "@/context/AuthContext";
 import InterestedCategories from "@/components/InterestedCategories";
 import Link from "next/link";
-import { int } from "zod";
 
 interface Props {}
 
@@ -191,7 +189,7 @@ const Page: NextPage<Props> = ({}) => {
                           <Building /> Company Name:
                         </p>
                         <div className="border cursor-not-allowed border-dark/20 rounded-md p-2 mt-1">
-                          {user.companyName}
+                          {user.companyName ?? <span className="text-yellow-500 flex items-center gap-2"><TriangleAlert size={20}/> Update needed</span>}
                         </div>
                       </div>
                       {user.role === "seller" && (
@@ -200,7 +198,7 @@ const Page: NextPage<Props> = ({}) => {
                             <Building /> GST Number:
                           </p>
                           <div className="border cursor-not-allowed border-dark/20 rounded-md p-2 mt-1">
-                            {user.gstNumber}
+                            {user.gstNumber ?? <span className="text-yellow-500 flex items-center gap-2"><TriangleAlert size={20}/> Update needed</span>}
                           </div>
                         </div>
                       )}
@@ -209,7 +207,7 @@ const Page: NextPage<Props> = ({}) => {
                           <MapPin /> Address:
                         </p>
                         <div className="border cursor-not-allowed border-dark/20 rounded-md p-2 mt-1">
-                          {user.address}
+                          {user.address ?? <span className="text-yellow-500 flex items-center gap-2"><TriangleAlert size={20}/> Update needed</span>}
                         </div>
                       </div>
                       <div>
@@ -217,7 +215,7 @@ const Page: NextPage<Props> = ({}) => {
                           <MapPin /> City:
                         </p>
                         <div className="border cursor-not-allowed border-dark/20 rounded-md p-2 mt-1">
-                          {user.city}
+                          {user.city ?? <span className="text-yellow-500 flex items-center gap-2"><TriangleAlert size={20}/> Update needed</span>}
                         </div>
                       </div>
                       <div>
@@ -225,7 +223,7 @@ const Page: NextPage<Props> = ({}) => {
                           <MapPin /> State:
                         </p>
                         <div className="border cursor-not-allowed border-dark/20 rounded-md p-2 mt-1">
-                          {user.state}
+                          {user.state ?? <span className="text-yellow-500 flex items-center gap-2"><TriangleAlert size={20}/> Update needed</span>}
                         </div>
                       </div>
                       <div>
@@ -233,7 +231,7 @@ const Page: NextPage<Props> = ({}) => {
                           <MapPin /> Pin Code:
                         </p>
                         <div className="border cursor-not-allowed border-dark/20 rounded-md p-2 mt-1">
-                          {user.zipCode}
+                          {user.zipCode ?? <span className="text-yellow-500 flex items-center gap-2"><TriangleAlert size={20}/> Update needed</span>}
                         </div>
                       </div>
                       <div>
@@ -241,8 +239,32 @@ const Page: NextPage<Props> = ({}) => {
                           <Users /> Employee Count:
                         </p>
                         <div className="border cursor-not-allowed border-dark/20 rounded-md p-2 mt-1">
-                          {user.employeeCount}
+                          {user.employeeCount ?? <span className="text-yellow-500 flex items-center gap-2"><TriangleAlert size={20}/> Update needed</span>}
                         </div>
+                      </div>
+                      <div>
+                        <p className="font-medium flex items-center gap-2 text-dark/70">
+                          <LinkIcon /> Website:
+                        </p>
+                        <div className="border cursor-not-allowed border-dark/20 rounded-md p-2 mt-1">
+                          {user.companyWebsite ?? <span className="text-yellow-500 flex items-center gap-2"><TriangleAlert size={20}/> Update needed</span>}
+                        </div>
+                      </div>
+                      <div className="mt-4">
+                        {
+                          (!user.companyName ||
+                          !user.address ||
+                          !user.city ||
+                          !user.state ||
+                          !user.zipCode ||
+                          !user.inceptionDate ||
+                          !user.employeeCount || !user.companyWebsite) && (
+                            <Link href={"/profile/add-details"} className="font-bold border hover:text-dark hover:bg-white transition-all duration-300 px-3 py-2 bg-dark rounded-md text-white">
+                              Update Details
+                            </Link>
+                          )
+                        }
+
                       </div>
                     </div>
                   </div>

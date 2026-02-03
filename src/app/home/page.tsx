@@ -1,9 +1,6 @@
 "use client";
 import Navbar from "@/components/Navbar";
-import {
-  Pencil,
-  Search,
-} from "lucide-react";
+import { Pencil, Search } from "lucide-react";
 import { NextPage } from "next";
 import { useEffect, useMemo, useState } from "react";
 import LiquidGlassMenu from "../../components/LiquidGlassMenu";
@@ -78,7 +75,7 @@ function Buyer() {
   const [deletePost, setDeletePost] = useState(false);
   const [deletePostId, setDeletePostId] = useState(NaN);
   const [deletePostTitle, setDeletePostTitle] = useState("");
-  
+
   const [items, setItems] = useState<any[] | null>();
 
   const [editPost, setEditPost] = useState<number | null | undefined>();
@@ -216,9 +213,7 @@ function Buyer() {
   return (
     <>
       <ToastContainer />
-      {
-        items && <AllItems items={items} setItems={setItems}/>
-      }
+      {items && <AllItems items={items} setItems={setItems} />}
       {expandPost && (
         <PostDetails
           postId={expandPost}
@@ -318,69 +313,77 @@ function Buyer() {
             </thead>
             {!loading ? (
               <tbody>
-                {sortedPosts.length ? sortedPosts.sort().map((post: any) => (
-                  <tr
-                    key={post.id}
-                    onClick={() => {
-                      setExpandPost(post.id);
-                    }}
-                    className="text-black/90 cursor-pointer hover:bg-dark/5 transition-all duration-300 border-t border-b last:border-b-0 border-dark/20 even:bg-dark/2"
-                  >
-                    <td className="px-3 py-4 font-medium text-dark text-left">
-                      {post.title}
-                    </td>
+                {sortedPosts.length ? (
+                  sortedPosts.sort().map((post: any) => (
+                    <tr
+                      key={post.id}
+                      onClick={() => {
+                        setExpandPost(post.id);
+                      }}
+                      className="text-black/90 cursor-pointer hover:bg-dark/5 transition-all duration-300 border-t border-b last:border-b-0 border-dark/20 even:bg-dark/2"
+                    >
+                      <td className="px-3 py-4 font-medium text-dark text-left">
+                        {post.title}
+                      </td>
 
-                    <td className="px-3 py-4 text-dark/70">
-                      {new Intl.DateTimeFormat("en-GB", {
-                        dateStyle: "short",
-                      }).format(new Date(post.createdAt))}
-                    </td>
-                    <td className="px-3 py-4 bottom-1 relative flex gap-2 items-center text-dark/70">
-                      <span className={`flex gap-2 relative max-w-50 items-center`}>
-                        {post.items.length ? (
-                          // post.items.map((item: any) => (
-                          //   <div
-                          //   key={item.id}
-                          //   className="py-1 px-3 bg-dark text-white font-medium text-nowrap text-sm w-fit rounded-full"
-                          //   >
-                          //     {item.category.name}
-                          //   </div>
-                          // ))
-                          <div onClick={(e)=>{
-                            e.stopPropagation()
-                            setItems(post.items)
-                          }} className="text-sm px-3 py-1 active:scale-95 active:-translate-y-0.5 border font-medium rounded transition-all select-none hover:-translate-y-1 duration-300 cursor-pointer">
+                      <td className="px-3 py-4 text-dark/70">
+                        {new Intl.DateTimeFormat("en-GB", {
+                          dateStyle: "short",
+                        }).format(new Date(post.createdAt))}
+                      </td>
+                      <td className="px-3 py-4 bottom-1 relative flex gap-2 items-center text-dark/70">
+                        <span
+                          className={`flex gap-2 relative max-w-50 items-center`}
+                        >
+                          {post.items.length ? (
+                            // post.items.map((item: any) => (
+                            //   <div
+                            //   key={item.id}
+                            //   className="py-1 px-3 bg-dark text-white font-medium text-nowrap text-sm w-fit rounded-full"
+                            //   >
+                            //     {item.category.name}
+                            //   </div>
+                            // ))
+                            <div
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setItems(post.items);
+                              }}
+                              className="text-sm px-3 py-1 active:scale-95 active:-translate-y-0.5 border font-medium rounded transition-all select-none hover:-translate-y-1 duration-300 cursor-pointer"
+                            >
                               View Items
-                          </div>
-                        ) : (
-                          <p className="text-black/50">no items</p>
-                        )}
-                      </span>
-                    </td>
+                            </div>
+                          ) : (
+                            <p className="text-black/50">no items</p>
+                          )}
+                        </span>
+                      </td>
 
-                    <td className="px-3 py-4 text-center font-bold text-dark">
-                      {post.offers.length}
-                    </td>
-                    <td className="flex px-3 py-4 top-1 relative justify-center">
-                      <EllipsisComp
-                        postId={post.id}
-                        setDeletePost={setDeletePost}
-                        setDeletePostId={setDeletePostId}
-                        setDeletePostTitle={setDeletePostTitle}
-                        deletePostTitle={deletePostTitle}
-                        setEditPost={setEditPost}
-                        setExpandPost={setExpandPost}
-                      />
-                    </td>
-                  </tr>
-                ))
-                :
-                (
+                      <td className="px-3 py-4 text-center font-bold text-dark">
+                        {post.offers.length}
+                      </td>
+                      <td className="flex px-3 py-4 top-1 relative justify-center">
+                        <EllipsisComp
+                          postId={post.id}
+                          setDeletePost={setDeletePost}
+                          setDeletePostId={setDeletePostId}
+                          setDeletePostTitle={setDeletePostTitle}
+                          deletePostTitle={deletePostTitle}
+                          setEditPost={setEditPost}
+                          setExpandPost={setExpandPost}
+                        />
+                      </td>
+                    </tr>
+                  ))
+                ) : (
                   <tr className="bg-white text-center w-full">
-                    <p className="text-center pt-2 pb-5 relative md:left-15/10 text-dark/50">No posts made</p>
+                    <td>
+                      <p className="text-center pt-2 pb-5 relative md:left-15/10 text-dark/50">
+                        No posts made
+                      </p>
+                    </td>
                   </tr>
-                )
-              }
+                )}
                 {hasMore && (
                   <tr>
                     {loadingMore ? (
@@ -440,42 +443,40 @@ function Seller() {
   const debounced = useDebounce(q, 500);
 
   const [sort, setSort] = useState<{
-  key: SortKey | null;
-  order: SortOrder;
-}>({
-  key: null,
-  order: "asc",
-});
+    key: SortKey | null;
+    order: SortOrder;
+  }>({
+    key: null,
+    order: "asc",
+  });
 
   const sortedPosts = useMemo(() => {
-  if (!sort.key) return posts;
+    if (!sort.key) return posts;
 
-  const { key, order } = sort;
+    const { key, order } = sort;
 
-  return [...posts].sort((a, b) => {
-    switch (key) {
-      case "title":
-        return order === "asc"
-          ? a.title.localeCompare(b.title)
-          : b.title.localeCompare(a.title);
+    return [...posts].sort((a, b) => {
+      switch (key) {
+        case "title":
+          return order === "asc"
+            ? a.title.localeCompare(b.title)
+            : b.title.localeCompare(a.title);
 
-      case "category":
-        return order === "asc"
-          ? (a.category?.name ?? "").localeCompare(b.category?.name ?? "")
-          : (b.category?.name ?? "").localeCompare(a.category?.name ?? "");
+        case "category":
+          return order === "asc"
+            ? (a.category?.name ?? "").localeCompare(b.category?.name ?? "")
+            : (b.category?.name ?? "").localeCompare(a.category?.name ?? "");
 
-      case "date":
-        return order === "asc"
-          ? new Date(a.createdAt).getTime() -
-              new Date(b.createdAt).getTime()
-          : new Date(b.createdAt).getTime() -
-              new Date(a.createdAt).getTime();
+        case "date":
+          return order === "asc"
+            ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+            : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
 
-      default:
-        return 0;
-    }
-  });
-}, [posts, sort]);
+        default:
+          return 0;
+      }
+    });
+  }, [posts, sort]);
   const handleSort = (key: SortKey) => {
     setSort((prev) =>
       prev.key === key
@@ -505,7 +506,6 @@ function Seller() {
     }
   };
 
-
   const handleLoadMore = () => {
     if (!hasMore || loadingMore) return;
     const nextRange = range + 1;
@@ -516,37 +516,30 @@ function Seller() {
   const [expandPost, setExpandPost] = useState<number | null | undefined>();
 
   useEffect(() => {
-  if (!debounced || debounced.length < 2) {
-    fetchPosts(1);
-    return;
-  }
-
-  const fetchResults = async () => {
-    try{
-      setLoading(true);
-      const res = await axios.post(
-      `/api/v1/post/search`, {q: debounced}
-    );
-    setPosts(res.data.data);
+    if (!debounced || debounced.length < 2) {
+      fetchPosts(1);
+      return;
     }
-    catch(err){
-      console.error(err);
-    }
-    finally{
-      setLoading(false);
-    }
-  };
 
-  fetchResults();
-}, [debounced]);
+    const fetchResults = async () => {
+      try {
+        setLoading(true);
+        const res = await axios.post(`/api/v1/post/search`, { q: debounced });
+        setPosts(res.data.data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    fetchResults();
+  }, [debounced]);
 
   return (
     <>
       <hr className="text-dark/22" />
-      {
-        items && <AllItems items={items} setItems={setItems}/>
-      }
+      {items && <AllItems items={items} setItems={setItems} />}
       <div className="flex flex-col gap-2">
         <h1 className="text-dark p-2 font-bold text-2xl">
           Posts you might be interested in
@@ -560,8 +553,16 @@ function Seller() {
           />
         )}
         <div className="relative md:w-fit w-full">
-          <Search size={20} className="absolute text-dark top-1/2 -translate-y-1/2 right-2" />
-          <input type="text" onChange={(e)=> setQ(e.target.value)} className="border max-w-full w-180 focus:outline-0 border-dark/50 px-2 py-1 bg-white text-dark placeholder:text-dark/40 rounded" placeholder="Search" />
+          <Search
+            size={20}
+            className="absolute text-dark top-1/2 -translate-y-1/2 right-2"
+          />
+          <input
+            type="text"
+            onChange={(e) => setQ(e.target.value)}
+            className="border max-w-full w-180 focus:outline-0 border-dark/50 px-2 py-1 bg-white text-dark placeholder:text-dark/40 rounded"
+            placeholder="Search"
+          />
         </div>
         <div className="overflow-x-auto">
           <table className="bg-white shadow rounded-md w-full min-w-200">
@@ -597,12 +598,8 @@ function Seller() {
                   </div>
                 </th>
 
-                <th
-                  className={`p-3 text-left`}
-                >
-                  <div className="flex items-center select-none">
-                    Items
-                  </div>
+                <th className={`p-3 text-left`}>
+                  <div className="flex items-center select-none">Items</div>
                 </th>
 
                 <th className="p-3 text-center cursor-default">Actions</th>
@@ -624,13 +621,18 @@ function Seller() {
                       }).format(new Date(post.createdAt))}
                     </td>
                     <td className="px-3 py-4 bottom-1 relative flex gap-2 items-center text-dark/70">
-                      <span className={`flex gap-2 relative max-w-50 items-center no-scrollbar ${post.items.length > 2 ? " overflow-x-scroll": ""}`}>
+                      <span
+                        className={`flex gap-2 relative max-w-50 items-center no-scrollbar ${post.items.length > 2 ? " overflow-x-scroll" : ""}`}
+                      >
                         {post.items.length ? (
-                          <div onClick={(e)=>{
-                            e.stopPropagation()
-                            setItems(post.items)
-                          }} className="text-sm px-3 py-1 active:scale-95 active:-translate-y-0.5 border font-medium rounded transition-all select-none hover:-translate-y-1 duration-300 cursor-pointer">
-                              View Items
+                          <div
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setItems(post.items);
+                            }}
+                            className="text-sm px-3 py-1 active:scale-95 active:-translate-y-0.5 border font-medium rounded transition-all select-none hover:-translate-y-1 duration-300 cursor-pointer"
+                          >
+                            View Items
                           </div>
                         ) : (
                           <p className="text-black/50">no items</p>

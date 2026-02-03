@@ -17,20 +17,23 @@ model User {
   email                 String      @unique
   password              String    
   phone                 String      @unique
+  firebaseId            String      @default("")
+
   isEmailVerified       Boolean     @default(false)
   isPhoneVerified       Boolean     @default(false)
+
   role                  String
   sellerType            String?
 
-  companyName           String
-  address               String
-  city                  String
-  state                 String
-  zipCode               String
-  inceptionDate         DateTime
-  employeeCount         String
+  companyName           String?
+  address               String?
+  city                  String?
+  state                 String?
+  zipCode               String?
+  inceptionDate         DateTime?
+  employeeCount         String?
   
-  pastLegalAction       Boolean     @default(false)
+  pastLegalAction       Boolean?     @default(false)
   pastLegalExplanation  String?
 
   isVerified            Boolean     @default(false)
