@@ -7,6 +7,8 @@ import Sidebar from "./components/Sidebar";
 import { useEffect, useState } from "react";
 import {
   Building,
+  Check,
+  CheckCircle,
   Coins,
   LinkIcon,
   LockKeyhole,
@@ -16,6 +18,7 @@ import {
   Plus,
   ScrollTextIcon,
   Tag,
+  Timer,
   TriangleAlert,
   Users,
 } from "lucide-react";
@@ -155,6 +158,15 @@ const Page: NextPage<Props> = ({}) => {
                           </div>
                         </div>
                       )}
+                      {
+                        user.isVerified ? (
+                          <p className="text-dark font-bold flex gap-2 items-center">Verified <CheckCircle size={16}/></p>
+                        )
+                        :
+                        (
+                          <p className="text-yellow-500 font-bold flex gap-2 items-center">Verifying <Timer size={16}/></p>
+                        )
+                      }
                       <Link href={"/change-password"} className="text-white bg-dark py-2 px-5 w-fit rounded font-medium border border-dark hover:text-dark hover:bg-white transition-all cursor-pointer">
                         Change Password
                       </Link>

@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import Spinner from "@/components/Spinner";
 import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
-import { IndianRupee, Plus, X } from "lucide-react";
+import { IndianRupee, Plus, Timer, X } from "lucide-react";
 import { NextPage } from "next";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -31,7 +31,13 @@ const Page: NextPage = () => {
   const [allCategories, setAllCategories] = useState<any[]>([]);
 
   const [itemsData, setItemsData] = useState<ItemData[]>([
-    { categoryId: undefined, details: "", quantity: 1, budget: 0, subCategoryId: undefined },
+    {
+      categoryId: undefined,
+      details: "",
+      quantity: 1,
+      budget: 0,
+      subCategoryId: undefined,
+    },
   ]);
 
   useEffect(() => {
@@ -42,7 +48,7 @@ const Page: NextPage = () => {
     axios
       .get("/api/v1/category")
       .then((res) => {
-        setAllCategories(res.data.categories)
+        setAllCategories(res.data.categories);
       })
       .catch(console.error);
   }, []);
@@ -50,13 +56,19 @@ const Page: NextPage = () => {
   const handleAddItem = () => {
     setItemsData((prev) => [
       ...prev,
-      { categoryId: undefined, details: "", quantity: 1, budget: 0, subCategoryId: undefined },
+      {
+        categoryId: undefined,
+        details: "",
+        quantity: 1,
+        budget: 0,
+        subCategoryId: undefined,
+      },
     ]);
   };
 
   const handlePost = async () => {
     const filtered = itemsData.filter(
-      (i) => i.categoryId && i.quantity > 0 && i.budget > 0 && i.subCategoryId
+      (i) => i.categoryId && i.quantity > 0 && i.budget > 0 && i.subCategoryId,
     );
 
     if (!title || !description || filtered.length === 0) {
@@ -77,7 +89,15 @@ const Page: NextPage = () => {
         toast.success("Post created successfully!");
         setTitle("");
         setDescription("");
-        setItemsData([{ categoryId: 0, details: "", quantity: 1, budget: 0, subCategoryId: undefined }]);
+        setItemsData([
+          {
+            categoryId: 0,
+            details: "",
+            quantity: 1,
+            budget: 0,
+            subCategoryId: undefined,
+          },
+        ]);
       } else {
         toast.error(res.data.message);
       }
@@ -87,6 +107,20 @@ const Page: NextPage = () => {
       setPosting(false);
     }
   };
+
+  if (!loading && !user.isVerified) {
+    return (
+      <div className="min-h-screen py-[10vh] items-center relative bg-light">
+        <Navbar solid />
+        <LiquidGlassMenu />
+        <ToastContainer />
+        <div className="bg-white py-10 flex p-6 flex-col text-dark min-h-[80vh] w-[90vw] md:w-[60vw] border border-dark justify-center items-center rounded-lg mx-auto">
+          <Timer/>
+          <p className="font-medium text-lg text-center">Your account is being verified. You will be able to post after we verify your account</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen py-[10vh] items-center relative bg-light">
@@ -108,8 +142,8 @@ const Page: NextPage = () => {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 ref={titleRef}
-                onKeyDown={(e)=>{
-                  if(e.key==="Enter"){
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
                     e.preventDefault();
                     descriptionRef.current?.focus();
                   }
@@ -144,7 +178,7 @@ const Page: NextPage = () => {
                     <div
                       onClick={() =>
                         setItemsData((prev) =>
-                          prev.filter((_, i) => i !== index)
+                          prev.filter((_, i) => i !== index),
                         )
                       }
                       className={`text-red-500 flex justify-between items-center cursor-pointer hover:bg-highlight transition-all duration-300 p-1 rounded-full ${

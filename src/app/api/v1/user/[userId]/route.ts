@@ -51,6 +51,7 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ userId: str
         gstNumber: true,
         interestedCategories: true,
         companyWebsite: true,
+        isVerified: true,
     }
   });
 
@@ -74,6 +75,7 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ userId: str
         zipCode: true,
         interestedCategories: true,
         companyWebsite: true,
+        isVerified: true,
     }
   });
 

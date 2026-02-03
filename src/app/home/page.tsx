@@ -1,6 +1,6 @@
 "use client";
 import Navbar from "@/components/Navbar";
-import { Pencil, Search } from "lucide-react";
+import { Pencil, Search, Timer } from "lucide-react";
 import { NextPage } from "next";
 import { useEffect, useMemo, useState } from "react";
 import LiquidGlassMenu from "../../components/LiquidGlassMenu";
@@ -47,7 +47,7 @@ const Page: NextPage<Props> = ({}) => {
             <span>{greeting},</span>
             <span>{user.companyName}...</span>
           </div>
-          {user.role === "buyer" ? <Buyer /> : <Seller />}
+          {user.role === "buyer" ? <Buyer isVerified={user.isVerified}/> : <Seller />}
           <LiquidGlassMenu />
         </>
       ) : (
@@ -61,7 +61,7 @@ const Page: NextPage<Props> = ({}) => {
 
 export default Page;
 
-function Buyer() {
+function Buyer({isVerified}: {isVerified: boolean}) {
   type SortKey = "title" | "date" | "category" | "active" | "offers";
   type SortOrder = "asc" | "desc";
 
@@ -209,7 +209,6 @@ function Buyer() {
     });
   };
   const [expandPost, setExpandPost] = useState<number | null>();
-
   return (
     <>
       <ToastContainer />
@@ -234,13 +233,20 @@ function Buyer() {
         <p className="text-lg md:text-2xl text-dark">
           Need to buy something? Make a post!
         </p>
-        <Link
-          href={"/post"}
-          className="flex gap-4 justify-center items-center w-full bg-dark md:max-w-[40%] text-highlight font-bold py-2 md:text-2xl hover:bg-transparent border border-dark hover:text-dark transition-all duration-300 rounded-lg"
-        >
-          <Pencil size={20} />
-          Post
-        </Link>
+        {isVerified ? (
+          <Link
+            href={"/post"}
+            className="flex gap-4 justify-center items-center w-full bg-dark md:max-w-[40%] text-highlight font-bold py-2 md:text-2xl hover:bg-transparent border border-dark hover:text-dark transition-all duration-300 rounded-lg"
+          >
+            <Pencil size={20} />
+            Post 
+          </Link>
+        ) : (
+          <p className="text-dark flex flex-col sm:flex-row gap-2 justify-center items-center text-center">
+            <Timer size={30} />
+            You will be able to post after we verify your account
+          </p>
+        )}
       </div>
       <hr className="text-dark/22" />
       <div>

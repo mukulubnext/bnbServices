@@ -66,6 +66,7 @@ export async function GET(req: NextRequest) {
         tokens: true,
         payments: true,
         sellerType: true,
+        isVerified: true,
     }
   });
 

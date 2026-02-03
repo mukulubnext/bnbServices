@@ -60,8 +60,6 @@ const Page: NextPage<Props> = ({}) => {
         <Breadcrumbs />
         <div className="flex flex-col gap-4 px-[5%] py-[10%] md:py-[5%] md:w-[50vw] min-h-screen h-fit">
           {stepNumber === 1 && <Register />}
-          {stepNumber === 2 && <Profile />}
-          {stepNumber === 3 && <AdditionalInfo />}
           <div className="flex relative top-4 md:hidden justify-center items-center">
             <RegisterStep active={stepNumber} invert={true} />
           </div>
@@ -132,6 +130,9 @@ function Register() {
 
   const [sendingPhoneOTP, setSendingPhoneOTP] = useState(false);
   const [confirmingPhoneOTP, setConfirmingPhoneOTP] = useState(false);
+
+  const [fireBaseId, setFireBaseId] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     if (!recaptchaVerifierRef.current) {
@@ -230,7 +231,7 @@ function Register() {
     }
   };
   const handleSubmit = async () => {
-    if (!email || !password || !phone || !role) {
+    if (!email || !password || !phone || !confirmPassword ) {
       toast.error("Please fill all the fields!");
       return;
     }
@@ -239,31 +240,34 @@ function Register() {
       return;
     }
     if (password === confirmPassword) {
-      setLoading(true);
-      const check = {
-        email: email,
-        phone: phone,
-      };
-      const res = await axios.post(`/api/v1/auth/checkExisting`, check);
-      if (res.data.status === "success") {
-        if (res.data.exists) {
-          toast.error("User already exists with this email/phone!");
-          setLoading(false);
-          return;
-        }
-      }
-      const body = {
+      try{
+        setLoading(true);
+      const res = await axios.post(`/api/v2/auth/register`, {
         email: email,
         password: password,
         phone: phone,
+        role: role,
         isEmailVerified: confirmMailOTP,
         isPhoneVerified: confirmPhoneOTP,
-        role: role,
+        fireBaseId: fireBaseId,
         sellerType: sellerType,
-      };
-      setData((e: any) => ({ ...e, ...body }));
-      setStepNumber(2);
-    } else {
+      });
+      if (res.data.status === "success") {
+          toast.success("Registered successfully!");
+          Object.keys(localStorage)
+            .filter((k) => k.startsWith("register_"))
+            .forEach((k) => localStorage.removeItem(k));
+          router.push("/profile/add-details");
+      }
+      }
+      catch(err:any){
+        toast.error(err.response?.data?.message || "Something went wrong!");
+      }
+      finally{
+        setLoading(false);
+      }
+    } 
+    else {
       toast.warning("Password and Confirm Password must be same");
     }
   };
@@ -521,376 +525,3 @@ function Register() {
   );
 }
 
-function Profile() {
-  const context = useContext(StepContext);
-  if (!context) return null;
-
-  const { stepNumber, setStepNumber, data, setData } = context;
-  const [companyName, setCompanyName] = usePersistedState(
-    "register_seller_companyName",
-    "",
-  );
-  const [gstNumber, setGstNumber] = usePersistedState(
-    "register_seller_gstNumber",
-    "",
-  );
-  const [addressLine1, setAddressLine1] = usePersistedState(
-    "register_seller_addressLine1",
-    "",
-  );
-  const [addressLine2, setAddressLine2] = usePersistedState(
-    "register_seller_addressLine2",
-    "",
-  );
-  const [city, setCity] = usePersistedState("register_seller_city", "");
-  const [stateName, setStateName] = usePersistedState(
-    "register_seller_stateName",
-    "",
-  );
-  const [zipCode, setZipCode] = usePersistedState(
-    "register_seller_zipCode",
-    "",
-  );
-  const [inceptionDate, setInceptionDate] = usePersistedState(
-    "register_seller_inceptionDate",
-    "",
-  );
-  const [employeeCount, setEmployeeCount] = usePersistedState(
-    "register_seller_employeeCount",
-    "",
-  );
-  const [pastLegalAction, setPastLegalAction] = usePersistedState(
-    "register_seller_pastLegalAction",
-    false,
-  );
-  const [pastLegalExplanation, setPastLegalExplanation] = usePersistedState(
-    "register_seller_pastLegalExplanation",
-    "",
-  );
-
-  const handleSubmit = () => {
-    if (
-      !companyName ||
-      !gstNumber ||
-      !addressLine1 ||
-      !city ||
-      !stateName ||
-      !zipCode ||
-      !inceptionDate ||
-      !employeeCount
-    ) {
-      toast.error("Please fill all the fields!");
-      return;
-    }
-    const body = {
-      companyName: companyName,
-      address: addressLine1 + " " + addressLine2,
-      gstNumber: gstNumber,
-      city: city,
-      state: stateName,
-      zipCode: zipCode,
-      inceptionDate: inceptionDate,
-      employeeCount: employeeCount,
-      pastLegalAction: pastLegalAction,
-      pastLegalExplanation: pastLegalExplanation,
-    };
-    setData((e: any) => ({ ...e, ...body }));
-    setStepNumber(3);
-  };
-
-  return (
-    <>
-      <div className=" text-dark mb-5">
-        <h1 className="font-bold text-4xl">Add Profile Details</h1>
-        <p>Complete your buyer profile by filling necessary details</p>
-      </div>
-      <div className="w-full flex justify-center items-center flex-col gap-4">
-        <div className="w-full flex justify-center flex-col">
-          <label htmlFor="company" className="font-medium text-xl text-dark">
-            Company Name
-          </label>
-          <div className="flex justify-center relative items-center w-full">
-            <input
-              id="company"
-              value={companyName}
-              onChange={(e) => setCompanyName(e.target.value)}
-              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
-            />
-          </div>
-        </div>
-        <div className="w-full flex justify-center flex-col">
-          <label htmlFor="company" className="font-medium text-xl text-dark">
-            GST Number
-          </label>
-          <div className="flex justify-center relative items-center w-full">
-            <input
-              id="gst"
-              value={gstNumber}
-              onChange={(e) => setGstNumber(e.target.value)}
-              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
-            />
-          </div>
-        </div>
-        <div className="w-full flex justify-center flex-col">
-          <label htmlFor="address1" className="font-medium text-xl text-dark">
-            Address Line 1
-          </label>
-          <div className="flex justify-center relative items-center w-full">
-            <input
-              id="address1"
-              value={addressLine1}
-              onChange={(e) => setAddressLine1(e.target.value)}
-              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
-            />
-          </div>
-        </div>
-        <div className="w-full flex justify-center flex-col">
-          <label htmlFor="address2" className="font-medium text-xl text-dark">
-            Address Line 2
-          </label>
-          <div className="flex justify-center relative items-center w-full">
-            <input
-              id="address2"
-              value={addressLine2}
-              onChange={(e) => setAddressLine2(e.target.value)}
-              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
-            />
-          </div>
-        </div>
-        <div className="flex justify-between w-full gap-6">
-          <div className="w-full flex justify-center flex-col">
-            <label htmlFor="city" className="font-medium text-xl text-dark">
-              City
-            </label>
-            <div className="flex justify-center relative items-center w-full">
-              <input
-                id="city"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
-              />
-            </div>
-          </div>
-          <div className="w-full flex justify-center flex-col">
-            <label htmlFor="state" className="font-medium text-xl text-dark">
-              State
-            </label>
-            <div className="flex justify-center relative items-center w-full">
-              <input
-                id="state"
-                value={stateName}
-                onChange={(e) => setStateName(e.target.value)}
-                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
-              />
-            </div>
-          </div>
-          <div className="w-full flex justify-center flex-col">
-            <label htmlFor="zip" className="font-medium text-xl text-dark">
-              Zip Code
-            </label>
-            <div className="flex justify-center relative items-center w-full">
-              <input
-                id="zip"
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]"
-                maxLength={6}
-                value={zipCode}
-                onChange={(e) => setZipCode(e.target.value)}
-                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
-              />
-            </div>
-          </div>
-        </div>
-        <div className="flex justify-between w-full gap-6">
-          <div className="w-full flex justify-center flex-col">
-            <label
-              htmlFor="inception"
-              className="font-medium text-xl text-dark"
-            >
-              Inception Date
-            </label>
-            <div className="flex justify-center relative items-center w-full">
-              <input
-                type="date"
-                id="inception"
-                value={inceptionDate}
-                onChange={(e) => setInceptionDate(e.target.value)}
-                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
-              />
-            </div>
-          </div>
-          <div className="w-full flex justify-center flex-col">
-            <label
-              htmlFor="employeeCount"
-              className="font-medium text-xl text-dark"
-            >
-              Employee Count
-            </label>
-            <div className="relative">
-              <select
-                id="employeeCount"
-                value={employeeCount}
-                onChange={(e) => setEmployeeCount(e.target.value)}
-                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full pl-10"
-              >
-                <option value="" disabled>
-                  Select Employee Count
-                </option>
-                <option value="1-10">1-10</option>
-                <option value="11-50">11-50</option>
-                <option value="51-200">51-200</option>
-                <option value="201-500">201-500</option>
-                <option value="501-1000">501-1000</option>
-                <option value="1000+">1000+</option>
-              </select>
-              <Users className="left-5 top-1/2 -translate-1/2 text-dark absolute" />
-            </div>
-          </div>
-        </div>
-        <div className="flex justify-between w-full">
-          <p className="font-medium text-dark">
-            Any past legal action/specification that may affect seller in
-            future?
-          </p>
-          <div>
-            <label className="inline-flex items-center mr-6">
-              <input
-                type="radio"
-                className="form-radio text-highlight"
-                name="legalAction"
-                value="yes"
-                checked={pastLegalAction === true}
-                onChange={() => setPastLegalAction(true)}
-              />
-              <span className="ml-2 text-dark">Yes</span>
-            </label>
-            <label className="inline-flex items-center">
-              <input
-                type="radio"
-                className="form-radio text-highlight"
-                name="legalAction"
-                value="no"
-                checked={pastLegalAction === false}
-                onChange={() => setPastLegalAction(false)}
-              />
-              <span className="ml-2 text-dark">No</span>
-            </label>
-          </div>
-        </div>
-        {pastLegalAction && (
-          <div className="w-full flex justify-center flex-col">
-            <label
-              htmlFor="legalExplanation"
-              className="font-medium text-xl text-dark"
-            >
-              Please explain
-            </label>
-            <div className="flex justify-center relative items-center w-full">
-              <textarea
-                id="legalExplanation"
-                value={pastLegalExplanation}
-                onChange={(e) => setPastLegalExplanation(e.target.value)}
-                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
-              />
-            </div>
-          </div>
-        )}
-        <button
-          onClick={handleSubmit}
-          className="text-xl my-6 font-bold text-highlight bg-dark w-full py-4 hover:ring-1 ring-dark hover:bg-light transition-all duration-300 hover:text-dark"
-        >
-          Submit
-        </button>
-      </div>
-    </>
-  );
-}
-
-function AdditionalInfo() {
-  const [interestedCategories, setInterestedCategories] = useState<any[]>([]);
-  const [isLoading, setLoading] = useState(false);
-  const [website, setWebsite] = useState("");
-  const context = useContext(StepContext);
-  if (!context) return null;
-  const { stepNumber, setStepNumber, data, setData } = context;
-
-  const handleSubmit = async () => {
-    setLoading(true);
-    const interestedSubCategories = interestedCategories.flatMap(
-      (cat) => cat.subCategories,
-    );
-    const body = {
-      interestedCategories: interestedCategories,
-      interestedSubCategories: interestedSubCategories,
-      companyWebsite: website,
-    };
-    const payload = {
-      ...data,
-      ...body,
-    };
-    try {
-      const res = await axios.post("/api/v1/auth/register", payload);
-
-      if (res.data.status === "success") {
-        toast.success("Registered successfully!");
-        window.location.href = `/signin`;
-      } else {
-        toast.error(res.data.message ?? "Something went wrong!");
-      }
-    } catch (err) {
-      toast.error("Something went wrong!");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <>
-      <div className="text-dark mb-5">
-        <h1 className="font-bold text-4xl">Add Additional Details</h1>
-        <p>(Optional)</p>
-      </div>
-
-      <div className="w-full flex flex-col gap-4">
-        <div className="w-full flex flex-col">
-          <label className="font-medium text-xl text-dark">
-            Interested Categories
-          </label>
-          <InterestedCategories
-            interestedCategories={interestedCategories}
-            setInterestedCategories={setInterestedCategories}
-          />
-        </div>
-        <div className="w-full flex flex-col">
-          <label className="font-medium text-xl text-dark">
-            Link for company website
-          </label>
-          <div className="relative">
-            <input
-              value={website}
-              onChange={(e) => setWebsite(e.target.value)}
-              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full pl-12"
-            />
-            <LinkIcon className="absolute text-dark left-3 top-1/2 -translate-y-1/2" />
-          </div>
-        </div>
-
-        {!isLoading ? (
-          <button
-            onClick={handleSubmit}
-            className="text-xl my-6 font-bold text-highlight bg-dark w-full py-4 hover:ring-1 ring-dark hover:bg-light transition-all duration-300 hover:text-dark"
-          >
-            {website === "" && interestedCategories.length === 0
-              ? "Skip"
-              : "Submit"}
-          </button>
-        ) : (
-          <button className="text-xl my-6 font-bold bg-muted flex justify-center items-center w-full py-4 ring-1 ring-dark transition-all duration-300 ">
-            <Spinner light={false} />
-          </button>
-        )}
-      </div>
-    </>
-  );
-}

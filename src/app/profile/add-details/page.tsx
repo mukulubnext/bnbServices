@@ -1,17 +1,17 @@
-"use client"
-import { StepContext } from '@/app/register/buyer/page';
-import RegisterStep from '@/app/register/components/RegisterStep';
-import Breadcrumbs from '@/components/Breadcrumbs';
-import InterestedCategories from '@/components/InterestedCategories';
-import Spinner from '@/components/Spinner';
-import { useAuth } from '@/context/AuthContext';
-import { usePersistedState } from '@/hooks/usePersistedState';
-import axios from 'axios';
-import { LinkIcon, ShoppingBag, Users } from 'lucide-react';
-import { NextPage } from 'next'
-import { useRouter } from 'next/navigation';
-import { useContext, useEffect, useState } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+"use client";
+import { StepContext } from "@/app/register/buyer/page";
+import RegisterStep from "@/app/register/components/RegisterStep";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import InterestedCategories from "@/components/InterestedCategories";
+import Spinner from "@/components/Spinner";
+import { useAuth } from "@/context/AuthContext";
+import { usePersistedState } from "@/hooks/usePersistedState";
+import axios from "axios";
+import { LinkIcon, ShoppingBag, Users } from "lucide-react";
+import { NextPage } from "next";
+import { useRouter } from "next/navigation";
+import { useContext, useEffect, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
 
 interface Props {}
 
@@ -24,19 +24,20 @@ const Page: NextPage<Props> = ({}) => {
     if (!loading && !user) {
       router.push("/signin");
     }
-    if(!loading && (!user.companyName ||
-      !user.address ||
-      !user.city ||
-      !user.state ||
-      !user.zipCode ||
-      !user.inceptionDate ||
-      !user.employeeCount)
-    ){
-        setStepNumber(1);
-      }
-      else{
-        setStepNumber(2);
-      }
+    if (
+      !loading &&
+      (!user.companyName ||
+        !user.address ||
+        !user.city ||
+        !user.state ||
+        !user.zipCode ||
+        !user.inceptionDate ||
+        !user.employeeCount)
+    ) {
+      setStepNumber(1);
+    } else {
+      setStepNumber(2);
+    }
   }, [user, loading, router]);
   return (
     <StepContext.Provider value={{ stepNumber, setStepNumber, data, setData }}>
@@ -46,7 +47,7 @@ const Page: NextPage<Props> = ({}) => {
         <div className="flex flex-col gap-4 px-[5%] py-[10%] relative md:py-[5%] md:w-[50vw] min-h-screen h-fit">
           {!loading ? (
             <>
-              {stepNumber === 1 && <Profile />}
+              {stepNumber === 1 && <Profile user={user} />}
               {stepNumber === 2 && <AdditionalInfo />}
               <div className="flex relative top-8 md:hidden justify-center items-center">
                 <RegisterStep active={stepNumber} invert={true} />
@@ -75,14 +76,14 @@ const Page: NextPage<Props> = ({}) => {
             </p>
           </div>
           <div className="hidden justify-center items-center md:flex">
-            <RegisterStep active={stepNumber} />
+            <RegisterStep active={stepNumber + 1} />
           </div>
         </div>
       </div>
     </StepContext.Provider>
   );
 };
-function Profile() {
+function Profile({ user }: { user: any }) {
   const context = useContext(StepContext);
   if (!context) return null;
   const { stepNumber, setStepNumber, setData } = context;
@@ -117,6 +118,7 @@ function Profile() {
     "profile_pastLegalExplanation",
     "",
   );
+  const [gstNumber, setGstNumber] = usePersistedState("profile_gstNumber", "");
   const [isLoading, setLoading] = useState(false);
   const handleSubmit = async () => {
     if (
@@ -141,25 +143,26 @@ function Profile() {
       employeeCount: employeeCount,
       pastLegalAction: pastLegalAction,
       pastLegalExplanation: pastLegalExplanation,
+      gstNumber: gstNumber,
     };
     setLoading(true);
-    try{
-        const res = await axios.post("/api/v2/profile", body);
-        if(res.data.status === "success"){
-            toast.success("Profile details added successfully!");
-            setStepNumber(2);
-        }
-        else{
-            toast.error(res.data.message || "Something went wrong!");
-            return;
-        }
-    }
-    catch(err:any){
-        toast.error(err.response?.data?.message || "Something went wrong!");
+    try {
+      const res = await axios.post("/api/v2/profile", body);
+      if (res.data.status === "success") {
+        toast.success("Profile details added successfully!");
+        setStepNumber(2);
+        Object.keys(localStorage)
+          .filter((k) => k.startsWith("profile_"))
+          .forEach((k) => localStorage.removeItem(k));
+      } else {
+        toast.error(res.data.message || "Something went wrong!");
         return;
-    }
-    finally{
-        setLoading(false);
+      }
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Something went wrong!");
+      return;
+    } finally {
+      setLoading(false);
     }
     setStepNumber(2);
   };
@@ -184,6 +187,21 @@ function Profile() {
             />
           </div>
         </div>
+        {user.role === "seller" && (
+          <div className="w-full flex justify-center flex-col">
+            <label htmlFor="gst" className="font-medium text-xl text-dark">
+              GST Number
+            </label>
+            <div className="flex justify-center relative items-center w-full">
+              <input
+                id="gst"
+                value={gstNumber}
+                onChange={(e) => setGstNumber(e.target.value)}
+                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
+              />
+            </div>
+          </div>
+        )}
         <div className="w-full flex justify-center flex-col">
           <label htmlFor="address1" className="font-medium text-xl text-dark">
             Address Line 1
@@ -349,24 +367,18 @@ function Profile() {
             </div>
           </div>
         )}
-        {
-            !isLoading ? (
-                <button
-          onClick={handleSubmit}
-          className="text-xl my-6 font-bold text-highlight bg-dark w-full py-4 hover:ring-1 ring-dark hover:bg-light transition-all duration-300 hover:text-dark"
-        >
-          Submit
-        </button>
-            )
-            :
-            (
-                <button
-          className=" my-6 py-4 ring-1 ring-dark transition-all duration-300 w-full flex justify-center items-center"
-        >
-          <Spinner light={false} />
-        </button>
-            )
-        }
+        {!isLoading ? (
+          <button
+            onClick={handleSubmit}
+            className="text-xl my-6 font-bold text-highlight bg-dark w-full py-4 hover:ring-1 ring-dark hover:bg-light transition-all duration-300 hover:text-dark"
+          >
+            Submit
+          </button>
+        ) : (
+          <button className=" my-6 py-4 ring-1 ring-dark transition-all duration-300 w-full flex justify-center items-center">
+            <Spinner light={false} />
+          </button>
+        )}
       </div>
     </>
   );
@@ -469,4 +481,4 @@ function AdditionalInfo() {
   );
 }
 
-export default Page
+export default Page;
