@@ -815,14 +815,6 @@ function AdditionalInfo() {
 
   const handleSubmit = async () => {
     setLoading(true);
-    if (
-      website !== "" &&
-      !website.includes("https://") &&
-      !website.includes("http://")
-    ) {
-      toast.error("Please enter full website url with https:// or http://");
-      return;
-    }
     const interestedSubCategories = interestedCategories.flatMap(
       (cat) => cat.subCategories,
     );

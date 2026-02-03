@@ -33,6 +33,8 @@ model User {
   pastLegalAction       Boolean     @default(false)
   pastLegalExplanation  String?
 
+  isVerified            Boolean     @default(false)
+
   gstNumber             String?     @unique
   
   interestedCategories  Category[]
