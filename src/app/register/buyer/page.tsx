@@ -115,12 +115,6 @@ function Register() {
     "register_confirmPassword",
     "",
   );
-
-  const [sentMailOTP, setSentMailOTP] = usePersistedState(
-    "register_sentMailOTP",
-    false,
-  );
-
   const [confirmMailOTP, setConfirmMailOTP] = usePersistedState(
     "register_confirmMailOTP",
     false,
@@ -129,7 +123,8 @@ function Register() {
     "register_confirmPhoneOTP",
     false,
   );
-
+  
+  const [sentMailOTP, setSentMailOTP] = useState(false);
   const [phoneOTP, setPhoneOTP] = useState("");
   const [emailOTP, setEmailOTP] = useState("");
   const [showPass, setShowPass] = useState(false);

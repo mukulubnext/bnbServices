@@ -26,9 +26,9 @@ export async function renderOtpTemplate(data: {
 
 export async function sendOtpEmail(to: string, html: string) {
   await transporter.sendMail({
-    from: `BNB Services <${process.env.GMAIL_EMAIL}>`,
+    from: `BNB <${process.env.GMAIL_EMAIL}>`,
     to: to,
-    subject: "Your OTP Code",
+    subject: "Click to view your OTP",
     html: html,
   });
 }
