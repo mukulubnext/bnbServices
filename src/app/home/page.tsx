@@ -598,21 +598,14 @@ function Seller() {
                 </th>
 
                 <th
-                  onClick={() => handleSort("category")}
-                  className={`p-3 cursor-pointer text-left ${
-                    sort.key === "category" && "text-dark"
-                  }`}
+                  className={`p-3 text-left`}
                 >
                   <div className="flex items-center select-none">
                     Items
-                    <SortIndicator
-                      active={sort.key === "category"}
-                      order={sort.order}
-                    />
                   </div>
                 </th>
 
-                <th className="p-3 text-center">Actions</th>
+                <th className="p-3 text-center cursor-default">Actions</th>
               </tr>
             </thead>
 

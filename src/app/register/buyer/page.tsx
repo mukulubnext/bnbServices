@@ -18,6 +18,7 @@ import React, {
   use,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import RegisterStep from "../components/RegisterStep";
@@ -29,6 +30,9 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import InterestedCategories from "@/components/InterestedCategories";
 import { usePersistedState } from "@/hooks/usePersistedState";
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { auth } from "@/lib/firebase";
+import { confPhoneOTP, sendPhoneOTP } from "@/lib/phoneotp";
 
 interface Props {}
 
@@ -121,17 +125,78 @@ function Register() {
     "register_confirmMailOTP",
     false,
   );
+  const [confirmPhoneOTP, setConfirmPhoneOTP] = usePersistedState(
+    "register_confirmPhoneOTP",
+    false,
+  );
 
   const [phoneOTP, setPhoneOTP] = useState("");
   const [emailOTP, setEmailOTP] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [sentPhoneOTP, setSentPhoneOTP] = useState(false);
-  const [confirmPhoneOTP, setConfirmPhoneOTP] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [sendingMailOTP, setSendingMailOTP] = useState(false);
+  const [sendingPhoneOTP, setSendingPhoneOTP] = useState(false);
   const [confirmingMailOTP, setConfirmingMailOTP] = useState(false);
+  const [confirmingPhoneOTP, setConfirmingPhoneOTP] = useState(false);
   const { stepNumber, setStepNumber, setData } = context;
+
+  const confirmationRef = useRef<any>(null);
+  const recaptchaVerifierRef = useRef<RecaptchaVerifier | null>(null);
+
+  useEffect(() => {
+    if (!recaptchaVerifierRef.current) {
+      recaptchaVerifierRef.current = new RecaptchaVerifier(
+        auth,
+        "recaptcha-container",
+        { size: "invisible" },
+      );
+    }
+
+    return () => {
+      recaptchaVerifierRef.current?.clear();
+      recaptchaVerifierRef.current = null;
+    };
+  }, []);
+
+  const handleSendPhoneOTP = async () => {
+    try {
+      setSendingPhoneOTP(true);
+      const formattedPhone = phone.startsWith("+") ? phone : `+91${phone}`;
+      const confirmation = await signInWithPhoneNumber(
+        auth,
+        formattedPhone,
+        recaptchaVerifierRef.current!,
+      );
+      confirmationRef.current = confirmation;
+      setSentPhoneOTP(true);
+    } catch (err) {
+      toast.error("Something went wrong.");
+      setSentPhoneOTP(false);
+    } finally {
+      setSendingPhoneOTP(false);
+    }
+  };
+
+  const handleConfirmPhoneOTP = async () => {
+    try {
+      setConfirmingPhoneOTP(true);
+      const idToken = await confPhoneOTP(confirmationRef.current, phoneOTP);
+
+      const res = await axios.post("/api/v1/otp/phone", { idToken });
+
+      if (res.data.status === "success") {
+        setConfirmPhoneOTP(true);
+        toast.success("Phone verified");
+      }
+    } catch {
+      toast.error("Invalid OTP");
+    }
+    finally {
+      setConfirmingPhoneOTP(false);
+    }
+  };
 
   const handleSendMailOTP = async () => {
     try {
@@ -156,9 +221,7 @@ function Register() {
       setSendingMailOTP(false);
     }
   };
-  const handleSendPhoneOTP = () => {
-    setSentPhoneOTP(true);
-  };
+
   const handleConfirmMailOTP = async () => {
     try {
       setConfirmingMailOTP(true);
@@ -175,14 +238,13 @@ function Register() {
       }
     } catch (err) {
       toast.error("Something went wrong.");
+      console.error(err);
       setConfirmMailOTP(false);
     } finally {
       setConfirmingMailOTP(false);
     }
   };
-  const handleConfirmPhoneOTP = () => {
-    setConfirmPhoneOTP(true);
-  };
+
   const handleSubmit = async () => {
     if (!email || !password || !phone || !role) {
       toast.error("Please fill all the fields!");
@@ -220,6 +282,7 @@ function Register() {
       toast.warning("Password and Confirm Password must be same");
     }
   };
+
   return (
     <>
       <div className=" text-dark mb-5">
@@ -235,11 +298,16 @@ function Register() {
             <input
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onKeyDown={(e)=>{
+                if(e.key === "Enter" && (!sentMailOTP || !sendingMailOTP)){
+                  handleSendMailOTP()
+                }
+              }}
               type="email"
               id="email"
               className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
             />
-            {!sendingMailOTP ? (
+            {!sendingMailOTP && !confirmMailOTP ? (
               !sentMailOTP && (
                 <button
                   onClick={handleSendMailOTP}
@@ -269,6 +337,11 @@ function Register() {
               <input
                 value={emailOTP}
                 onChange={(e) => setEmailOTP(e.target.value)}
+                onKeyDown={(e)=>{
+                  if(e.key === "Enter" && !confirmingMailOTP){
+                    handleConfirmMailOTP()
+                  }
+                }}
                 type="text"
                 inputMode="numeric"
                 pattern="[0-9]"
@@ -301,18 +374,28 @@ function Register() {
             <input
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
+              onKeyDown={(e)=>{
+                if(e.key === "Enter" && (!sentPhoneOTP || !sendingPhoneOTP)){
+                  handleSendPhoneOTP()
+                }
+              }}
               type="tel"
               id="phone"
               className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
             />
-            {!sentPhoneOTP && (
-              <button
-                onClick={handleSendPhoneOTP}
-                className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-sm md:text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
-              >
-                Send OTP
-              </button>
-            )}
+            {!sentPhoneOTP && !confirmPhoneOTP &&
+              (!sendingPhoneOTP ? (
+                <button
+                  onClick={handleSendPhoneOTP}
+                  className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-sm md:text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
+                >
+                  Send OTP
+                </button>
+              ) : (
+                <button className="h-full cursor-not-allowed transition-all duration-300 rounded-md border border-dark absolute text-sm md:text-lg bg-white px-6 right-0 font-bold text-white">
+                  <Spinner light={false} />
+                </button>
+              ))}
             {confirmPhoneOTP && (
               <div className="p-2 text-white bg-dark/90 rounded-full absolute right-5">
                 <Check size={20} />
@@ -330,15 +413,32 @@ function Register() {
                 value={phoneOTP}
                 onChange={(e) => setPhoneOTP(e.target.value)}
                 type="email"
+                onKeyDown={(e)=>{
+                  if(e.key === "Enter" && !confirmingPhoneOTP){
+                    handleConfirmPhoneOTP()
+                  }
+                }}
                 id="email"
                 className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
               />
-              <button
+              {
+                !confirmingPhoneOTP ? (
+                  <button
                 onClick={handleConfirmPhoneOTP}
                 className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
               >
                 <Check />
               </button>
+                )
+                :
+                (
+                  <button
+                    className="h-full cursor-pointer transition-all duration-300 rounded-md border border-dark absolute text-lg bg-white px-6 right-0 font-bold text-white"
+                  >
+                    <Spinner light={false} />
+                  </button>
+                )
+              }
             </div>
           </div>
         )}
@@ -392,6 +492,7 @@ function Register() {
             </button>
           </div>
         </div>
+        <div id="recaptcha-container"></div>
         {!isLoading ? (
           <button
             onClick={handleSubmit}
@@ -676,8 +777,13 @@ function Profile() {
 }
 
 function AdditionalInfo() {
-  const [interestedCategories, setInterestedCategories] = usePersistedState<any[]>( "register_seller_interestedCategories", []);
-  const [website, setWebsite] = usePersistedState("register_seller_website", "");
+  const [interestedCategories, setInterestedCategories] = usePersistedState<
+    any[]
+  >("register_seller_interestedCategories", []);
+  const [website, setWebsite] = usePersistedState(
+    "register_seller_website",
+    "",
+  );
 
   const [isLoading, setLoading] = useState(false);
   const context = useContext(StepContext);
@@ -695,7 +801,9 @@ function AdditionalInfo() {
       toast.error("Please enter full website url with https:// or http://");
       return;
     }
-    const interestedSubCategories = interestedCategories.flatMap((cat)=>cat.subCategories);
+    const interestedSubCategories = interestedCategories.flatMap(
+      (cat) => cat.subCategories,
+    );
     const body = {
       interestedCategories: interestedCategories,
       interestedSubCategories: interestedSubCategories,
