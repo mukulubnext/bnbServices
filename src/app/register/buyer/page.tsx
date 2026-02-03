@@ -412,7 +412,8 @@ function Register() {
               <input
                 value={phoneOTP}
                 onChange={(e) => setPhoneOTP(e.target.value)}
-                type="email"
+                type="text"
+                maxLength={6}
                 onKeyDown={(e)=>{
                   if(e.key === "Enter" && !confirmingPhoneOTP){
                     handleConfirmPhoneOTP()
@@ -842,7 +843,6 @@ function AdditionalInfo() {
           />
         </div>
 
-        {/* ADDRESS */}
         <div className="w-full flex flex-col">
           <label className="font-medium text-xl text-dark">
             Link for company website
