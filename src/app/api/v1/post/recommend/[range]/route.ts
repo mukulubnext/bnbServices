@@ -97,36 +97,44 @@ export async function GET(
     };
 
     // ---------------- FETCH POSTS ----------------
-    const [
-      interestedPosts,
-      otherPosts,
-      interestedCount,
-      otherCount,
-    ] = await Promise.all([
-      prisma.posts.findMany({
-        where: categoryIds.length ? interestedWhere : undefined,
-        orderBy: { createdAt: "desc" },
-        skip,
-        take,
-        select: postSelect,
-      }),
+    const [interestedPosts, otherPosts, interestedCount, otherCount] =
+      await Promise.all([
+        prisma.posts.findMany({
+          where: categoryIds.length ? interestedWhere : undefined,
+          orderBy:[
+            {
+              offers: {_count: "asc"}
+            },
+            {
+              createdAt: "desc"
+            }
+          ],
+          skip,
+          take,
+          select: postSelect,
+        }),
 
-      prisma.posts.findMany({
-        where: categoryIds.length ? otherWhere : baseWhere,
-        orderBy: { createdAt: "desc" },
-        skip,
-        take,
-        select: postSelect,
-      }),
+        prisma.posts.findMany({
+          where: categoryIds.length ? otherWhere : baseWhere,
+          orderBy:[
+            {
+              offers: {_count: "asc"}
+            },
+            {
+              createdAt: "desc"
+            }
+          ],
+          skip,
+          take,
+          select: postSelect,
+        }),
 
-      categoryIds.length
-        ? prisma.posts.count({ where: interestedWhere })
-        : prisma.posts.count({ where: baseWhere }),
+        categoryIds.length
+          ? prisma.posts.count({ where: interestedWhere })
+          : prisma.posts.count({ where: baseWhere }),
 
-      categoryIds.length
-        ? prisma.posts.count({ where: otherWhere })
-        : 0,
-    ]);
+        categoryIds.length ? prisma.posts.count({ where: otherWhere }) : 0,
+      ]);
 
     // ---------------- MERGE (PRIORITY ORDER) ----------------
     const posts = [...interestedPosts, ...otherPosts];
