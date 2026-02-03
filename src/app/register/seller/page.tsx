@@ -326,7 +326,8 @@ function Register() {
                     handleconfirmMailOTP()
                   }
                 }}
-                type="email"
+                type="text"
+                maxLength={6}
                 id="email"
                 className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
               />
@@ -399,7 +400,8 @@ function Register() {
                     handleConfirmPhoneOTP()
                   }
                 }}
-                type="email"
+                type="text"
+                maxLength={6}
                 id="email"
                 className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
               />
