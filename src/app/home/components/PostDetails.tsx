@@ -4,6 +4,7 @@ import Spinner from "@/components/Spinner";
 import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
 import {
+  Coins,
   IndianRupee,
   LinkIcon,
   Mail,
@@ -16,8 +17,9 @@ import {
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import ItemTable from "./ItemTable";
+import ConfirmMakeOffer from "./ConfirmMakeOffer";
 
 interface ItemData {
   categoryId: number | undefined;
@@ -69,6 +71,8 @@ export default function PostDetails({
 
   const [hasOffer, setHasOffer] = useState(false);
   const [fetchingOffer, setFetchingOffer] = useState(false);
+
+  const [confirmMakeOffer, setConfirmMakeOffer] = useState(false);
 
   const router = useRouter();
 
@@ -219,6 +223,7 @@ export default function PostDetails({
       return;
     }
     try {
+      setConfirmMakeOffer(false);
       setFetchingBuyer(true);
       const offer = await axios.post(`/api/v1/offer/make`, { postId: postId });
       if (offer.data.status === "failed") {
@@ -228,14 +233,14 @@ export default function PostDetails({
       const buyerId = offer.data.buyerId;
       const res = await axios.get(`/api/v1/user/${buyerId}`);
       if (res.data.status === "failed") {
-        toast.error("Failed to fetch buyer's details");
+        toast.error(res.data.message);
         return;
       }
       setBuyer(res.data.buyer);
       setMadeOffer(true);
       setHasOffer(true);
-    } catch (err) {
-      toast.error("Failed to fetch buyer's details");
+    } catch (err:any) {
+      toast.error(err.response.data.message ?? "Failed to fetch buyer's details");
       console.error(err);
     } finally {
       setFetchingBuyer(false);
@@ -261,6 +266,10 @@ export default function PostDetails({
       }}
       className="flex z-100 absolute top-0 left-0 py-10 w-screen min-h-screen bg-black/80 flex-col"
     >
+      {
+        confirmMakeOffer && <ConfirmMakeOffer handleMakeOffer={handleMakeOffer} setConfirmMakeOffer={setConfirmMakeOffer} /> 
+      }
+      <ToastContainer />
       <div
         onClick={(e) => e.stopPropagation()}
         className="bg-white flex justify-center relative flex-col py-10 px-5 text-dark gap-4 w-[90vw] md:w-[60vw] h-fit rounded-lg mx-auto"
@@ -338,10 +347,10 @@ export default function PostDetails({
                     !madeOffer &&
                     !hasOffer && (
                       <button
-                        onClick={handleMakeOffer}
+                        onClick={() => setConfirmMakeOffer(true)}
                         className="flex w-fit hover:bg-transparent text-white hover:text-dark transition-all duration-300 cursor-pointer justify-center items-center gap-2 px-4 py-2 rounded border bg-dark font-medium"
                       >
-                        View Details
+                        View Details - <p className="flex justify-center items-center gap-px"><Coins size={16} /> {post.price}</p>
                       </button>
                     )
                   )}

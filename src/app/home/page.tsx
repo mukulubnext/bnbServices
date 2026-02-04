@@ -47,7 +47,11 @@ const Page: NextPage<Props> = ({}) => {
             <span>{greeting},</span>
             <span>{user.companyName}...</span>
           </div>
-          {user.role === "buyer" ? <Buyer isVerified={user.isVerified}/> : <Seller />}
+          {user.role === "buyer" ? (
+            <Buyer isVerified={user.isVerified} />
+          ) : (
+            <Seller isVerified={user.isVerified} />
+          )}
           <LiquidGlassMenu />
         </>
       ) : (
@@ -61,7 +65,7 @@ const Page: NextPage<Props> = ({}) => {
 
 export default Page;
 
-function Buyer({isVerified}: {isVerified: boolean}) {
+function Buyer({ isVerified }: { isVerified: boolean }) {
   type SortKey = "title" | "date" | "category" | "active" | "offers";
   type SortOrder = "asc" | "desc";
 
@@ -239,7 +243,7 @@ function Buyer({isVerified}: {isVerified: boolean}) {
             className="flex gap-4 justify-center items-center w-full bg-dark md:max-w-[40%] text-highlight font-bold py-2 md:text-2xl hover:bg-transparent border border-dark hover:text-dark transition-all duration-300 rounded-lg"
           >
             <Pencil size={20} />
-            Post 
+            Post
           </Link>
         ) : (
           <p className="text-dark flex flex-col sm:flex-row gap-2 justify-center items-center text-center">
@@ -436,7 +440,7 @@ type Post = {
   items: any[];
 };
 
-function Seller() {
+function Seller({ isVerified }: { isVerified: boolean }) {
   const router = useRouter();
 
   const [posts, setPosts] = useState<Post[]>([]);
@@ -541,147 +545,158 @@ function Seller() {
 
     fetchResults();
   }, [debounced]);
-
-  return (
-    <>
-      <hr className="text-dark/22" />
-      {items && <AllItems items={items} setItems={setItems} />}
-      <div className="flex flex-col gap-2">
-        <h1 className="text-dark p-2 font-bold text-2xl">
-          Posts you might be interested in
-        </h1>
-        {expandPost && (
-          <PostDetails
-            postId={expandPost}
-            setExpandPost={setExpandPost}
-            editPost={null}
-            setEditPost={() => {}}
-          />
-        )}
-        <div className="relative md:w-fit w-full">
-          <Search
-            size={20}
-            className="absolute text-dark top-1/2 -translate-y-1/2 right-2"
-          />
-          <input
-            type="text"
-            onChange={(e) => setQ(e.target.value)}
-            className="border max-w-full w-180 focus:outline-0 border-dark/50 px-2 py-1 bg-white text-dark placeholder:text-dark/40 rounded"
-            placeholder="Search"
-          />
-        </div>
-        <div className="overflow-x-auto">
-          <table className="bg-white shadow rounded-md w-full min-w-200">
-            <thead>
-              <tr className="bg-dark/2 text-dark/50">
-                <th
-                  onClick={() => handleSort("title")}
-                  className={`p-3 cursor-pointer text-left ${
-                    sort.key === "title" && "text-dark"
-                  }`}
-                >
-                  <div className="flex items-center select-none">
-                    Title
-                    <SortIndicator
-                      active={sort.key === "title"}
-                      order={sort.order}
-                    />
-                  </div>
-                </th>
-
-                <th
-                  onClick={() => handleSort("date")}
-                  className={`p-3 cursor-pointer text-left ${
-                    sort.key === "date" && "text-dark"
-                  }`}
-                >
-                  <div className="flex items-center select-none">
-                    Posted On
-                    <SortIndicator
-                      active={sort.key === "date"}
-                      order={sort.order}
-                    />
-                  </div>
-                </th>
-
-                <th className={`p-3 text-left`}>
-                  <div className="flex items-center select-none">Items</div>
-                </th>
-
-                <th className="p-3 text-center cursor-default">Actions</th>
-              </tr>
-            </thead>
-
-            {!loading ? (
-              <tbody>
-                {sortedPosts.map((post) => (
-                  <tr
-                    key={post.id}
-                    onClick={() => setExpandPost(post.id)}
-                    className="text-black/90 cursor-pointer hover:bg-dark/5 transition-all duration-300 border-t border-b last:border-b-0 border-dark/20 even:bg-dark/2"
-                  >
-                    <td className="p-3 font-medium text-dark">{post.title}</td>
-                    <td className="p-3 text-dark/70">
-                      {new Intl.DateTimeFormat("en-GB", {
-                        dateStyle: "short",
-                      }).format(new Date(post.createdAt))}
-                    </td>
-                    <td className="px-3 py-4 bottom-1 relative flex gap-2 items-center text-dark/70">
-                      <span
-                        className={`flex gap-2 relative max-w-50 items-center no-scrollbar ${post.items.length > 2 ? " overflow-x-scroll" : ""}`}
-                      >
-                        {post.items.length ? (
-                          <div
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setItems(post.items);
-                            }}
-                            className="text-sm px-3 py-1 active:scale-95 active:-translate-y-0.5 border font-medium rounded transition-all select-none hover:-translate-y-1 duration-300 cursor-pointer"
-                          >
-                            View Items
-                          </div>
-                        ) : (
-                          <p className="text-black/50">no items</p>
-                        )}
-                      </span>
-                    </td>
-                    <td className="p-3 text-center">
-                      <button className="text-white bg-dark py-1 px-3 rounded border hover:text-dark hover:bg-transparent cursor-pointer transition-all duration-300">
-                        View
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-
-                {hasMore && (
-                  <tr>
-                    <td colSpan={4} className="p-4 text-center">
-                      {loadingMore ? (
-                        <Spinner light={false} />
-                      ) : (
-                        <button
-                          onClick={handleLoadMore}
-                          className="px-4 py-2 bg-dark text-white rounded hover:bg-white hover:text-dark border transition"
-                        >
-                          Load More
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            ) : (
-              <tbody>
-                <tr>
-                  <td colSpan={4} className="p-6 text-center">
-                    <Spinner light={false} />
-                  </td>
-                </tr>
-              </tbody>
-            )}
-          </table>
-        </div>
+  console.log(isVerified);
+  if (!isVerified) {
+    return (
+      <div className="bg-white min-h-[70vh] gap-4 px-2 text-center flex justify-center items-center flex-col text-dark">
+        <Timer className="w-10 h-10" />
+        You are being verified. You will be able to see posts after we verify
+        your account
       </div>
-    </>
-  );
+    );
+  } else
+    return (
+      <>
+        <hr className="text-dark/22" />
+        {items && <AllItems items={items} setItems={setItems} />}
+        <div className="flex flex-col gap-2">
+          <h1 className="text-dark p-2 font-bold text-2xl">
+            Posts you might be interested in
+          </h1>
+          {expandPost && (
+            <PostDetails
+              postId={expandPost}
+              setExpandPost={setExpandPost}
+              editPost={null}
+              setEditPost={() => {}}
+            />
+          )}
+          <div className="relative md:w-fit w-full">
+            <Search
+              size={20}
+              className="absolute text-dark top-1/2 -translate-y-1/2 right-2"
+            />
+            <input
+              type="text"
+              onChange={(e) => setQ(e.target.value)}
+              className="border max-w-full w-180 focus:outline-0 border-dark/50 px-2 py-1 bg-white text-dark placeholder:text-dark/40 rounded"
+              placeholder="Search"
+            />
+          </div>
+          <div className="overflow-x-auto">
+            <table className="bg-white shadow rounded-md w-full min-w-200">
+              <thead>
+                <tr className="bg-dark/2 text-dark/50">
+                  <th
+                    onClick={() => handleSort("title")}
+                    className={`p-3 cursor-pointer text-left ${
+                      sort.key === "title" && "text-dark"
+                    }`}
+                  >
+                    <div className="flex items-center select-none">
+                      Title
+                      <SortIndicator
+                        active={sort.key === "title"}
+                        order={sort.order}
+                      />
+                    </div>
+                  </th>
+
+                  <th
+                    onClick={() => handleSort("date")}
+                    className={`p-3 cursor-pointer text-left ${
+                      sort.key === "date" && "text-dark"
+                    }`}
+                  >
+                    <div className="flex items-center select-none">
+                      Posted On
+                      <SortIndicator
+                        active={sort.key === "date"}
+                        order={sort.order}
+                      />
+                    </div>
+                  </th>
+
+                  <th className={`p-3 text-left`}>
+                    <div className="flex items-center select-none">Items</div>
+                  </th>
+
+                  <th className="p-3 text-center cursor-default">Actions</th>
+                </tr>
+              </thead>
+
+              {!loading ? (
+                <tbody>
+                  {sortedPosts.map((post) => (
+                    <tr
+                      key={post.id}
+                      onClick={() => setExpandPost(post.id)}
+                      className="text-black/90 cursor-pointer hover:bg-dark/5 transition-all duration-300 border-t border-b last:border-b-0 border-dark/20 even:bg-dark/2"
+                    >
+                      <td className="p-3 font-medium text-dark">
+                        {post.title}
+                      </td>
+                      <td className="p-3 text-dark/70">
+                        {new Intl.DateTimeFormat("en-GB", {
+                          dateStyle: "short",
+                        }).format(new Date(post.createdAt))}
+                      </td>
+                      <td className="px-3 py-4 bottom-1 relative flex gap-2 items-center text-dark/70">
+                        <span
+                          className={`flex gap-2 relative max-w-50 items-center no-scrollbar ${post.items.length > 2 ? " overflow-x-scroll" : ""}`}
+                        >
+                          {post.items.length ? (
+                            <div
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setItems(post.items);
+                              }}
+                              className="text-sm px-3 py-1 active:scale-95 active:-translate-y-0.5 border font-medium rounded transition-all select-none hover:-translate-y-1 duration-300 cursor-pointer"
+                            >
+                              View Items
+                            </div>
+                          ) : (
+                            <p className="text-black/50">no items</p>
+                          )}
+                        </span>
+                      </td>
+                      <td className="p-3 text-center">
+                        <button className="text-white bg-dark py-1 px-3 rounded border hover:text-dark hover:bg-transparent cursor-pointer transition-all duration-300">
+                          View
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+
+                  {hasMore && (
+                    <tr>
+                      <td colSpan={4} className="p-4 text-center">
+                        {loadingMore ? (
+                          <Spinner light={false} />
+                        ) : (
+                          <button
+                            onClick={handleLoadMore}
+                            className="px-4 py-2 bg-dark text-white rounded hover:bg-white hover:text-dark border transition"
+                          >
+                            Load More
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              ) : (
+                <tbody>
+                  <tr>
+                    <td colSpan={4} className="p-6 text-center">
+                      <Spinner light={false} />
+                    </td>
+                  </tr>
+                </tbody>
+              )}
+            </table>
+          </div>
+        </div>
+      </>
+    );
 }

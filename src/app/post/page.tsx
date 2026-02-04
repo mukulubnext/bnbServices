@@ -153,7 +153,6 @@ const Page: NextPage = () => {
               />
             </label>
 
-            {/* description */}
             <label className="flex flex-col gap-2">
               <span className="text-dark font-medium">Description</span>
               <textarea

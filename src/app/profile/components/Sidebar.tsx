@@ -5,9 +5,10 @@ interface SideBarProps {
   selected: number;
   setSelected: React.Dispatch<React.SetStateAction<number>>;
   role: string;
+  credits: number;
 }
 
-export default function Sidebar({ selected, setSelected, role }: SideBarProps) {
+export default function Sidebar({ selected, setSelected, role, credits }: SideBarProps) {
   return (
     <div className="h-fit w-screen bg-white flex justify-between mt-7.5 md:pt-[15vh] md:flex-col md:w-fit md:h-screen md:fixed md:top-0 md:left-0 md:justify-start md:gap-0 md:border-right-2 md:border-dark">
       <div
@@ -44,7 +45,7 @@ export default function Sidebar({ selected, setSelected, role }: SideBarProps) {
         >
             <Wallet />
           <p className="hidden sm:block text-nowrap sm:text-xs md:text-[16px]">
-            Wallet: <span>0 credits</span>
+            Wallet: <span>{(credits).toLocaleString()} credits</span>
           </p>
         </div>
       )}

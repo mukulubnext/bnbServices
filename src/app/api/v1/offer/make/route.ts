@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { decrypt } from "@/lib/sessions";
+import { TransactionType } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import z from "zod";
 
@@ -22,32 +23,37 @@ export async function POST(req: NextRequest){
     if(!user){
         return NextResponse.json({status:"failed", message:"Unauthorized"}, {status:401})
     }
-
     if(user.role === "buyer"){
         return NextResponse.json({status:"failed", message:"You are not authorized to create offers"}, {status:401})
     }
-
     const post = await prisma.posts.findUnique({
         where:{id: postId, isDeleted: false},
     })
-
-    
     if(!post){
         return NextResponse.json({status:"failed", message:"Post not found"}, {status:404})
     }
-    
     const alreadyOffered = await prisma.offers.findFirst({
         where:{postId: postId, userId: user.id},
     })
-
     if(alreadyOffered){
         return NextResponse.json({status:"failed", message:"You already have an offer for this post"}, {status:401})
     }
-
+    if(user.credits < post.price){
+        return NextResponse.json({status:"failed", message:"Not enough credits"}, {status:401})
+    }
+    const transaction = await prisma.transaction.create({
+        data: {
+            credits: post.price,
+            userId: user.id,
+            type: TransactionType.OFFER,
+        }
+        }
+    )
     const offer = await prisma.offers.create({
         data:{
             postId: postId,
             userId: user.id,
+            transactionId: transaction.id,
         },
         select:{
             id: true,
@@ -62,6 +68,12 @@ export async function POST(req: NextRequest){
                 }
             }
         }
+    })
+    await prisma.user.update({
+        where:{id: user.id},
+        data:{
+            credits: user.credits - post.price,
+        },
     })
     return NextResponse.json({status:"success", message:"Offer created successfully", buyerId: post.userId}, {status:200})
 }

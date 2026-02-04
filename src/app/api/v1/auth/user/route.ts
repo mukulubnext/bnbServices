@@ -63,7 +63,7 @@ export async function GET(req: NextRequest) {
           }
         },
         companyWebsite: true,
-        tokens: true,
+        credits: true,
         payments: true,
         sellerType: true,
         isVerified: true,

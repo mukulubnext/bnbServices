@@ -46,8 +46,9 @@ model User {
   
   posts                 Posts[]   
   offers                Offers[]
+  transactions          Transaction[]
 
-  tokens                Int         @default(0)
+  credits               Int         @default(0)
   payments              Payment[]
   
   createdAt             DateTime     @default(now())
@@ -59,9 +60,11 @@ model Payment {
   userId              Int
   user                User           @relation(fields: [userId], references: [id])
   amount              Decimal
-  token               Int
+  credits             Int
   provider            String
   providerOrderId     String         @unique
+  transactionId       Int            @unique
+  transaction         Transaction    @relation(fields: [transactionId], references: [id])
   status              PaymentStatus
   createdAt           DateTime       @default(now())
 }
@@ -82,6 +85,8 @@ model Posts {
   userId              Int
   user                User        @relation(fields: [userId], references: [id])
   offers              Offers[]
+
+  price               Int
 
   isActive            Boolean     @default(true)
 
@@ -127,6 +132,9 @@ model Offers{
   userId              Int   
   user                User        @relation(fields: [userId], references: [id])
 
+  transactionId       Int         @unique
+  transaction         Transaction @relation(fields: [transactionId], references: [id])
+
   createdAt           DateTime    @default(now())
   updatedAt           DateTime    @updatedAt
 
@@ -139,7 +147,7 @@ model Item{
   categoryId          Int
   category            Category    @relation(fields: [categoryId], references: [id])
 
-  subCategoryId       Int?
+  subCategoryId       Int?  
   subCategory         SubCategory? @relation(fields: [subCategoryId], references: [id])
 
   details             String
@@ -167,6 +175,7 @@ model OTP {
 
   @@index([identifier, channel, purpose])
 }
+
 model Credits{
   id            Int        @id @default(autoincrement())
   credits       Int
@@ -174,6 +183,25 @@ model Credits{
   isActive      Boolean    @default(true)
   @@unique([credits, price])
 }
+
+model Transaction{
+  id            Int        @id @default(autoincrement())
+  credits       Int
+  userId        Int
+  user          User       @relation(fields: [userId], references: [id])
+
+  offer         Offers?   
+  payment       Payment?
+
+  type          TransactionType
+  createdAt     DateTime   @default(now())
+}
+
+enum TransactionType {
+  BUY
+  OFFER
+}
+
 enum OTPChannel {
   EMAIL
   PHONE

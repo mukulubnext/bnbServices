@@ -17,10 +17,10 @@ const Page: NextPage<Props> = ({}) => {
   const {user} = useAuth();
   const router = useRouter();
   useEffect(() => {
-    if (!user) {
+    if (!loading && !user) {
       router.push("/signin");
     }
-    if(user.role === "buyer"){
+    if(!loading && user.role === "buyer"){
       router.push("/home");
     }
   }, [user]);

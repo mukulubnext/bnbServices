@@ -79,7 +79,9 @@ const Page: NextPage<Props> = ({}) => {
       <Navbar solid={true} />
       <LiquidGlassMenu />
       <div className="bg-white gap-4 px-4 items-center w-[96%] lg:w-fit py-6 flex flex-col rounded-lg min-h-full">
-        <h1 className="font-bold text-dark text-center text-xl lg:text-2xl">Buy Credits</h1>
+        <h1 className="font-bold text-dark text-center text-xl lg:text-2xl">
+          Buy Credits
+        </h1>
         <div className="grid grid-cols-2 xl:grid-cols-3 gap-4 w-fit mx-auto">
           {credits.map((credit: any) => (
             <TokenCard
@@ -136,19 +138,15 @@ const Page: NextPage<Props> = ({}) => {
             Price: ₹{debounced !== 0 && !selected && debounced}
             {credits.find((credit: any) => credit.id === selected)?.price}
           </p>
-          {
-            !selected && custom < 250 ? (
-              <button className="bg-dark brightness-50 mx-auto cursor-not-allowed w-full text-white border transition-all duration-300 font-bold py-2 px-5 md:w-100 rounded-md">
-            Buy
-          </button>
-            )
-            :
-            (
-              <button className="bg-dark mx-auto w-full text-white hover:bg-white hover:text-dark border transition-all duration-300 font-bold py-2 px-5 md:w-100 rounded-md">
-            Buy
-          </button>
-            )
-          }
+          {!selected && custom < 250 ? (
+            <button className="bg-dark brightness-50 mx-auto cursor-not-allowed w-full text-white border transition-all duration-300 font-bold py-2 px-5 md:w-100 rounded-md">
+              Buy
+            </button>
+          ) : (
+            <button className="bg-dark mx-auto w-full text-white hover:bg-white hover:text-dark border transition-all duration-300 font-bold py-2 px-5 md:w-100 rounded-md">
+              Buy
+            </button>
+          )}
         </div>
       </div>
     </div>

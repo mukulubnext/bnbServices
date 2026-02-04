@@ -29,6 +29,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { useAuth } from "@/context/AuthContext";
 import InterestedCategories from "@/components/InterestedCategories";
 import Link from "next/link";
+import TransactionTable from "./components/TransactionTable";
 
 interface Props {}
 
@@ -115,6 +116,7 @@ const Page: NextPage<Props> = ({}) => {
               selected={selected}
               setSelected={setSelected}
               role={user.role}
+              credits={user.credits}
             />
             <div className="w-full bg-light px-[5%] md:pl-[30vw] lg:pl-[20vw]">
               <div className="md:mt-12 mt-4 relative bg-white p-6 border border-dark rounded-lg min-h-[80vh]">
@@ -371,7 +373,7 @@ const Page: NextPage<Props> = ({}) => {
                         </p>
                         <div className="border flex max-w-100 justify-center items-center gap-3 w-full text-center border-dark/60 text-dark text-3xl font-bold rounded-md p-2 mt-1">
                           <Coins />
-                          {user.tokens ?? 0}
+                          {user.credits ?? 0}
                         </div>
                       </div>
                     </div>
@@ -393,48 +395,7 @@ const Page: NextPage<Props> = ({}) => {
                       <h1 className="font-bold text-dark text-xl mt-4 md:text-2xl">
                         Wallet History
                       </h1>
-                      <div className="w-full h-[50vh] border border-dark/40 rounded-lg">
-                        {!user.payments || user.payments.length === 0 ? (
-                          <div className="flex h-full relative bottom-[5%] text-black/40 justify-center items-center">
-                            No previous record.
-                          </div>
-                        ) : (
-                          <table className="w-full border-collapse">
-                            <thead>
-                              <tr>
-                                <th className="border border-dark/20 p-2 text-left">
-                                  Date
-                                </th>
-                                <th className="border border-dark/20 p-2 text-left">
-                                  Amount
-                                </th>
-                                <th className="border border-dark/20 p-2 text-left">
-                                  Status
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {user.payments.map((payment: any, index: any) => (
-                                <tr key={index}>
-                                  <td className="border border-dark/20 p-2">
-                                    {payment.createdAt}
-                                  </td>
-                                  <td className="border border-dark/20 p-2">
-                                    {payment.amount}
-                                  </td>
-                                  <td
-                                    className={`border border-dark/20 p-2 ${payment.status === "success" ? "text-green-400" : "text-red-400"}`}
-                                  >
-                                    {payment.status === "success"
-                                      ? "Success"
-                                      : "Failed"}
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        )}
-                      </div>
+                      <TransactionTable />
                     </div>
                   </div>
                 )}
