@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     let { interestedCategories, interestedSubCategories, companyWebsite } =
       reqBody.parse(await req.json());
     const token = req.cookies.get("token")?.value;
-    if(!companyWebsite?.startsWith("http")){
+    if(companyWebsite!.length > 0 && !companyWebsite?.startsWith("http")){
         companyWebsite = "https://" + companyWebsite;
     }
     if (!token) {
