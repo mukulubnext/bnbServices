@@ -9,6 +9,7 @@ import { usePersistedState } from "@/hooks/usePersistedState";
 import axios from "axios";
 import { LinkIcon, ShoppingBag, Users } from "lucide-react";
 import { NextPage } from "next";
+import { refresh } from "next/cache";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
@@ -35,10 +36,20 @@ const Page: NextPage<Props> = ({}) => {
         !user.employeeCount)
     ) {
       setStepNumber(1);
-    } else {
+    } else if(!loading && !user.interestedCategories) {
       setStepNumber(2);
     }
+    else {
+      router.push('/home')
+    }
   }, [user, loading, router]);
+  if(loading){
+    return(
+      <div className="bg-light w-screen h-screen flex justify-center items-center">
+        <Spinner light={false} />
+      </div>
+    )
+  }
   return (
     <StepContext.Provider value={{ stepNumber, setStepNumber, data, setData }}>
       <ToastContainer />
@@ -388,6 +399,7 @@ function AdditionalInfo() {
   const [interestedCategories, setInterestedCategories] = usePersistedState<
     any[]
   >("register_seller_interestedCategories", []);
+  const router = useRouter();
   const [website, setWebsite] = usePersistedState(
     "register_seller_website",
     "",
@@ -420,7 +432,8 @@ function AdditionalInfo() {
         Object.keys(localStorage)
           .filter((k) => k.startsWith("register_"))
           .forEach((k) => localStorage.removeItem(k));
-        window.location.href = `/signin`;
+          refresh();
+        router.push("/home");
       } else {
         toast.error(res.data.message ?? "Something went wrong!");
       }

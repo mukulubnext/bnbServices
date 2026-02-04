@@ -50,7 +50,19 @@ const Page: NextPage<Props> = ({}) => {
           {user.role === "buyer" ? (
             <Buyer isVerified={user.isVerified} />
           ) : (
-            <Seller isVerified={user.isVerified} />
+            <Seller
+              isVerified={user.isVerified}
+              incompleteProfile={
+                !user.companyName ||
+                !user.address ||
+                !user.city ||
+                !user.state ||
+                !user.zipCode ||
+                !user.inceptionDate ||
+                !user.employeeCount ||
+                !user.gstNumber
+              }
+            />
           )}
           <LiquidGlassMenu />
         </>
@@ -440,7 +452,13 @@ type Post = {
   items: any[];
 };
 
-function Seller({ isVerified }: { isVerified: boolean }) {
+function Seller({
+  isVerified,
+  incompleteProfile,
+}: {
+  isVerified: boolean;
+  incompleteProfile: boolean;
+}) {
   const router = useRouter();
 
   const [posts, setPosts] = useState<Post[]>([]);
@@ -550,8 +568,23 @@ function Seller({ isVerified }: { isVerified: boolean }) {
     return (
       <div className="bg-white min-h-[70vh] gap-4 px-2 text-center flex justify-center items-center flex-col text-dark">
         <Timer className="w-10 h-10" />
-        You are being verified. You will be able to see posts after we verify
-        your account
+        <p className="not-last:border-b border-dark/40 pb-3">
+          You are being verified. You will be able to see posts after we verify
+          your account
+        </p>
+        {incompleteProfile && (
+          <>
+            <span className="flex justify-center items-center flex-col gap-1">
+              <p>Complete your profile to get verified</p>
+              <Link
+                href="/profile/add-details"
+                className="text-white rounded my-2 hover:text-dark border hover:bg-white transition-all duration-300 bg-dark px-3 py-1 font-bold hover:no-underline"
+              >
+                Complete Profile
+              </Link>
+            </span>
+          </>
+        )}
       </div>
     );
   } else
