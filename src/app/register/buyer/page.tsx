@@ -116,7 +116,7 @@ function Register() {
     "register_confirmPhoneOTP",
     false,
   );
-  
+
   const [sentMailOTP, setSentMailOTP] = useState(false);
   const [phoneOTP, setPhoneOTP] = useState("");
   const [emailOTP, setEmailOTP] = useState("");
@@ -153,14 +153,25 @@ function Register() {
   const handleSendPhoneOTP = async () => {
     try {
       setSendingPhoneOTP(true);
-      const formattedPhone = phone.startsWith("+") ? phone : `+91${phone}`;
-      const confirmation = await signInWithPhoneNumber(
-        auth,
-        formattedPhone,
-        recaptchaVerifierRef.current!,
-      );
-      confirmationRef.current = confirmation;
-      setSentPhoneOTP(true);
+      const res = await axios.post("/api/v1/auth/check", { phone: phone });
+      if (res.data.status === "success") {
+        if (res.data.exists) {
+          toast.error("Phone already exists!");
+          setSentPhoneOTP(false);
+        } else {
+          const formattedPhone = phone.startsWith("+") ? phone : `+91${phone}`;
+          const confirmation = await signInWithPhoneNumber(
+            auth,
+            formattedPhone,
+            recaptchaVerifierRef.current!,
+          );
+          confirmationRef.current = confirmation;
+          setSentPhoneOTP(true);
+        }
+      }
+      else {
+        toast.error(res.data.message ?? "Something went wrong!");
+      }
     } catch (err) {
       toast.error("Something went wrong.");
       setSentPhoneOTP(false);
@@ -183,8 +194,7 @@ function Register() {
       }
     } catch {
       toast.error("Invalid OTP");
-    }
-    finally {
+    } finally {
       setConfirmingPhoneOTP(false);
     }
   };
@@ -237,7 +247,7 @@ function Register() {
   };
 
   const handleSubmit = async () => {
-    if (!email || !password || !phone || !confirmPassword ) {
+    if (!email || !password || !phone || !confirmPassword) {
       toast.error("Please fill all the fields!");
       return;
     }
@@ -246,33 +256,30 @@ function Register() {
       return;
     }
     if (password === confirmPassword) {
-      try{
+      try {
         setLoading(true);
-      const res = await axios.post(`/api/v2/auth/register`, {
-        email: email,
-        password: password,
-        phone: phone,
-        role: role,
-        isEmailVerified: confirmMailOTP,
-        isPhoneVerified: confirmPhoneOTP,
-        fireBaseId: fireBaseId,
-      });
-      if (res.data.status === "success") {
+        const res = await axios.post(`/api/v2/auth/register`, {
+          email: email,
+          password: password,
+          phone: phone,
+          role: role,
+          isEmailVerified: confirmMailOTP,
+          isPhoneVerified: confirmPhoneOTP,
+          fireBaseId: fireBaseId,
+        });
+        if (res.data.status === "success") {
           toast.success("Registered successfully!");
           Object.keys(localStorage)
             .filter((k) => k.startsWith("register_"))
             .forEach((k) => localStorage.removeItem(k));
           router.push("/profile/add-details");
-      }
-      }
-      catch(err:any){
+        }
+      } catch (err: any) {
         toast.error(err.response?.data?.message || "Something went wrong!");
-      }
-      finally{
+      } finally {
         setLoading(false);
       }
-    } 
-    else {
+    } else {
       toast.warning("Password and Confirm Password must be same");
     }
   };
@@ -292,9 +299,9 @@ function Register() {
             <input
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              onKeyDown={(e)=>{
-                if(e.key === "Enter" && (!sentMailOTP || !sendingMailOTP)){
-                  handleSendMailOTP()
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && (!sentMailOTP || !sendingMailOTP)) {
+                  handleSendMailOTP();
                 }
               }}
               type="email"
@@ -331,9 +338,9 @@ function Register() {
               <input
                 value={emailOTP}
                 onChange={(e) => setEmailOTP(e.target.value)}
-                onKeyDown={(e)=>{
-                  if(e.key === "Enter" && !confirmingMailOTP){
-                    handleConfirmMailOTP()
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !confirmingMailOTP) {
+                    handleConfirmMailOTP();
                   }
                 }}
                 type="text"
@@ -368,16 +375,17 @@ function Register() {
             <input
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              onKeyDown={(e)=>{
-                if(e.key === "Enter" && (!sentPhoneOTP || !sendingPhoneOTP)){
-                  handleSendPhoneOTP()
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && (!sentPhoneOTP || !sendingPhoneOTP)) {
+                  handleSendPhoneOTP();
                 }
               }}
               type="tel"
               id="phone"
               className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
             />
-            {!sentPhoneOTP && !confirmPhoneOTP &&
+            {!sentPhoneOTP &&
+              !confirmPhoneOTP &&
               (!sendingPhoneOTP ? (
                 <button
                   onClick={handleSendPhoneOTP}
@@ -408,32 +416,26 @@ function Register() {
                 onChange={(e) => setPhoneOTP(e.target.value)}
                 type="text"
                 maxLength={6}
-                onKeyDown={(e)=>{
-                  if(e.key === "Enter" && !confirmingPhoneOTP){
-                    handleConfirmPhoneOTP()
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !confirmingPhoneOTP) {
+                    handleConfirmPhoneOTP();
                   }
                 }}
                 id="email"
                 className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
               />
-              {
-                !confirmingPhoneOTP ? (
-                  <button
-                onClick={handleConfirmPhoneOTP}
-                className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
-              >
-                <Check />
-              </button>
-                )
-                :
-                (
-                  <button
-                    className="h-full cursor-pointer transition-all duration-300 rounded-md border border-dark absolute text-lg bg-white px-6 right-0 font-bold text-white"
-                  >
-                    <Spinner light={false} />
-                  </button>
-                )
-              }
+              {!confirmingPhoneOTP ? (
+                <button
+                  onClick={handleConfirmPhoneOTP}
+                  className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
+                >
+                  <Check />
+                </button>
+              ) : (
+                <button className="h-full cursor-pointer transition-all duration-300 rounded-md border border-dark absolute text-lg bg-white px-6 right-0 font-bold text-white">
+                  <Spinner light={false} />
+                </button>
+              )}
             </div>
           </div>
         )}

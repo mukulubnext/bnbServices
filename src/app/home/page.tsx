@@ -524,6 +524,7 @@ function Seller({
         setPosts((prev) =>
           r === 1 ? res.data.posts : [...prev, ...res.data.posts],
         );
+        setRange((prev)=>prev+1)
         setHasMore(res.data.hasMore);
       }
     } catch (err) {
@@ -536,9 +537,7 @@ function Seller({
 
   const handleLoadMore = () => {
     if (!hasMore || loadingMore) return;
-    const nextRange = range + 1;
-    setRange(nextRange);
-    fetchPosts(nextRange);
+    fetchPosts(range);
   };
 
   const [expandPost, setExpandPost] = useState<number | null | undefined>();

@@ -152,14 +152,25 @@ function Register() {
   const handleSendPhoneOTP = async () => {
     try {
       setSendingPhoneOTP(true);
-      const formattedPhone = phone.startsWith("+") ? phone : `+91${phone}`;
-      const confirmation = await signInWithPhoneNumber(
-        auth,
-        formattedPhone,
-        recaptchaVerifierRef.current!,
-      );
-      confirmationRef.current = confirmation;
-      setSentPhoneOTP(true);
+      const res = await axios.post("/api/v1/auth/check", { phone: phone });
+      if (res.data.status === "success") {
+        if (res.data.exists) {
+          toast.error("Phone already exists!");
+          setSentPhoneOTP(false);
+        } else {
+          const formattedPhone = phone.startsWith("+") ? phone : `+91${phone}`;
+          const confirmation = await signInWithPhoneNumber(
+            auth,
+            formattedPhone,
+            recaptchaVerifierRef.current!,
+          );
+          confirmationRef.current = confirmation;
+          setSentPhoneOTP(true);
+        }
+      }
+      else {
+        toast.error(res.data.message ?? "Something went wrong!");
+      }
     } catch (err) {
       toast.error("Something went wrong.");
       setSentPhoneOTP(false);
