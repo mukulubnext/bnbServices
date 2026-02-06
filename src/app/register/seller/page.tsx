@@ -183,7 +183,7 @@ function Register() {
     try {
       setConfirmingPhoneOTP(true);
       const idToken = await confPhoneOTP(confirmationRef.current, phoneOTP);
-
+      setFireBaseId(idToken);
       const res = await axios.post("/api/v1/otp/phone", { idToken });
 
       if (res.data.status === "success") {
