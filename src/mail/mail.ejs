@@ -1,20 +1,101 @@
 <!DOCTYPE html>
 <html>
-  <body style="font-family: Arial, sans-serif;">
-    <div style="display: flex; justify-items: center; align-items: center; flex-direction: column;"></div>
-      <h2>Verify Email</h2>
+  <body
+    style="
+      margin: 0;
+      padding: 40px 0;
+      background-color: white;
+      font-family: Arial, Helvetica, sans-serif;
+    "
+  >
+    <table
+      align="center"
+      width="600"
+      cellpadding="0"
+      cellspacing="0"
+      style="
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 1px;
+        overflow: hidden;
+      "
+    >
+      <!-- Header -->
+      <tr>
+        <td
+          style="
+            background: #005b4c;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+          "
+        >
+          Verify Your Email
+        </td>
+      </tr>
 
-      <p>Your OTP is:</p>
+      <!-- Body -->
+      <tr>
+        <td style="padding: 30px; color: #333333;">
+          <p style="margin-top: 0;">
+            Hi user,
+          </p>
 
-      <h1 style="letter-spacing: 6px; border: 1px solid black; width: fit-content; padding-left: 10px; padding-right: 10px;"><%= otp %></h1>
+          <p>
+            Thanks for signing up! Use the OTP below to verify your email address.
+          </p>
 
-      <p>Expires in <%= expiry %> minutes.</p>
+          <div
+            style="
+              margin: 30px auto;
+              text-align: center;
+              font-size: 32px;
+              letter-spacing: 8px;
+              font-weight: bold;
+              color: #005b4c;
+              border: 2px dashed #005b4c;
+              padding: 15px 20px;
+              width: fit-content;
+            "
+          >
+            <%= otp %>
+          </div>
 
-      <hr />
+          <p style="text-align: center; color: #555;">
+            Expires in <strong><%= expiry %></strong> minutes
+          </p>
 
-      <p style="font-size: 12px; color: #777">
-        If you didnt request this, ignore the email.
-      </p>
-    </div>
+          <hr
+            style="
+              margin: 30px 0;
+              border: none;
+              border-top: 1px solid #eee;
+            "
+          />
+
+          <p style="font-size: 12px; color: #777; text-align: center;">
+            If you didn't request this email verification, you can safely ignore
+            this message.
+          </p>
+        </td>
+      </tr>
+
+      <!-- Footer -->
+      <tr>
+        <td
+          style="
+            background: #f4f4f4;
+            text-align: center;
+            padding: 15px;
+            font-size: 11px;
+            color: #888;
+          "
+        >
+        © BNB Services • Secure Authentication
+        </td>
+      </tr>
+    </table>
   </body>
 </html>
