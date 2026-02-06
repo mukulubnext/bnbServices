@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import { decrypt } from "@/lib/sessions";
 import { NextRequest, NextResponse } from "next/server";
 import { z, ZodError } from "zod";
+import { calculateAmount } from "../../create/route";
 
 const reqBody = z.object({
   title: z.string().min(3).max(100),
@@ -59,12 +60,13 @@ export async function PUT(
         { status: 404 },
       );
     }
-
+    const totalPrice = items.reduce((acc, item) => acc + (item.budget * item.quantity), 0);
     const updatedPost = await prisma.posts.update({
       where: { id: postId },
       data: {
         title,
         description,
+        price: calculateAmount(totalPrice),
       },
       select: {
         id: true,
@@ -92,7 +94,6 @@ export async function PUT(
         },
       },
     });
-
     await prisma.item.deleteMany({
       where: { postId },
     });

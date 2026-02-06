@@ -19,7 +19,7 @@ const schema = z.object({
     .min(1),
 });
 
-function calculateAmount(amount: number) {
+export function calculateAmount(amount: number) {
   const randomValue = Math.floor(Math.random() * 10);
 
   let finalAmount = 0;
