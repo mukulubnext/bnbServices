@@ -147,7 +147,18 @@ function Profile({ user }: { user: any }) {
       toast.error("Please fill all the fields!");
       return;
     }
-    const body = {
+    const body = user.role === "buyer" ? {
+      companyName: companyName,
+      address: addressLine1 + " " + addressLine2,
+      city: city,
+      state: stateName,
+      zipCode: zipCode,
+      inceptionDate: inceptionDate,
+      employeeCount: employeeCount,
+      pastLegalAction: pastLegalAction,
+      pastLegalExplanation: pastLegalExplanation,
+    }:
+    {
       companyName: companyName,
       address: addressLine1 + " " + addressLine2,
       city: city,
