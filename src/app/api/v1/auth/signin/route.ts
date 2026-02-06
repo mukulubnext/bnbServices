@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
           { status: 400 }
         );
       }
-      const token = await encrypt({ id: user.id });
+      const token = await encrypt({ id: user.id, email: user.email, role: user.role });
       const res = NextResponse.json({ status: "success" }, { status: 200 });
       res.cookies.set("token", token, {
         path: "/",
