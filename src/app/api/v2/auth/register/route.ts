@@ -3,7 +3,6 @@ import { encrypt } from "@/lib/sessions";
 import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 import z from "zod";
-import { ca } from "zod/v4/locales";
 
 export async function POST(req: NextRequest) {
   const reqBody = z.object({
@@ -58,6 +57,7 @@ export async function POST(req: NextRequest) {
         isEmailVerified,
         isPhoneVerified,
         firebaseId: fireBaseId,
+        isVerified: true,
       },
       select: {
         id: true,

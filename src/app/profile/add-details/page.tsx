@@ -9,7 +9,6 @@ import { usePersistedState } from "@/hooks/usePersistedState";
 import axios from "axios";
 import { LinkIcon, ShoppingBag, Users } from "lucide-react";
 import { NextPage } from "next";
-import { refresh } from "next/cache";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
@@ -60,9 +59,6 @@ const Page: NextPage<Props> = ({}) => {
             <>
               {stepNumber === 1 && <Profile user={user} />}
               {stepNumber === 2 && <AdditionalInfo />}
-              <div className="flex relative top-8 md:hidden justify-center items-center">
-                <RegisterStep active={stepNumber} invert={true} />
-              </div>
             </>
           ) : (
             <div className="flex justify-center items-center">
@@ -79,15 +75,12 @@ const Page: NextPage<Props> = ({}) => {
           </div>
           <div className="flex flex-col justify-center gap-2 items-center">
             <h1 className="text-highlight text-center font-semibold text-2xl md:text-4xl lg:text-[40px]">
-              Join as a Buyer
+              Join as a <span className="capitalize">{user.role ?? "Buyer/Seller"}</span>
             </h1>
             <p className="lg:text-xl md:text-lg text-[8px] md:max-w-[80%] text-center text-highlight">
               Browse tools, manage subscriptions, and enjoy exclusive
               marketplace benefits.
             </p>
-          </div>
-          <div className="hidden justify-center items-center md:flex">
-            <RegisterStep active={stepNumber + 1} />
           </div>
         </div>
       </div>
@@ -161,7 +154,6 @@ function Profile({ user }: { user: any }) {
       const res = await axios.post("/api/v2/profile", body);
       if (res.data.status === "success") {
         toast.success("Profile details added successfully!");
-        setStepNumber(2);
         Object.keys(localStorage)
           .filter((k) => k.startsWith("profile_"))
           .forEach((k) => localStorage.removeItem(k));
@@ -408,6 +400,7 @@ function AdditionalInfo() {
   const [isLoading, setLoading] = useState(false);
   const context = useContext(StepContext);
   if (!context) return null;
+  const {refresh} = useAuth();
 
   const { stepNumber, setStepNumber, data, setData } = context;
 
@@ -426,18 +419,19 @@ function AdditionalInfo() {
     };
     try {
       const res = await axios.post("/api/v2/profile/additional", payload);
-
       if (res.data.status === "success") {
         toast.success("Registered successfully!");
         Object.keys(localStorage)
           .filter((k) => k.startsWith("register_"))
           .forEach((k) => localStorage.removeItem(k));
-          refresh();
+        refresh();
         router.push("/home");
-      } else {
+      } 
+      else {
         toast.error(res.data.message ?? "Something went wrong!");
       }
     } catch (err) {
+      console.log(err)
       toast.error("Something went wrong!");
     } finally {
       setLoading(false);
