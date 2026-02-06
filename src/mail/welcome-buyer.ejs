@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <body
+    style="
+      margin: 0;
+      padding: 40px 0;
+      background-color: white;
+      font-family: Arial, Helvetica, sans-serif;
+    "
+  >
+    <table
+      align="center"
+      width="600"
+      cellpadding="0"
+      cellspacing="0"
+      style="
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 1px;
+        overflow: hidden;
+      "
+    >
+      <!-- Header -->
+      <tr>
+        <td
+          style="
+            background: #005b4c;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          "
+        >
+          Bottles <img width="50px" height="50px" src="https://bnb-services-7heb.vercel.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FN.df5fd99e.png&w=256&q=75" alt="n"> Boxes
+        </td>
+      </tr>
+
+      <!-- Body -->
+      <tr>
+        <td style="padding: 10px; color: #333333;">
+          <h2 style="color: #005b4c;">Welcome <%= name %>!</h2>
+
+          <p style="display: flex; gap: 4px;">
+            We are excited to have you on board on our platform as a <strong style="color: #005b4c;"><%= role %>.</strong>
+          </p>
+
+          <div
+            style="
+              margin: 30px auto;
+              text-align: center;
+              font-size: 32px;
+              letter-spacing: 8px;
+              font-weight: bold;
+              color: #005b4c;
+              border: 2px dashed #005b4c;
+              padding: 15px 20px;
+              width: fit-content;
+            "
+          >
+          </div>
+
+          <p style="text-align: center; color: #555;">
+            Expires in <strong></strong> minutes
+          </p>
+
+          <hr
+            style="
+              margin: 30px 0;
+              border: none;
+              border-top: 1px solid #eee;
+            "
+          />
+
+          <p style="font-size: 12px; color: #777; text-align: center;">
+            If you didn't request this email verification, you can safely ignore
+            this message.
+          </p>
+        </td>
+      </tr>
+
+      <!-- Footer -->
+      <tr>
+        <td
+          style="
+            background: #f4f4f4;
+            text-align: center;
+            padding: 15px;
+            font-size: 11px;
+            color: #888;
+          "
+        >
+        © BNB Services • Secure Authentication
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

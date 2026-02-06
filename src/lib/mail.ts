@@ -23,6 +23,19 @@ export async function renderOtpTemplate(data: {
 
   return ejs.renderFile(templatePath, data);
 }
+export async function renderWelcomeBuyerTemplate(data: {
+  name:string,
+  role: string
+}) {
+  const templatePath = path.join(
+    process.cwd(),
+    "src",
+    "mail",
+    "welcome-buyer.ejs"
+  );
+
+  return ejs.renderFile(templatePath, data);
+}
 export async function renderForgotPasswordTemplate(data: {
   otp: string;
   expiry: number;

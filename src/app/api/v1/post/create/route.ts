@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
     }
     const { title, description, itemsData } = schema.parse(await req.json());
 
-    const totalPrice = itemsData.reduce((acc, item) => acc + item.budget, 0);
+    const totalPrice = itemsData.reduce((acc, item) => acc + (item.budget * item.quantity), 0);
 
     const post = await prisma.posts.create({
       data: {
