@@ -1,3 +1,4 @@
+import { renderWelcomeBuyerTemplate, renderWelcomeSellerTemplate, sendEmail } from "@/lib/mail";
 import prisma from "@/lib/prisma";
 import { encrypt } from "@/lib/sessions";
 import bcrypt from "bcryptjs";
@@ -68,9 +69,24 @@ export async function POST(req: NextRequest) {
         isEmailVerified: true,
         isPhoneVerified: true,
         firebaseId: true,
+        companyName : true,
       },
     });
     const res = NextResponse.json({ status: "success" }, { status: 200 });
+    let html;
+    if(user.role === "buyer"){
+      html = await renderWelcomeBuyerTemplate({
+        name: user.companyName ?? "user",
+        role: user.role,
+      });
+    }
+    else {
+      html = await renderWelcomeSellerTemplate({
+        name: user.companyName ?? "user",
+        role: user.role,
+      })
+    }
+    await sendEmail(user.email, html, "Welcome to Bottles n Boxes");
     return res;
   } catch (err) {
     console.error(err);

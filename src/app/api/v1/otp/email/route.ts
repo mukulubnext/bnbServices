@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import z from "zod";
-import { renderOtpTemplate, sendOtpEmail } from "@/lib/mail";
+import { renderOtpTemplate, sendEmail } from "@/lib/mail";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { OTPChannel, OTPPurpose } from "@prisma/client";
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
         expiresAt: new Date(Date.now() + 5 * 60 * 1000),
       },
     });
-    await sendOtpEmail(email, html);
+    await sendEmail(email, html);
     return NextResponse.json({
       status: "success",
       message: "Email sent successfully.",

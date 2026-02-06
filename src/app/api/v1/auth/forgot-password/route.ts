@@ -1,4 +1,4 @@
-import { renderForgotPasswordTemplate, sendOtpEmail } from "@/lib/mail";
+import { renderForgotPasswordTemplate, sendEmail } from "@/lib/mail";
 import prisma from "@/lib/prisma";
 import { OTPChannel, OTPPurpose } from "@prisma/client";
 import bcrypt from "bcryptjs";
@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
         expiresAt: new Date(Date.now() + 5 * 60 * 1000),
       },
     });
-    await sendOtpEmail(email, html, "Reset Password");
+    await sendEmail(email, html, "Reset Password");
     return NextResponse.json({
       status: "success",
       message: "OTP sent successfully.",

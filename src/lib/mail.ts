@@ -36,6 +36,19 @@ export async function renderWelcomeBuyerTemplate(data: {
 
   return ejs.renderFile(templatePath, data);
 }
+export async function renderWelcomeSellerTemplate(data: {
+  name:string,
+  role: string
+}) {
+  const templatePath = path.join(
+    process.cwd(),
+    "src",
+    "mail",
+    "welcome-seller.ejs"
+  );
+
+  return ejs.renderFile(templatePath, data);
+}
 export async function renderForgotPasswordTemplate(data: {
   otp: string;
   expiry: number;
@@ -52,7 +65,7 @@ export async function renderForgotPasswordTemplate(data: {
   return ejs.renderFile(templatePath, data);
 }
 
-export async function sendOtpEmail(to: string, html: string, subject?: string) {
+export async function sendEmail(to: string, html: string, subject?: string) {
   await transporter.sendMail({
     from: `Boxes n Bottles <${process.env.GMAIL_EMAIL}>`,
     to: to,

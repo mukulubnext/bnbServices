@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { renderForgotPasswordTemplate, renderOtpTemplate, renderWelcomeBuyerTemplate } from "@/lib/mail";
+import { renderForgotPasswordTemplate, renderOtpTemplate, renderWelcomeBuyerTemplate, renderWelcomeSellerTemplate } from "@/lib/mail";
 
 export async function GET() {
-  const html = await renderWelcomeBuyerTemplate({
+  const html = await renderWelcomeSellerTemplate({
     name: "Mukal Markanda Coorp.",
     role: "Buyer"
   });
