@@ -54,7 +54,7 @@ const Page: NextPage<Props> = ({}) => {
               </p>
               <div className="flex flex-col gap-4">
                 <a
-                  href="mailto:support@solaris.io"
+                  href="mailto:boxesnbottles028@gmail.com"
                   className="flex items-center gap-4 p-4 rounded-2xl transition-colors hover:bg-white/5"
                 >
                   <Mail className="text-highlight" />
@@ -62,7 +62,9 @@ const Page: NextPage<Props> = ({}) => {
                     <p className="text-xs uppercase font-bold tracking-wider text-muted">
                       Email Support
                     </p>
-                    <p className="font-medium text-light">support@solaris.io</p>
+                    <a className="font-medium text-light">
+                      boxesnbottles028@gmail.com
+                    </a>
                   </div>
                 </a>
                 <a
@@ -98,7 +100,7 @@ const Page: NextPage<Props> = ({}) => {
               </p>
               <div className="flex flex-col gap-4">
                 <a
-                  href="tel:+15550001234"
+                  href="tel:+919463303177"
                   className="flex items-center gap-4 p-4 rounded-2xl transition-colors hover:bg-white/5"
                 >
                   <Phone className="text-highlight" />
@@ -106,7 +108,7 @@ const Page: NextPage<Props> = ({}) => {
                     <p className="text-xs uppercase font-bold tracking-wider text-muted">
                       Call Our Sales Team
                     </p>
-                    <p className="font-medium text-light">+1 (555) 000-1234</p>
+                    <p className="font-medium text-light">+91 9463303177</p>
                   </div>
                 </a>
                 <div className="flex items-center gap-4 p-4 rounded-2xl">

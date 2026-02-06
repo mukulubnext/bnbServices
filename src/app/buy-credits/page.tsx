@@ -40,9 +40,9 @@ const Page: NextPage<Props> = ({}) => {
     fetchCredits();
   }, []);
 
-  useEffect(() => {
-    if (!loading && !user) router.push("/signin");
-  }, [user, loading, router]);
+  // useEffect(() => {
+  //   if (!loading && !user) router.push("/signin");
+  // }, [user, loading, router]);
 
   useEffect(() => {
     if (debounced < 250) {
