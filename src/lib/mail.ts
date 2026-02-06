@@ -54,7 +54,7 @@ export async function renderForgotPasswordTemplate(data: {
 
 export async function sendOtpEmail(to: string, html: string, subject?: string) {
   await transporter.sendMail({
-    from: `BNB <${process.env.GMAIL_EMAIL}>`,
+    from: `Boxes n Bottles <${process.env.GMAIL_EMAIL}>`,
     to: to,
     subject: subject ?? "Click to view your OTP",
     html: html,
