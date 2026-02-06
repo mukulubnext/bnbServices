@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const otp = Math.floor(Math.random() * 1000000);
+  const otp = Math.floor(100000 + Math.random() * 900000);
 
   const html = await renderOtpTemplate({
     otp: otp.toString(),

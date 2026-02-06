@@ -1,40 +1,51 @@
 "use client";
 import Navbar from "@/components/Navbar";
 import Spinner from "@/components/Spinner";
-import axios, { AxiosError } from "axios";
 import { ArrowLeft } from "lucide-react";
-import { NextPage } from "next";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { use, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
+import OTPInput from "./components/OtpInput";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
-interface Props {}
+type Props = {
+  params: {
+    email: string;
+  };
+};
 
-const Page: NextPage<Props> = ({}) => {
-  const [email, setEmail] = useState("");
-  const [sending, setSending] = useState(false);
+export default function Page({
+  params,
+}: {
+  params: Promise<{ email: string }>
+}) {
+  const email = decodeURIComponent(use(params).email);
+const [sending, setSending] = useState(false);
+  const [otp, setOtp] = useState("");
   const router = useRouter();
 
-  const handleSendOtp = async () => {
+  const handleVerify = async () => {
     setSending(true);
-    try {
-      const res = await axios.post("/api/v1/auth/forgot-password", {
+    try{
+      const res = await axios.post("/api/v1/auth/forgot-password/verify", {
         email: email,
+        otp: otp,
       });
-      if (res.data.status === "success") {
-        toast.success("OTP sent successfully.");
-        router.push(`/forgot-password/verify/${encodeURIComponent(email)}`);
-      } else {
+      if(res.data.status === "success"){
+        router.push(`/change-password/${encodeURIComponent(res.data.token)}`)
+      }
+      else{
         toast.error(res.data.message);
       }
-    } catch (err:any) {
+    }
+    catch(err:any){
       toast.error( err.response?.data?.message ?? "Something went wrong.");
     }
     finally{
       setSending(false);
     }
-  };
+  }
 
   return (
     <div className="bg-light w-screen h-screen flex justify-center items-center">
@@ -42,36 +53,24 @@ const Page: NextPage<Props> = ({}) => {
       <ToastContainer />
       <div className="bg-white py-5 px-5 md:px-10 max-w-[90%] rounded-lg flex flex-col relative bottom-[2%] gap-5 w-fit border text-dark">
         <div className="flex flex-col justify-center items-center">
-          <h1 className="font-bold text-2xl text-center">Forgot Password?</h1>
+          <h1 className="font-bold text-2xl text-center">OTP Sent!</h1>
           <p className="text-xs text-center">
-            No worries, we'll send you reset instructions.
+            Verify the OTP sent on: {email}
           </p>
         </div>
         <div className="flex flex-col gap-2">
           <div>
             <label htmlFor="email" className="font-bold text-sm text-dark/80">
-              Email Address
+              OTP
             </label>
-            <input
-              type="email"
-              onKeyDown={(e)=>{
-                if(e.key === "Enter"){
-                  handleSendOtp();
-                }
-              }}
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="john.doe@xyz.com"
-              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-sm md:text-[16px] bg-white w-full p-2"
-            />
+            <OTPInput length={6} onChange={(x) => setOtp(x)} />
           </div>
           {sending ? (
             <button className="bg-white flex justify-center items-center text-dark py-2 px-5 w-full my-3 rounded font-medium border border-dark transition-all cursor-wait">
               <Spinner light={false} />
             </button>
           ) : (
-            <button onClick={handleSendOtp} className="bg-dark text-white py-2 px-5 w-full my-3 rounded font-medium border border-dark hover:text-dark hover:bg-white transition-all cursor-pointer">
+            <button onClick={handleVerify} className="bg-dark text-white py-2 px-5 w-full my-3 rounded font-medium border border-dark hover:text-dark hover:bg-white transition-all cursor-pointer">
               Submit
             </button>
           )}
@@ -89,5 +88,3 @@ const Page: NextPage<Props> = ({}) => {
     </div>
   );
 };
-
-export default Page;

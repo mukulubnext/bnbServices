@@ -23,12 +23,27 @@ export async function renderOtpTemplate(data: {
 
   return ejs.renderFile(templatePath, data);
 }
+export async function renderForgotPasswordTemplate(data: {
+  otp: string;
+  expiry: number;
+  name: string;
+  link: string;
+}) {
+  const templatePath = path.join(
+    process.cwd(),
+    "src",
+    "mail",
+    "forgot-password.ejs"
+  );
 
-export async function sendOtpEmail(to: string, html: string) {
+  return ejs.renderFile(templatePath, data);
+}
+
+export async function sendOtpEmail(to: string, html: string, subject?: string) {
   await transporter.sendMail({
     from: `BNB <${process.env.GMAIL_EMAIL}>`,
     to: to,
-    subject: "Click to view your OTP",
+    subject: subject ?? "Click to view your OTP",
     html: html,
   });
 }

@@ -11,11 +11,11 @@ export interface SessionPayload extends JWTPayload {
 const secretKey = process.env.SESSION_SECRET;
 const encodedKey = new TextEncoder().encode(secretKey);
 
-export async function encrypt(payload: any) {
+export async function encrypt(payload: any, exp?: string) {
   return new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime("7d")
+    .setExpirationTime(exp ?? "7d")
     .sign(encodedKey);
 }
 

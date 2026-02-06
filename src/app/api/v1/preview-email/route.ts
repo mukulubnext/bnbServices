@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
-import { renderOtpTemplate } from "@/lib/mail";
+import { renderForgotPasswordTemplate } from "@/lib/mail";
 
 export async function GET() {
-  const html = await renderOtpTemplate({
+  const html = await renderForgotPasswordTemplate({
     otp: "482913",
     expiry: 5,
+    name: "Mukal",
+    link: "https://bnbservices.vercel.app/forgot-password",
   });
 
   return new NextResponse(html, {
