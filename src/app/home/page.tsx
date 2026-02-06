@@ -36,6 +36,7 @@ const Page: NextPage<Props> = ({}) => {
   useEffect(() => {
     if (!loading && !user) {
       router.push("/signin");
+      return;
     }
   }, [user, loading, router]);
   return (
@@ -46,6 +47,18 @@ const Page: NextPage<Props> = ({}) => {
           <div className="text-dark md:gap-4 font-bold flex-col flex text-2xl md:text-3xl lg:text-4xl md:flex-row">
             <span>{greeting},</span>
             <span>{user.companyName}...</span>
+            {!(user.companyName &&
+              user.address &&
+              user.city &&
+              user.state &&
+              user.zipCode &&
+              user.inceptionDate &&
+              user.employeeCount)
+             &&
+             (
+              <Link href={"/profile/add-details"} className="text-[16px] bg-dark text-white flex justify-center items-center px-3 py-1 hover:bg-white hover:text-dark transition-all duration-300 border">Complete Profile</Link>
+             ) 
+            }
           </div>
           {user.role === "buyer" ? (
             <Buyer isVerified={user.isVerified} />
@@ -524,7 +537,7 @@ function Seller({
         setPosts((prev) =>
           r === 1 ? res.data.posts : [...prev, ...res.data.posts],
         );
-        setRange((prev)=>prev+1)
+        setRange((prev) => prev + 1);
         setHasMore(res.data.hasMore);
       }
     } catch (err) {

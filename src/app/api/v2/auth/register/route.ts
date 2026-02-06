@@ -70,15 +70,7 @@ export async function POST(req: NextRequest) {
         firebaseId: true,
       },
     });
-    const token = await encrypt({ id: (await user).id });
     const res = NextResponse.json({ status: "success" }, { status: 200 });
-    res.cookies.set("token", token, {
-      path: "/",
-      httpOnly: true,
-      maxAge: 60 * 60 * 24 * 30,
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      secure: process.env.NODE_ENV === "production",
-    });
     return res;
   } catch (err) {
     console.error(err);

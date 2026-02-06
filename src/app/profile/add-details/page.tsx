@@ -19,35 +19,44 @@ const Page: NextPage<Props> = ({}) => {
   const [stepNumber, setStepNumber] = useState(1);
   const [data, setData] = useState<any>({});
   const { user, loading } = useAuth();
+  const isAuthReady = !loading && user;
   const router = useRouter();
   useEffect(() => {
-    if (!loading && !user) {
-      router.push("/signin");
+    if (loading) return;
+
+    if (!user) {
+      router.replace("/signin");
+      return;
     }
-    if (
-      !loading &&
-      (!user.companyName ||
-        !user.address ||
-        !user.city ||
-        !user.state ||
-        !user.zipCode ||
-        !user.inceptionDate ||
-        !user.employeeCount)
-    ) {
+
+    const hasProfile =
+      user.companyName &&
+      user.address &&
+      user.city &&
+      user.state &&
+      user.zipCode &&
+      user.inceptionDate &&
+      user.employeeCount;
+
+    if (!hasProfile) {
       setStepNumber(1);
-    } else if(!loading && !user.interestedCategories) {
+      return;
+    }
+
+    if (!user.interestedCategories || user.interestedCategories.length === 0) {
       setStepNumber(2);
+      return;
     }
-    else {
-      router.push('/home')
-    }
-  }, [user, loading, router]);
-  if(loading){
-    return(
+
+    router.replace("/home");
+  }, [loading, user, router]);
+
+  if (loading || !user) {
+    return (
       <div className="bg-light w-screen h-screen flex justify-center items-center">
         <Spinner light={false} />
       </div>
-    )
+    );
   }
   return (
     <StepContext.Provider value={{ stepNumber, setStepNumber, data, setData }}>
@@ -75,7 +84,8 @@ const Page: NextPage<Props> = ({}) => {
           </div>
           <div className="flex flex-col justify-center gap-2 items-center">
             <h1 className="text-highlight text-center font-semibold text-2xl md:text-4xl lg:text-[40px]">
-              Join as a <span className="capitalize">{user.role ?? "Buyer/Seller"}</span>
+              Join as a{" "}
+              <span className="capitalize">{user.role ?? "Buyer/Seller"}</span>
             </h1>
             <p className="lg:text-xl md:text-lg text-[8px] md:max-w-[80%] text-center text-highlight">
               Browse tools, manage subscriptions, and enjoy exclusive
@@ -400,7 +410,7 @@ function AdditionalInfo() {
   const [isLoading, setLoading] = useState(false);
   const context = useContext(StepContext);
   if (!context) return null;
-  const {refresh} = useAuth();
+  const { refresh } = useAuth();
 
   const { stepNumber, setStepNumber, data, setData } = context;
 
@@ -424,14 +434,13 @@ function AdditionalInfo() {
         Object.keys(localStorage)
           .filter((k) => k.startsWith("register_"))
           .forEach((k) => localStorage.removeItem(k));
-        refresh();
+        await refresh();
         router.push("/home");
-      } 
-      else {
+      } else {
         toast.error(res.data.message ?? "Something went wrong!");
       }
     } catch (err) {
-      console.log(err)
+      console.log(err);
       toast.error("Something went wrong!");
     } finally {
       setLoading(false);
