@@ -98,6 +98,7 @@ const Page: NextPage = () => {
             subCategoryId: undefined,
           },
         ]);
+        router.replace('/home')
       } else {
         toast.error(res.data.message);
       }
