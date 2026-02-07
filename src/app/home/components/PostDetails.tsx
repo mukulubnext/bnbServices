@@ -20,6 +20,7 @@ import React, { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import ItemTable from "./ItemTable";
 import ConfirmMakeOffer from "./ConfirmMakeOffer";
+import Link from "next/link";
 
 interface ItemData {
   categoryId: number | undefined;
@@ -239,8 +240,10 @@ export default function PostDetails({
       setBuyer(res.data.buyer);
       setMadeOffer(true);
       setHasOffer(true);
-    } catch (err:any) {
-      toast.error(err.response.data.message ?? "Failed to fetch buyer's details");
+    } catch (err: any) {
+      toast.error(
+        err.response.data.message ?? "Failed to fetch buyer's details",
+      );
       console.error(err);
     } finally {
       setFetchingBuyer(false);
@@ -266,9 +269,12 @@ export default function PostDetails({
       }}
       className="flex z-100 absolute top-0 left-0 py-10 w-screen min-h-screen bg-black/80 flex-col"
     >
-      {
-        confirmMakeOffer && <ConfirmMakeOffer handleMakeOffer={handleMakeOffer} setConfirmMakeOffer={setConfirmMakeOffer} /> 
-      }
+      {confirmMakeOffer && (
+        <ConfirmMakeOffer
+          handleMakeOffer={handleMakeOffer}
+          setConfirmMakeOffer={setConfirmMakeOffer}
+        />
+      )}
       <ToastContainer />
       <div
         onClick={(e) => e.stopPropagation()}
@@ -292,7 +298,7 @@ export default function PostDetails({
             <div className="flex justify-between flex-col items-start md:flex-row md:items-center">
               <div>
                 <h1 className="font-bold text-2xl md:text-4xl">{title}</h1>
-                <p className="text-xs font-medium text-muted">
+                <p className="text-xs font-medium text-dark/90">
                   {createdAt !== updatedAt && "(Edited)"}
                 </p>
               </div>
@@ -346,12 +352,29 @@ export default function PostDetails({
                   ) : (
                     !madeOffer &&
                     !hasOffer && (
-                      <button
-                        onClick={() => setConfirmMakeOffer(true)}
-                        className="flex w-fit hover:bg-transparent text-white hover:text-dark transition-all duration-300 cursor-pointer justify-center items-center gap-2 px-4 py-2 rounded border bg-dark font-medium"
-                      >
-                        View Details - <p className="flex justify-center items-center gap-px"><Coins size={16} /> {post.price}</p>
-                      </button>
+                      <div className="flex flex-col justify-center items-center">
+                        <button
+                          onClick={() => {
+                            user.credits < post.price
+                              ? router.push("/buy-credits")
+                              : setConfirmMakeOffer(true);
+                          }}
+                          className="flex w-fit hover:bg-transparent text-white hover:text-dark transition-all duration-300 cursor-pointer justify-center items-center gap-2 px-4 py-2 rounded border bg-dark font-medium"
+                        >
+                          View Details -{" "}
+                          <p className="flex justify-center items-center gap-px">
+                            <Coins size={16} /> {post.price}
+                          </p>
+                        </button>
+                        {user.credits < post.price && (
+                          <div className="flex my-2 justify-center items-center gap-2">
+                            <span className="text-red-500 font-medium">
+                              Not enough credits!
+                            </span>{" "}
+                            <Link href={"/buy-credits"} className="underline underline-offset-4">Purchase Now!</Link>
+                          </div>
+                        )}
+                      </div>
                     )
                   )}
                 </div>

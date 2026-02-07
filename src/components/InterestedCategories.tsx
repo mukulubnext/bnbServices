@@ -15,7 +15,7 @@ const InterestedCategories: NextPage<Props> = ({
   interestedCategories,
   setInterestedCategories,
 }: Props) => {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
   const [categories, setCategories] = useState<any[]>([]);
 
   const [catExpanded, setCatExpanded] = useState<number | undefined>(undefined);
@@ -37,20 +37,18 @@ const InterestedCategories: NextPage<Props> = ({
   }, []);
 
   return (
-    <div
-      onClick={() => setExpanded((prev) => !prev)}
-      className="bg-white select-none p-3 flex flex-col gap-4 w-full border border-dark text-dark rounded-md"
-    >
+    <div className="select-none p-3 flex flex-col gap-4 w-full text-dark rounded-md">
       {interestedCategories.length > 0 ? (
-        <div className="flex items-center relative">
+        <div className="flex border px-5 py-3 rounded-xl border-dark items-center relative">
           <div className="flex flex-wrap gap-2 items-center">
             {interestedCategories.map((cat) => (
               <div
                 key={cat.id}
-                className="px-3 py-1 font-medium flex flex-wrap items-center gap-2 cursor-pointer text-light bg-dark rounded-full"
+                className="px-3 py-1 font-medium flex h-fit flex-wrap items-center gap-2 cursor-pointer text-light bg-dark rounded-3xl"
               >
-                <span>{cat.name}:</span>
-
+                <span className="uppercase font-semibold border-r border-light/20 px-2">
+                  {cat.name}
+                </span>
                 {cat.subCategories.map((sub: any) => (
                   <span
                     key={sub.id}
@@ -95,25 +93,11 @@ const InterestedCategories: NextPage<Props> = ({
               </div>
             ))}
           </div>
-          <div className="absolute right-0">
-            <ChevronDown
-              className={`${
-                expanded ? "rotate-180" : ""
-              } text-dark transition-all duration-300`}
-            />
-          </div>
         </div>
       ) : (
         <>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center border px-5 py-3 rounded-xl border-dark justify-between">
             <p className="text-dark opacity-50">Select</p>
-          </div>
-          <div className="absolute right-[12%]">
-            <ChevronDown
-              className={`${
-                expanded ? "rotate-180" : ""
-              } text-dark transition-all duration-300`}
-            />
           </div>
         </>
       )}
@@ -123,7 +107,7 @@ const InterestedCategories: NextPage<Props> = ({
           <div
             onClick={(e) => e.stopPropagation()}
             style={{ scrollbarWidth: "thin" }}
-            className="bg-white gap-2 flex flex-col overflow-y-scroll max-h-100"
+            className={`bg-white gap-2 flex flex-col ${categories.length > 8 ? "overflow-y-scroll max-h-100" : ""}`}
           >
             {categories ? (
               categories.map((cat) => {
@@ -135,7 +119,7 @@ const InterestedCategories: NextPage<Props> = ({
                           ? setCatExpanded(undefined)
                           : setCatExpanded(cat.id);
                       }}
-                      className={`px-3 mr-5 flex justify-between items-center border-dark transition-all duration-300 border rounded-full font-medium text-[16px] py-1 cursor-pointer ${catExpanded === cat.id ? "bg-dark text-white hover:bg-dark" : " hover:bg-dark/10"}`}
+                      className={`px-5 mr-5 flex justify-between items-center border-dark transition-all duration-300 border rounded-full font-medium text-[16px] py-2 cursor-pointer ${catExpanded === cat.id ? "bg-dark text-white hover:bg-dark" : " hover:bg-dark/10"}`}
                       key={cat.id}
                     >
                       {cat.name}{" "}
@@ -143,7 +127,7 @@ const InterestedCategories: NextPage<Props> = ({
                         className={`${catExpanded === cat.id ? "rotate-180 text-white" : ""} text-dark transition-all duration-300`}
                       />
                     </div>
-                    <div className="flex flex-col gap-2">
+                    <div className="flex mx-3 flex-col gap-2">
                       <div className="flex flex-wrap gap-2 items-center">
                         {catExpanded === cat.id &&
                           cat.subCategories.map((subCat: any) => {
@@ -184,7 +168,7 @@ const InterestedCategories: NextPage<Props> = ({
                                     ];
                                   });
                                 }}
-                                className="px-3 flex w-fit justify-between items-center border-dark hover:bg-dark/10 transition-all duration-300 border rounded-full font-medium text-[14px] py-1 cursor-pointer"
+                                className="px-3 flex w-fit justify-between items-center border-dark hover:bg-dark/10 transition-all duration-300 border rounded-full font-medium text-[14px] py-2 cursor-pointer"
                                 key={subCat.id}
                               >
                                 {subCat.name}
@@ -193,7 +177,7 @@ const InterestedCategories: NextPage<Props> = ({
                           })}
                       </div>
                       {catExpanded === cat.id && (
-                        <hr className="text-dark/30 px-5" />
+                        <hr className="text-dark/30 my-3 px-5" />
                       )}
                     </div>
                   </div>
