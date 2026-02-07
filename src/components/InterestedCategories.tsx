@@ -54,15 +54,37 @@ const InterestedCategories: NextPage<Props> = ({
                 {cat.subCategories.map((sub: any) => (
                   <span
                     key={sub.id}
-                    className="text-white font-medium py-0.5 rounded-full text-sm"
+                    className="flex items-center gap-1 bg-white/10 px-2 py-0.5 rounded-full text-sm"
                   >
                     {sub.name}
+                    <X
+                      size={12}
+                      className="cursor-pointer hover:text-red-400"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setInterestedCategories(
+                          (prev) =>
+                            prev
+                              .map((c) =>
+                                c.id === cat.id
+                                  ? {
+                                      ...c,
+                                      subCategories: c.subCategories.filter(
+                                        (s: any) => s.id !== sub.id,
+                                      ),
+                                    }
+                                  : c,
+                              )
+                              .filter((c) => c.subCategories.length > 0), // 🧠 auto-remove empty cat
+                        );
+                      }}
+                    />
                   </span>
                 ))}
 
                 <X
                   size={14}
-                  className="ml-2"
+                  className="ml-2 hover:text-red-400"
                   onClick={(e) => {
                     e.stopPropagation();
                     setInterestedCategories((prev) =>

@@ -19,19 +19,26 @@ const ItemTable: NextPage<Props> = ({ items }: Props) => {
         <tbody>
           {items &&
             items.map((item, index) => (
-              <tr key={index} className="border-t last:border-b text-dark">
-                <td className="px-5 py-3 flex flex-col">
-                  <span className="font-bold">{item.category.name}</span>
-                  <span className="text-sm text-dark/90">
-                    {item.subCategory.name}
-                  </span>
-                </td>
-                <td className="text-center px-5 py-3">₹{item.budget}</td>
-                <td className="text-center px-5 py-3">{item.quantity}</td>
-                <td className="text-center px-5 py-3">
-                  ₹{item.quantity * Number(item.budget)}
-                </td>
-              </tr>
+              <>
+                {/* MAIN ROW */}
+                <tr
+                  key={item.id}
+                  className="border-t group last:border-b text-dark"
+                >
+                  <td className="px-5 py-3">
+                    <div className="font-bold">{item.category.name}</div>
+                    <div className="text-sm text-dark/80 max-w-[80%]">
+                      {item.subCategory.name}, {item.details}
+                    </div>
+                  </td>
+
+                  <td className="text-center px-5 py-3">₹{item.budget}</td>
+                  <td className="text-center px-5 py-3">{item.quantity}</td>
+                  <td className="text-center px-5 py-3">
+                    ₹{item.quantity * Number(item.budget)}
+                  </td>
+                </tr>
+              </>
             ))}
           <tr className="border-t text-dark">
             <td className="px-5 py-3 font-bold text-dark">Total</td>
