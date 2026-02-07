@@ -345,7 +345,7 @@ function Profile({ user }: { user: any }) {
         </div>
         <div className="flex justify-between w-full">
           <p className="font-medium text-dark">
-            Any past legal action/specification that may affect seller in
+            Any past legal action/specification that may affect {user.role === "buyer" ? "seller" : "buyer"} in
             future?
           </p>
           <div>
