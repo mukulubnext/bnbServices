@@ -1,6 +1,7 @@
 import { renderWelcomeBuyerTemplate, renderWelcomeSellerTemplate, sendEmail } from "@/lib/mail";
 import prisma from "@/lib/prisma";
 import { encrypt } from "@/lib/sessions";
+import { TransactionType } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 import z from "zod";
@@ -59,6 +60,7 @@ export async function POST(req: NextRequest) {
         isPhoneVerified,
         firebaseId: fireBaseId,
         isVerified: true,
+        credits: 100,
       },
       select: {
         id: true,
@@ -86,6 +88,13 @@ export async function POST(req: NextRequest) {
         role: user.role,
       })
     }
+    await prisma.transaction.create({
+      data: {
+        credits: 100,
+        userId: user.id,
+        type: TransactionType.SIGNUP_BONUS,
+      }
+    })
     await sendEmail(user.email, html, "Welcome to Bottles n Boxes");
     return res;
   } catch (err) {

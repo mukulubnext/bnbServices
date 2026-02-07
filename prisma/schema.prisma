@@ -60,7 +60,7 @@ model Payment {
   userId              Int
   user                User           @relation(fields: [userId], references: [id])
   amount              Decimal
-  credits             Int
+  credits             Int            @default(0)
   provider            String
   providerOrderId     String         @unique
   transactionId       Int            @unique
@@ -200,6 +200,7 @@ model Transaction{
 enum TransactionType {
   BUY
   OFFER
+  SIGNUP_BONUS
 }
 
 enum OTPChannel {
