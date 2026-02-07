@@ -165,7 +165,7 @@ const Page: NextPage<Props> = ({}) => {
         <Breadcrumbs />
       </div>
       <div className="flex md:fixed right-0 justify-center md:flex-col py-6 gap-5 items-center bg-dark md:w-[50vw] md:h-screen">
-        <div className="p-4 rounded-2xl bg-highlight/22">
+        <div className="p-4 hidden md:block rounded-2xl bg-highlight/22">
           <LogIn className="text-highlight lg:w-15 lg:h-15 md:w-10 md:h-10 w-8 h-8" />
         </div>
         <div className="flex flex-col justify-center gap-2 items-center">

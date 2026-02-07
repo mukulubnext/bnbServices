@@ -59,16 +59,13 @@ const Page: NextPage<Props> = ({}) => {
       <div className="flex relative md:flex-row flex-col-reverse bg-light">
         <Breadcrumbs />
         <div className="flex flex-col gap-4 px-[5%] py-[10%] md:py-[5%] md:w-[50vw] min-h-screen h-fit">
-          {stepNumber === 1 && <Register />}
-          <div className="flex relative top-4 md:hidden justify-center items-center">
-            <RegisterStep active={stepNumber} invert={true} />
-          </div>
+          {stepNumber === 1 && <Register />}   
         </div>
         <div className="relative">
           <Breadcrumbs />
         </div>
         <div className="flex md:fixed right-0 justify-center md:flex-col py-6 gap-5 items-center bg-dark md:w-[50vw] md:h-screen">
-          <div className="p-4 rounded-2xl bg-highlight/22">
+          <div className="p-4 hidden md:block rounded-2xl bg-highlight/22">
             <Store className="text-highlight lg:w-15 lg:h-15 md:w-10 md:h-10 w-8 h-8" />
           </div>
           <div className="flex flex-col justify-center gap-2 items-center">
@@ -79,9 +76,6 @@ const Page: NextPage<Props> = ({}) => {
               Manage inventory, reach millions, and scale your storefront
               globally.
             </p>
-          </div>
-          <div className="hidden justify-center items-center md:flex">
-            <RegisterStep active={stepNumber} />
           </div>
         </div>
       </div>
@@ -285,12 +279,12 @@ function Register() {
   return (
     <>
       <div className=" text-dark mb-5">
-        <h1 className="font-bold text-4xl">Register with Us</h1>
-        <p>Become a part of Solaris by entering the details below</p>
+        <h1 className="font-bold text-xl md:text-4xl">Register with Us</h1>
+        <p className="text-sm md:text-[16px]">Become a part of BnB by entering the details below</p>
       </div>
       <div className="w-full flex justify-center items-center flex-col gap-4">
         <div className="w-full flex justify-center flex-col">
-          <label htmlFor="email" className="font-medium text-xl text-dark">
+          <label htmlFor="email" className="font-medium text-sm md:text-lg text-dark">
             Email Address
           </label>
           <div className="flex justify-center relative items-center w-full">
@@ -304,13 +298,13 @@ function Register() {
               }}
               type="email"
               id="email"
-              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
+              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-2.5 md:py-3.5 px-4 w-full"
             />
             {!confirmMailOTP && !sendingMailOTP ? (
               !sentEmailOTP && (
                 <button
                   onClick={handleSendMailOTP}
-                  className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-sm md:text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
+                  className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-xs md:text-sm bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
                 >
                   Send OTP
                 </button>
@@ -329,7 +323,7 @@ function Register() {
         </div>
         {sentEmailOTP && !confirmMailOTP && (
           <div className="w-full flex justify-center flex-col">
-            <label htmlFor="email" className="font-medium text-xl text-dark">
+            <label htmlFor="email" className="font-medium text-sm md:text-lg text-dark">
               Email OTP
             </label>
             <div className="flex justify-center relative items-center w-full">
@@ -344,7 +338,7 @@ function Register() {
                 type="text"
                 maxLength={6}
                 id="email"
-                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
+                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-2.5 md:py-3.5 px-4 w-full"
               />
               {!confirmingMailOTP ? (
                 <button
@@ -365,7 +359,7 @@ function Register() {
           </div>
         )}
         <div className="w-full flex justify-center flex-col">
-          <label htmlFor="phone" className="font-medium text-xl text-dark">
+          <label htmlFor="phone" className="font-medium text-sm md:text-lg text-dark">
             Phone Number
           </label>
           <div className="flex justify-center relative items-center w-full">
@@ -379,13 +373,13 @@ function Register() {
                 }}
               type="tel"
               id="phone"
-              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
+              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-2.5 md:py-3.5 px-4 w-full"
             />
             {!confirmPhoneOTP && !sentPhoneOTP &&
               (!sendingPhoneOTP ? (
                 <button
                   onClick={handleSendPhoneOTP}
-                  className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-sm md:text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
+                  className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-xs md:text-sm bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
                 >
                   Send OTP
                 </button>
@@ -403,7 +397,7 @@ function Register() {
         </div>
         {sentPhoneOTP && !confirmPhoneOTP && (
           <div className="w-full flex justify-center flex-col">
-            <label htmlFor="email" className="font-medium text-xl text-dark">
+            <label htmlFor="email" className="font-medium text-sm md:text-lg text-dark">
               Phone OTP
             </label>
             <div className="flex justify-center relative items-center w-full">
@@ -418,7 +412,7 @@ function Register() {
                 type="text"
                 maxLength={6}
                 id="email"
-                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
+                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-2.5 md:py-3.5 px-4 w-full"
               />
               {
                 !confirmingPhoneOTP ? (
@@ -442,7 +436,7 @@ function Register() {
           </div>
         )}
         <div className="w-full flex justify-center flex-col">
-          <label htmlFor="confirm" className="font-medium text-xl text-dark">
+          <label htmlFor="confirm" className="font-medium text-sm md:text-lg text-dark">
             Password
           </label>
           <div className="flex justify-center relative items-center w-full">
@@ -451,20 +445,20 @@ function Register() {
               onChange={(e) => setPassword(e.target.value)}
               type={showPass ? "text" : "password"}
               id="confirm"
-              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
+              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-2.5 md:py-3.5 px-4 w-full"
             />
             <button
               onClick={() => setShowPass((e) => !e)}
               className="absolute cursor-pointer text-dark px-6 right-0"
             >
-              {showPass ? <EyeClosed size={32} /> : <Eye size={32} />}
+              {showPass ? <EyeClosed className="w-5 h-5 md:w-7 md:h-7" /> : <Eye className="w-5 h-5 md:w-7 md:h-7" />}
             </button>
           </div>
         </div>
         <div className="w-full flex justify-center flex-col">
           <label
             htmlFor="password"
-            className="font-medium flex gap-2 items-center text-xl text-dark"
+            className="font-medium flex gap-2 items-center text-sm md:text-lg text-dark"
           >
             Confirm Password{" "}
             {password !== confirmPassword &&
@@ -481,29 +475,29 @@ function Register() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               type={showConfirm ? "text" : "password"}
               id="password"
-              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-3.5 px-4 w-full"
+              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-2.5 md:py-3.5 px-4 w-full"
             />
             <button
               onClick={() => setShowConfirm((e) => !e)}
               className="absolute cursor-pointer text-dark px-6 right-0"
             >
-              {showConfirm ? <EyeClosed size={32} /> : <Eye size={32} />}
+              {showConfirm ? <EyeClosed className="w-5 h-5 md:w-7 md:h-7" /> : <Eye className="w-5 h-5 md:w-7 md:h-7" />}
             </button>
           </div>
         </div>
-        <div className="flex justify-start gap-2 w-full items-center">
-          <p className="text-dark font-semibold">Choose your seller type:</p>
+        <div className="flex flex-col md:flex-row items-start md:justify-start gap-2 w-full md:items-center">
+          <p className="text-dark text-sm md:text-[16px] font-semibold">Choose your seller type:</p>
           <div className="flex justify-center items-center gap-2">
             <button
               onClick={() => setSellerType("manufacturer")}
-              className={`flex justify-center items-center ${sellerType === "manufacturer" ? "bg-dark text-white" : "text-dark"} transition-all duration-300 font-bold py-2 px-4 rounded-lg`}
+              className={`flex justify-center items-center ${sellerType === "manufacturer" ? "bg-dark text-white" : "text-dark"} transition-all text-sm md:text-[16px] duration-300 font-bold py-2 px-4 rounded-lg`}
             >
               Manufacturer
             </button>
             <p className="text-lg text-dark">/</p>
             <button
               onClick={() => setSellerType("supplier")}
-              className={`flex justify-center items-center ${sellerType === "supplier" ? "bg-dark text-white" : "text-dark"} transition-all duration-300 font-bold py-2 px-4 rounded-lg`}
+              className={`flex justify-center items-center ${sellerType === "supplier" ? "bg-dark text-white" : "text-dark"} transition-all text-sm md:text-[16px] duration-300 font-bold py-2 px-4 rounded-lg`}
             >
               Supplier
             </button>
