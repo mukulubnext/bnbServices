@@ -272,7 +272,7 @@ export default function PostDetails({
       <ToastContainer />
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white flex justify-center relative flex-col py-10 px-5 text-dark gap-4 w-[90vw] md:w-[60vw] h-fit rounded-lg mx-auto"
+        className="bg-white flex justify-center relative flex-col py-10 px-5 text-dark gap-4 w-[98vw] md:w-[60vw] h-fit rounded-lg mx-auto"
       >
         <div
           onClick={() => {

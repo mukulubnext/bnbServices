@@ -56,10 +56,10 @@ const Page: NextPage<Props> = ({}) => {
   };
 
   return (
-    <div className="flex relative md:flex-row flex-col-reverse bg-light">
+    <div className="flex relative md:flex-row flex-col-reverse md:max-h-screen bg-light">
       <ToastContainer />
       <Breadcrumbs />
-      <div className="flex flex-col gap-4 px-[5%] pt-[10%]  relative  md:w-[50vw] min-h-screen h-fit">
+      <div className="flex flex-col gap-4 px-[5%] pt-[10%] relative md:w-[50vw] min-h-screen h-fit">
         {!loading ? (
           <>
             <div className=" text-dark mb-5">
@@ -86,7 +86,7 @@ const Page: NextPage<Props> = ({}) => {
                     onChange={(e) => setEmail(e.target.value)}
                     type="email"
                     id="email"
-                    className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-sm md:text-lg bg-white p-4 w-full"
+                    className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-sm md:text-lg bg-white p-2.5 md:p-4 w-full"
                   />
                 </div>
               </div>
@@ -110,13 +110,13 @@ const Page: NextPage<Props> = ({}) => {
                         submitRef.current?.click();
                       }
                     }}
-                    className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-sm md:text-lg bg-white p-4 w-full"
+                    className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-sm md:text-lg bg-white p-2.5 md:p-4 w-full"
                   />
                   <button
                     onClick={() => setShowPass((e) => !e)}
                     className="absolute cursor-pointer text-dark px-6 right-0"
                   >
-                    {showPass ? <EyeClosed size={24} /> : <Eye size={24} />}
+                    {showPass ? <EyeClosed className="w-6 h-6 " /> : <Eye className="w-6 h-6 " />}
                   </button>
                 </div>
               </div>
