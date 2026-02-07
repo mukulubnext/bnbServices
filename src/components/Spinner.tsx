@@ -1,7 +1,7 @@
 import { NextPage } from 'next'
 
 interface Props {
-    light: boolean
+    light?: boolean
 }
 
 const Spinner: NextPage<Props> = ({light}: Props) => {

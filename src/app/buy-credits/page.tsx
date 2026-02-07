@@ -19,6 +19,7 @@ const Page: NextPage<Props> = ({}) => {
   const [customCredits, setCustomCredits] = useState<number>(0);
   const [credits, setCredits] = useState<any>(null);
   const debounced = useDebounce(custom, 500);
+  const [checked, setChecked] = useState<boolean>(false);
 
   const [isFetchingCredits, setIsFetchingCredits] = useState<boolean>(false);
 
@@ -28,10 +29,9 @@ const Page: NextPage<Props> = ({}) => {
   useEffect(() => {
     const fetchCredits = async () => {
       try {
-        const res = await fetch("/api/v1/credits");
-        const data = await res.json();
-        if (res.status === 200) {
-          setCredits(data.prices);
+        const res = await axios.get("/api/v1/credits");
+        if (res.data.status === "success") {
+          setCredits(res.data.prices);
         }
       } catch (err) {
         console.error(err);
@@ -40,9 +40,9 @@ const Page: NextPage<Props> = ({}) => {
     fetchCredits();
   }, []);
 
-  // useEffect(() => {
-  //   if (!loading && !user) router.push("/signin");
-  // }, [user, loading, router]);
+  useEffect(() => {
+    if (!loading && !user) router.push("/signin");
+  }, [user, loading, router]);
 
   useEffect(() => {
     if (debounced < 250) {
@@ -75,78 +75,98 @@ const Page: NextPage<Props> = ({}) => {
     );
   }
   return (
-    <div className="bg-light w-full py-[10vh] flex flex-col justify-center items-center min-h-screen">
+    <div className="bg-light w-full py-[10vh] flex flex-col justify-start items-center min-h-screen">
       <Navbar solid={true} />
       <LiquidGlassMenu />
-      <div className="bg-white gap-4 px-4 items-center w-[96%] lg:w-fit py-6 flex flex-col rounded-lg min-h-full">
-        <h1 className="font-bold text-dark text-center text-xl lg:text-2xl">
-          Buy Credits
-        </h1>
-        <div className="grid grid-cols-2 xl:grid-cols-3 gap-4 w-fit mx-auto">
-          {credits.map((credit: any) => (
-            <TokenCard
-              key={credit.id}
-              id={credit.id}
-              credits={credit.credits}
-              price={credit.price}
-              selected={selected}
-              setSelected={setSelected}
-              setCustom={setCustom}
-            />
-          ))}
-        </div>
-        <div className="w-10 h-10 mx-auto md:mx-0 bg-white border-2 text-dark font-bold text-center flex justify-center items-center rounded-full">
-          or
-        </div>
-        <div className="flex flex-col justify-center items-center w-full gap-2">
-          <h1 className="font-bold text-dark text-xl">
-            Custom Credits Value:{" "}
-          </h1>
-          <div>
-            <div className="flex gap-1 justify-start relative items-center">
-              <IndianRupee className="text-dark left-2 absolute" />
-              <input
-                inputMode="numeric"
-                placeholder="Enter price in ₹ (Min 250)"
-                onFocus={() => {
-                  setSelected(0);
-                }}
-                value={custom === 0 ? "" : custom}
-                onChange={(e) => setCustom(Number(e.target.value))}
-                type="number"
-                min={250}
-                className="border focus:outline-0 w-full md:w-auto p-3 pl-10 rounded border-dark"
-              />
+      <div className="bg-white w-[95vw] md:w-[80vw] flex flex-col md:flex-row text-dark border-dark/40 border-2 shadow-xl rounded min-h-[80vh]">
+        <div className="md:w-[70%] border-r border-dark/40">
+          <div className="h-fit p-10 flex flex-col gap-4">
+            <h1 className="text-2xl font-bold">Choose credits</h1>
+            <div className="grid grid-cols-2 xl:grid-cols-3 justify-between items-center gap-8">
+              {credits.map((credit: any, index: number) => (
+                <TokenCard
+                  key={index}
+                  price={credit.price}
+                  setSelected={setSelected}
+                  setCustom={setCustom}
+                  selected={selected}
+                  credits={credit.credits}
+                  id={index + 1}
+                />
+              ))}
             </div>
           </div>
         </div>
-        <div className="border-t-2 w-full text-dark font-bold flex flex-col py-2 md:py-6 gap-2 border-dark">
-          <p className="flex gap-1 items-center">
-            Credits:{" "}
-            {custom !== 0 && debounced < 250 ? (
-              <span className="text-red-500">Min 250₹</span>
+        <div className="md:w-[30%] flex flex-col justify-between gap-4 p-10">
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1">
+              <h1 className="font-medium">Credits</h1>
+              <div className="relative flex items-center">
+                {!isFetchingCredits ? (
+                  <div className="border border-dark/20 w-full py-1 pl-8 rounded">
+                    {!selected && custom < 250
+                      ? <span className="text-red-500">Price must be greater than 250</span>
+                      : selected === 0
+                        ? customCredits
+                        : credits[selected - 1].credits}
+                  </div>
+                ) : (
+                  <div className="border border-dark/20 w-full py-1 pl-8 rounded">
+                    <Spinner light={false} />
+                  </div>
+                )}
+                <Coins
+                  size={16}
+                  className="absolute left-2 top-1/2 -translate-y-1/2"
+                />
+              </div>
+            </div>
+            <div className="flex flex-col gap-1">
+              <h1 className="font-medium">Price (Change for custom)</h1>
+              <div className="relative flex items-center">
+                <input
+                  value={selected === 0 ? custom : credits[selected - 1].price}
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]"
+                  min={250}
+                  onChange={(e) => {
+                    setCustom(Number(e.target.value));
+                    setSelected(0);
+                  }}
+                  className="border border-dark/20 w-full py-1 pl-8 rounded"
+                />
+                <IndianRupee
+                  size={16}
+                  className="absolute left-2 top-1/2 -translate-y-1/2"
+                />
+              </div>
+            </div>
+            <div className="flex flex-row my-3 justify-start items-start gap-1.75">
+              <input
+                onClick={() => setChecked((prev) => !prev)}
+                type="checkbox"
+                className="my-1"
+              />
+              <p className="text-sm">I agree to the Terms and Conditions</p>
+            </div>
+          </div>
+          <div>
+            {checked ? (
+              <button className="flex justify-center transition-all duration-300 items-center py-2.5 hover:text-dark hover:bg-white border bg-dark text-white font-bold w-full">
+                Checkout
+              </button>
             ) : (
-              ""
+              <div className="relative group">
+                <button className="flex justify-center items-center py-2.5 cursor-not-allowed brightness-50 border bg-muted text-white font-bold w-full">
+                  Checkout
+                </button>
+                <p className="border absolute opacity-0 bottom-full text-nowrap right-full transition-all group-hover:opacity-100 duration-1000 text-xs p-1 bg-dark/20 text-dark">
+                  Kindly agree to Terms and Conditions
+                </p>
+              </div>
             )}
-            <span>
-              {custom >= 250 &&
-                (isFetchingCredits ? <Spinner light={false} /> : customCredits)}
-            </span>
-            {credits.find((credit: any) => credit.id === selected)?.credits}
-          </p>
-          <p>
-            Price: ₹{debounced !== 0 && !selected && debounced}
-            {credits.find((credit: any) => credit.id === selected)?.price}
-          </p>
-          {!selected && custom < 250 ? (
-            <button className="bg-dark brightness-50 mx-auto cursor-not-allowed w-full text-white border transition-all duration-300 font-bold py-2 px-5 md:w-100 rounded-md">
-              Buy
-            </button>
-          ) : (
-            <button className="bg-dark mx-auto w-full text-white hover:bg-white hover:text-dark border transition-all duration-300 font-bold py-2 px-5 md:w-100 rounded-md">
-              Buy
-            </button>
-          )}
+          </div>
         </div>
       </div>
     </div>

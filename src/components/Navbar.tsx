@@ -1,5 +1,5 @@
 "use client";
-import { ChevronRight, Menu, Search, X } from "lucide-react";
+import { ChevronRight, Coins, Menu, Search, Wallet, X } from "lucide-react";
 import { NextPage } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -11,13 +11,13 @@ import Image from "next/image";
 
 interface Props {
   solid?: boolean;
-  userProp ?: any;
+  userProp?: any;
 }
 
 const Navbar: NextPage<Props> = ({ solid, userProp }: Props) => {
   const [isScrolled, setScrolled] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
-  const {user , loading} = useAuth();
+  const { user, loading } = useAuth();
   const navlinks = [
     { name: "Home", path: "/" },
     { name: "About", path: "/about" },
@@ -47,30 +47,46 @@ const Navbar: NextPage<Props> = ({ solid, userProp }: Props) => {
         className="flex justify-center group items-center gap-2 cursor-pointer"
       >
         <h1 className="text-light flex gap-1 justify-center items-center md:text-2xl font-bold">
-        Boxes <span><Image className="md:w-10 md:h-10 w-8 h-8 rounded" src={N} alt="n" /></span> Bottles
-      </h1>
+          Boxes{" "}
+          <span>
+            <Image
+              className="md:w-10 md:h-10 w-8 h-8 rounded"
+              src={N}
+              alt="n"
+            />
+          </span>{" "}
+          Bottles
+        </h1>
       </Link>
       <div className={`hidden md:flex justify-center items-center gap-8`}>
         {navlinks.map((d, i) => (
           <NavLink key={i} name={d.name} path={d.path} />
         ))}
       </div>
-      <div className="hidden md:flex justify-center items-center gap-4">
+      <div className="hidden md:flex justify-center items-center gap-4 h-full">
+        <Link href={"/buy-credits"} className="flex cursor-pointer justify-center items-center transition-all duration-300 group gap-3 bg-light text-dark border hover:bg-dark hover:text-light px-2 h-full">
+          <Wallet size={24}/>
+          <div className="h-10 w-px transition-all duration-300 group-hover:bg-light bg-dark"></div>
+          <span className="flex justify-center items-center">
+            <Coins/>
+            <p className="font-semibold">{user?.credits}</p>
+          </span>
+        </Link>
         {!loading ? (
           !user ? (
             <>
               <Link
-              className="flex px-6 py-2.5 rounded-full text-sm bg-light text-dark font-bold transition-all transform hover:-translate-y-0.5 duration-300 shadow-md"
-              href={"/register"}
-            >
-              Register
-            </Link>
-            <Link
-              className="flex px-6 py-2.5 rounded-full text-sm ring-2 ring-light text-light font-bold transition-all transform hover:-translate-y-0.5 duration-300 shadow-md"
-              href={"/signin"}
-            >
-              Sign In
-            </Link>
+                className="flex px-6 py-2.5 rounded-full text-sm bg-light text-dark font-bold transition-all transform hover:-translate-y-0.5 duration-300 shadow-md"
+                href={"/register"}
+              >
+                Register
+              </Link>
+              <Link
+                className="flex px-6 py-2.5 rounded-full text-sm ring-2 ring-light text-light font-bold transition-all transform hover:-translate-y-0.5 duration-300 shadow-md"
+                href={"/signin"}
+              >
+                Sign In
+              </Link>
             </>
           ) : (
             <Link
@@ -119,19 +135,19 @@ const Navbar: NextPage<Props> = ({ solid, userProp }: Props) => {
             !user ? (
               <>
                 <Link
-                href={"/register"}
-                onClick={() => setMenuOpen(false)}
-                className="w-full py-3 text-center bg-light text-dark font-bold rounded-xl"
-              >
-                Register Now
-              </Link>
-              <Link
-                href={"/signin"}
-                onClick={() => setMenuOpen(false)}
-                className="w-full py-3 text-center text-light ring-2 ring-light font-bold rounded-xl"
-              >
-                Sign In
-              </Link>
+                  href={"/register"}
+                  onClick={() => setMenuOpen(false)}
+                  className="w-full py-3 text-center bg-light text-dark font-bold rounded-xl"
+                >
+                  Register Now
+                </Link>
+                <Link
+                  href={"/signin"}
+                  onClick={() => setMenuOpen(false)}
+                  className="w-full py-3 text-center text-light ring-2 ring-light font-bold rounded-xl"
+                >
+                  Sign In
+                </Link>
               </>
             ) : (
               <Link
