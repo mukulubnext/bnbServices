@@ -31,7 +31,7 @@ const ItemTable: NextPage<Props> = ({ items }: Props) => {
                   </div>
                 </td>
 
-                <td className="text-center px-5 py-3">₹{item.budget}</td>
+                <td className="text-center px-5 py-3">₹{Number(item.budget).toLocaleString()}</td>
                 <td className="text-center px-5 py-3"> 
                   {item.quantity}{item.quantityUnit}
                 </td>
