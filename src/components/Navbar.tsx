@@ -64,14 +64,31 @@ const Navbar: NextPage<Props> = ({ solid, userProp }: Props) => {
         ))}
       </div>
       <div className="hidden md:flex justify-center items-center gap-4 h-full">
-        <Link href={"/buy-credits"} className="flex cursor-pointer justify-center items-center transition-all duration-300 group gap-3 bg-light text-dark border hover:bg-dark hover:text-light px-2 h-full">
-          <Wallet size={24}/>
-          <div className="h-10 w-px transition-all duration-300 group-hover:bg-light bg-dark"></div>
-          <span className="flex justify-center items-center">
-            <Coins/>
-            <p className="font-semibold">{user?.credits}</p>
-          </span>
-        </Link>
+        {!loading && user && user.role === "seller" && (
+          <Link
+            href="/buy-credits"
+            className="
+    group relative flex items-center gap-3 px-4 py-2
+    rounded-2xl
+    bg-white/10 backdrop-blur-md
+    border border-white/20
+    text-light
+    hover:bg-white/20
+    transition-all duration-300
+    shadow-lg hover:shadow-2xl
+  "
+          >
+            <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition pointer-events-none" />
+            <div className="relative p-2 rounded-xl bg-white/20 border border-white/30">
+              <Wallet size={20} />
+            </div>
+            <div className="h-6 w-px bg-white/30" />
+            <div className="relative flex items-center gap-1 font-semibold">
+              <Coins size={18} />
+              <span>{user?.credits}</span>
+            </div>
+          </Link>
+        )}
         {!loading ? (
           !user ? (
             <>

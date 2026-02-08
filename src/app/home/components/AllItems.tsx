@@ -1,6 +1,7 @@
 import ItemTable from "./ItemTable";
 import { X } from "lucide-react";
 import { NextPage } from "next";
+import { useEffect } from "react";
 
 interface Props {
   items: any[];
@@ -8,6 +9,16 @@ interface Props {
 }
 
 const AllItems: NextPage<Props> = ({ items, setItems }: Props) => {
+  useEffect(() => {
+      const handleEscape = (e: KeyboardEvent) => {
+        if (e.key === "Escape") {
+          setItems(null);
+        }
+      };
+  
+      document.addEventListener("keydown", handleEscape);
+      return () => document.removeEventListener("keydown", handleEscape);
+    }, []);
   return (
     <div className="flex justify-center fixed w-screen h-screen z-100 top-0 left-0 items-center bg-black/80">
       <div className="bg-white relative min-w-[50%] max-w-[95%] h-fit rounded">

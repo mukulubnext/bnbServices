@@ -42,6 +42,7 @@ const Page: NextPage<Props> = ({}) => {
 
   useEffect(() => {
     if (!loading && !user) router.push("/signin");
+    if (!loading && user && user.role === "buyer") router.push("/home");
   }, [user, loading, router]);
 
   useEffect(() => {
