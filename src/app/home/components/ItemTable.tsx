@@ -13,6 +13,7 @@ const ItemTable: NextPage<Props> = ({ items }: Props) => {
             <th className="text-left px-5 py-3">Item Name</th>
             <th className="text-center px-5 py-3">Price/unit</th>
             <th className="text-center px-5 py-3">Quantity</th>
+            <th className="text-center px-5 py-3">Units</th>
             <th className="text-center px-5 py-3">Total Price</th>
           </tr>
         </thead>
@@ -31,23 +32,27 @@ const ItemTable: NextPage<Props> = ({ items }: Props) => {
                 </td>
 
                 <td className="text-center px-5 py-3">₹{item.budget}</td>
-                <td className="text-center px-5 py-3">{item.quantity}</td>
+                <td className="text-center px-5 py-3"> 
+                  {item.quantity}{item.quantityUnit}
+                </td>
+                <td className="text-center px-5 py-3">{item.units}</td>
                 <td className="text-center px-5 py-3">
-                  ₹{item.quantity * Number(item.budget)}
+                  ₹{item.units * Number(item.budget)}
                 </td>
               </tr>
             ))}
           <tr className="border-t border-dark/20 text-dark">
             <td className="px-5 py-3 font-bold text-dark">Total</td>
             <td></td>
+            <td></td>
             <td className="text-center">
-              {items.reduce((acc, item) => acc + Number(item.quantity), 0)}
+              {items.reduce((acc, item) => acc + Number(item.units), 0)}
             </td>
             <td className="px-5 py-3 font-medium text-center text-dark">
               ₹
               {items.reduce(
                 (acc, item) =>
-                  acc + Number(item.budget) * Number(item.quantity),
+                  acc + Number(item.budget) * Number(item.units),
                 0,
               )}
             </td>

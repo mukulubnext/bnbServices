@@ -25,9 +25,11 @@ import Link from "next/link";
 interface ItemData {
   categoryId: number | undefined;
   details: string;
-  quantity: number;
+  units: number;
   budget: number;
   subCategoryId: number | undefined;
+  quantity: number;
+  quantityUnit: string;
 }
 
 interface Props {
@@ -165,9 +167,11 @@ export default function PostDetails({
     const itemsData: ItemData[] = items.map((item) => ({
       categoryId: item.categoryId,
       details: item.details,
-      quantity: Number(item.quantity),
+      units: Number(item.units),
       budget: Number(item.budget),
       subCategoryId: item.subCategoryId,
+      quantity: Number(item.quantity),
+      quantityUnit: item.quantityUnit,
     }));
 
     const isSamePost =
@@ -255,9 +259,11 @@ export default function PostDetails({
       {
         categoryId: undefined,
         details: "",
-        quantity: 1,
+        units: 1,
         budget: 0,
         subCategoryId: undefined,
+        quantity: 1,
+        quantityUnit: "L",
       },
     ]);
   };
@@ -361,7 +367,7 @@ export default function PostDetails({
                           }}
                           className="flex w-fit hover:bg-transparent text-white hover:text-dark transition-all duration-300 cursor-pointer justify-center items-center gap-2 px-4 py-2 rounded border bg-dark font-medium"
                         >
-                          View Details -{" "}
+                          Buyer Details -{" "}
                           <p className="flex justify-center items-center gap-px">
                             <Coins size={16} /> {post.price}
                           </p>

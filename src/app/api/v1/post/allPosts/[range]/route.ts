@@ -33,6 +33,8 @@ export async function GET(
         items: {
           select: {
             id: true,
+            quantity: true,
+            quantityUnit: true,
             category: {
               select: {
                 name: true,
@@ -43,7 +45,7 @@ export async function GET(
                 name: true,
               }
             },
-            quantity: true,
+            units: true,
             budget: true,
             details: true,
             createdAt: true,

@@ -14,9 +14,11 @@ import Item from "./components/Item";
 interface ItemData {
   categoryId: number | undefined;
   details: string;
-  quantity: number;
+  units: number;
   budget: number;
   subCategoryId: number | undefined;
+  quantity: number;
+  quantityUnit: string;
 }
 
 const Page: NextPage = () => {
@@ -34,9 +36,11 @@ const Page: NextPage = () => {
     {
       categoryId: undefined,
       details: "",
-      quantity: 1,
+      units: 1,
       budget: 0,
       subCategoryId: undefined,
+      quantity: 1,
+      quantityUnit: "L",
     },
   ]);
 
@@ -59,16 +63,18 @@ const Page: NextPage = () => {
       {
         categoryId: undefined,
         details: "",
-        quantity: 1,
+        units: 1,
         budget: 0,
         subCategoryId: undefined,
+        quantity: 1,
+        quantityUnit: "L",
       },
     ]);
   };
 
   const handlePost = async () => {
     const filtered = itemsData.filter(
-      (i) => i.categoryId && i.quantity > 0 && i.budget > 0 && i.subCategoryId,
+      (i) => i.categoryId && i.units > 0 && i.budget > 0 && i.subCategoryId,
     );
 
     if (!title || !description || filtered.length === 0) {
@@ -93,9 +99,11 @@ const Page: NextPage = () => {
           {
             categoryId: 0,
             details: "",
-            quantity: 1,
+            units: 1,
             budget: 0,
             subCategoryId: undefined,
+            quantity: 1,
+            quantityUnit: "L",
           },
         ]);
         router.replace('/home')
@@ -164,8 +172,7 @@ const Page: NextPage = () => {
                 className="border border-dark/20 rounded-md p-2 h-32"
               />
             </label>
-
-            {/* items */}
+            <hr className="text-dark/20" />
             <div className="flex flex-col gap-3">
               {itemsData.map((item, index) => (
                 <div

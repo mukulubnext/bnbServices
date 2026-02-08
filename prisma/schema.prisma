@@ -78,7 +78,7 @@ enum PaymentStatus{
 model Posts {
   id                  Int         @id @default(autoincrement()) @unique
   title               String
-  description         String
+  description         String?
 
   items               Item[]
 
@@ -142,26 +142,30 @@ model Offers{
   deletedAt           DateTime?
 }
 model Item{
-  id                  Int         @id @default(autoincrement())
+  id                  Int           @id @default(autoincrement())
 
   categoryId          Int
-  category            Category    @relation(fields: [categoryId], references: [id])
+  category            Category      @relation(fields: [categoryId], references: [id])
 
   subCategoryId       Int?  
-  subCategory         SubCategory? @relation(fields: [subCategoryId], references: [id])
+  subCategory         SubCategory?  @relation(fields: [subCategoryId], references: [id])
 
-  details             String
-  quantity            Int         @default(1)
+  details             String?
+  units               Int           @default(1)
+
+  quantity            Int           @default(0)
+  quantityUnit        QuantityUnit  @default(L)
+
   budget              Decimal
   
   postId              Int
-  post                Posts       @relation(fields: [postId], references: [id])
+  post                Posts         @relation(fields: [postId], references: [id])
 
-  isDeleted           Boolean?    @default(false)
+  isDeleted           Boolean?      @default(false)
   deletedAt           DateTime?
 
-  createdAt           DateTime    @default(now())
-  updatedAt           DateTime    @updatedAt @default(now())
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt @default(now())
 }
 model OTP {
   id            Int        @id @default(autoincrement())
@@ -212,4 +216,14 @@ enum OTPPurpose {
   LOGIN
   SIGNUP
   RESET_PASSWORD
+}
+enum QuantityUnit{
+  kg
+  g
+  L
+  mL
+  mm
+  m
+  cm
+  gsm
 }

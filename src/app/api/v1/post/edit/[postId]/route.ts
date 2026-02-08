@@ -3,18 +3,21 @@ import { decrypt } from "@/lib/sessions";
 import { NextRequest, NextResponse } from "next/server";
 import { z, ZodError } from "zod";
 import { calculateAmount } from "../../create/route";
+import { QuantityUnit } from "@prisma/client";
 
 const reqBody = z.object({
   title: z.string().min(3).max(100),
-  description: z.string().min(3).max(1000),
+  description: z.string().min(3).max(1000).optional(),
   items: z
     .array(
       z.object({
         categoryId: z.number().min(1),
-        details: z.string().max(200),
-        quantity: z.number().min(1),
+        details: z.string().max(200).optional(),
+        units: z.number().min(1),
         budget: z.number().min(1),
         subCategoryId: z.number().min(1),
+        quantity: z.number().min(1),
+        quantityUnit: z.enum(QuantityUnit),
       }),
     )
     .min(1),
@@ -60,7 +63,10 @@ export async function PUT(
         { status: 404 },
       );
     }
-    const totalPrice = items.reduce((acc, item) => acc + (item.budget * item.quantity), 0);
+    const totalPrice = items.reduce(
+      (acc, item) => acc + item.budget * item.units,
+      0,
+    );
     const updatedPost = await prisma.posts.update({
       where: { id: postId },
       data: {
@@ -82,7 +88,7 @@ export async function PUT(
                 name: true,
               },
             },
-            quantity: true,
+            units: true,
             subCategory: true,
             subCategoryId: true,
             budget: true,
@@ -102,10 +108,12 @@ export async function PUT(
       data: items.map((item) => ({
         categoryId: item.categoryId,
         details: item.details,
-        quantity: item.quantity,
+        units: item.units,
         budget: item.budget,
         postId,
         subCategoryId: item.subCategoryId,
+        quantity: item.quantity,
+        quantityUnit: item.quantityUnit,
       })),
     });
 

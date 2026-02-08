@@ -1,19 +1,22 @@
 import prisma from "@/lib/prisma";
 import { decrypt } from "@/lib/sessions";
+import { QuantityUnit } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { z, ZodError } from "zod";
 
 const schema = z.object({
   title: z.string().min(3).max(100),
-  description: z.string().min(3).max(1000),
+  description: z.string().min(3).max(1000).optional(),
   itemsData: z
     .array(
       z.object({
         categoryId: z.number().min(1),
         subCategoryId: z.number().min(1),
-        details: z.string().max(200),
-        quantity: z.number().min(1),
+        details: z.string().max(200).optional(),
+        units: z.number().min(1),
         budget: z.number().min(1),
+        quantity: z.number().min(1),
+        quantityUnit: z.enum(QuantityUnit),
       }),
     )
     .min(1),
@@ -57,7 +60,7 @@ export async function POST(req: NextRequest) {
     }
     const { title, description, itemsData } = schema.parse(await req.json());
 
-    const totalPrice = itemsData.reduce((acc, item) => acc + (item.budget * item.quantity), 0);
+    const totalPrice = itemsData.reduce((acc, item) => acc + (item.budget * item.units), 0);
 
     const post = await prisma.posts.create({
       data: {
@@ -71,10 +74,12 @@ export async function POST(req: NextRequest) {
       data: itemsData.map((item) => ({
         categoryId: item.categoryId,
         details: item.details,
-        quantity: item.quantity,
+        units: item.units,
         budget: item.budget,
         postId: post.id,
         subCategoryId: item.subCategoryId,
+        quantity: item.quantity,
+        quantityUnit: item.quantityUnit,
       })),
     });
 

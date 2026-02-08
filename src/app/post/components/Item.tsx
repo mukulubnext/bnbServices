@@ -1,13 +1,16 @@
 import { IndianRupee } from "lucide-react";
 import { NextPage } from "next";
 import { useEffect } from "react";
+import QuantityUnitSelector from "./QuantityUnitSelector";
 
 interface ItemData {
   categoryId: number | undefined;
   details: string;
-  quantity: number;
+  units: number;
   budget: number;
   subCategoryId: number | undefined;
+  quantity: number;
+  quantityUnit: string;
 }
 
 interface Props {
@@ -50,39 +53,29 @@ const Item: NextPage<Props> = ({ value, allCategories, onChange }) => {
             <option value="" disabled>
               {value.categoryId ? "Select a category" : "Select an item first"}
             </option>
-            {value.categoryId && allCategories[value.categoryId-1].subCategories.map((cat: any) => (
-              <option key={cat.id} value={cat.id}>
-                {cat.name}
-              </option>
-            ))}
+            {value.categoryId &&
+              allCategories[value.categoryId - 1].subCategories.map(
+                (cat: any) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </option>
+                ),
+              )}
           </select>
         </label>
-
       </div>
+      <hr className="mt-2 text-dark/20" />
+      <div className="flex flex-col md:flex-row gap-2 justify-center md:gap-[10%] items-center">
         <label className="flex flex-col gap-2 w-full">
-          <span className="text-dark font-medium">Details</span>
-          <input
-            value={value.details}
-            placeholder="Size, Color, Material etc."
-            onChange={(e) => update({ details: e.target.value })}
-            className="border border-dark/20 rounded-md w-full p-2"
-          />
-        </label>
-
-      <div className="flex justify-center gap-[10%] items-center">
-        <label className="flex flex-col gap-2 w-full">
-          <span className="text-dark font-medium">Quantity</span>
+          <span className="text-dark font-medium">Units</span>
           <input
             type="number"
             min={1}
-            value={value.quantity}
-            onChange={(e) =>
-              update({ quantity: e.target.valueAsNumber })
-            }
+            value={value.units}
+            onChange={(e) => update({ units: e.target.valueAsNumber })}
             className="border border-dark/20 rounded-md w-full p-2"
           />
         </label>
-
         <label className="flex flex-col gap-2 w-full">
           <span className="text-dark font-medium">Estimated Price / Unit</span>
           <div className="relative flex items-center">
@@ -90,15 +83,45 @@ const Item: NextPage<Props> = ({ value, allCategories, onChange }) => {
               type="number"
               min={0}
               value={value.budget}
-              onChange={(e) =>
-                update({ budget: e.target.valueAsNumber })
-              }
+              onChange={(e) => update({ budget: e.target.valueAsNumber })}
               className="border pl-8 border-dark/20 w-full rounded-md p-2"
             />
             <IndianRupee size={16} className="absolute text-dark left-2" />
           </div>
         </label>
+        <div className="flex flex-col gap-2 w-full">
+          <label htmlFor="quantity" className="text-dark font-medium">
+            Quantity
+          </label>
+
+          <div className="flex items-start focus-within:border-dark justify-between border border-dark/20 rounded-md">
+            <input
+              id="quantity"
+              type="number"
+              min={1}
+              value={value.quantity}
+              onChange={(e) => update({ quantity: e.target.valueAsNumber })}
+              className="w-full focus:outline-0 p-2"
+            />
+
+            <QuantityUnitSelector
+              quantityUnit={value.quantityUnit}
+              onChange={update}
+            />
+          </div>
+        </div>
       </div>
+      <label className="flex flex-col gap-2 w-full">
+        <span className="text-dark font-medium flex items-center gap-1">
+          Details <span className="text-sm text-dark/70">(Optional)</span>
+        </span>
+        <input
+          value={value.details}
+          placeholder="Size, Color, Material etc."
+          onChange={(e) => update({ details: e.target.value })}
+          className="border border-dark/20 rounded-md w-full p-2"
+        />
+      </label>
     </div>
   );
 };
