@@ -371,7 +371,12 @@ export default function PostDetails({
                             <span className="text-red-500 font-medium">
                               Not enough credits!
                             </span>{" "}
-                            <Link href={"/buy-credits"} className="underline underline-offset-4">Purchase Now!</Link>
+                            <Link
+                              href={"/buy-credits"}
+                              className="underline underline-offset-4"
+                            >
+                              Purchase Now!
+                            </Link>
                           </div>
                         )}
                       </div>
@@ -380,53 +385,62 @@ export default function PostDetails({
                 </div>
                 {buyer && hasOffer && (
                   <>
-                    <div className="flex flex-col border p-3 gap-2">
-                      <h1 className="font-bold text-center text-xl">
-                        Buyer's Details:
+                    <div className="w-full max-w-full mx-auto border border-dark/20 rounded-xl p-4 sm:p-6 flex flex-col gap-4 bg-white shadow-sm">
+                      <h1 className="font-semibold text-center text-xl tracking-tight text-dark">
+                        Buyer’s Details
                       </h1>
-                      <div className="flex items-center gap-1">
-                        <span className="font-semibold flex items-center gap-1">
-                          <User size={16} /> Buyer:{" "}
-                        </span>{" "}
-                        {buyer.companyName}
+                      <div className="h-px w-full bg-dark/10" />
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 text-sm sm:text-base">
+                        <span className="font-semibold flex items-center gap-2 shrink-0">
+                          <User size={16} /> Buyer
+                        </span>
+                        <span className="wrap-break-word">{buyer.companyName}</span>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <span className="font-semibold flex items-center gap-1">
-                          <PhoneCall size={16} /> Phone Number:{" "}
-                        </span>{" "}
-                        <a href={`tel:${buyer.phone}`} className="underline">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 text-sm sm:text-base">
+                        <span className="font-semibold flex items-center gap-2 shrink-0">
+                          <PhoneCall size={16} /> Phone
+                        </span>
+                        <a
+                          href={`tel:${buyer.phone}`}
+                          className="underline break-all hover:no-underline"
+                        >
                           {buyer.phone}
                         </a>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <span className="font-semibold flex items-center gap-1">
-                          <Mail size={16} /> Email:{" "}
-                        </span>{" "}
-                        <a href={`mailto:${buyer.email}`} className="underline">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 text-sm sm:text-base">
+                        <span className="font-semibold flex items-center gap-2 shrink-0">
+                          <Mail size={16} /> Email
+                        </span>
+                        <a
+                          href={`mailto:${buyer.email}`}
+                          className="underline break-all hover:no-underline"
+                        >
                           {buyer.email}
                         </a>
                       </div>
-                      <div className="flex items-start gap-1">
-                        <span className="font-semibold flex items-center gap-1">
-                          <Pin size={16} /> Address:{" "}
-                        </span>{" "}
-                        <p>
+                      <div className="flex flex-col gap-1 text-sm sm:text-base">
+                        <span className="font-semibold flex items-center gap-2">
+                          <Pin size={16} /> Address
+                        </span>
+                        <p className="text-dark/80 leading-relaxed wrap-break-word">
                           {buyer.address}, {buyer.city}, {buyer.state},{" "}
                           {buyer.zipCode}
                         </p>
                       </div>
-                      <div className="flex items-start gap-1">
-                        <span className="font-semibold flex items-center gap-1">
-                          <LinkIcon size={16} /> Website:{" "}
-                        </span>{" "}
-                        <a
-                          href={buyer.companyWebsite}
-                          target="_blank"
-                          className="underline hover:no-underline"
-                        >
-                          {buyer.companyWebsite}
-                        </a>
-                      </div>
+                      {buyer.companyWebsite && (
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 text-sm sm:text-base">
+                          <span className="font-semibold flex items-center gap-2 shrink-0">
+                            <LinkIcon size={16} /> Website
+                          </span>
+                          <a
+                            href={buyer.companyWebsite}
+                            target="_blank"
+                            className="underline break-all hover:no-underline"
+                          >
+                            {buyer.companyWebsite}
+                          </a>
+                        </div>
+                      )}
                     </div>
                   </>
                 )}

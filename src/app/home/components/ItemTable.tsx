@@ -21,11 +21,11 @@ const ItemTable: NextPage<Props> = ({ items }: Props) => {
             items.map((item) => (
               <tr
                 key={item.id}
-                className="border-t group last:border-b text-dark"
+                className="border-t border-dark/20 group last:border-b text-dark"
               >
                 <td className="px-5 py-3">
                   <div className="font-bold">{item.category.name}</div>
-                  <div className="text-sm text-dark/80 max-w-[80%]">
+                  <div className="text-sm text-dark/80 min-w-60">
                     {item.subCategory.name}, {item.details}
                   </div>
                 </td>
@@ -37,7 +37,7 @@ const ItemTable: NextPage<Props> = ({ items }: Props) => {
                 </td>
               </tr>
             ))}
-          <tr className="border-t text-dark">
+          <tr className="border-t border-dark/20 text-dark">
             <td className="px-5 py-3 font-bold text-dark">Total</td>
             <td></td>
             <td className="text-center">

@@ -616,15 +616,15 @@ function Seller({
               setEditPost={() => {}}
             />
           )}
-          <div className="relative md:w-fit w-full">
+          <div className="relative md:w-fit group w-full">
             <Search
               size={20}
-              className="absolute text-dark top-1/2 -translate-y-1/2 right-2"
+              className="absolute text-dark/50 transition-all duration-300 group-hover:text-dark/80 top-1/2 -translate-y-1/2 right-2"
             />
             <input
               type="text"
               onChange={(e) => setQ(e.target.value)}
-              className="border max-w-full w-180 focus:outline-0 border-dark/50 px-2 py-1 bg-white text-dark placeholder:text-dark/40 rounded"
+              className="border max-w-full w-180 focus:outline-0 border-dark/20 px-2 py-2 bg-white text-dark placeholder:text-dark/40 rounded-lg"
               placeholder="Search"
             />
           </div>

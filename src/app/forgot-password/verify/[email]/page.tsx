@@ -51,18 +51,18 @@ const [sending, setSending] = useState(false);
     <div className="bg-light w-screen h-screen flex justify-center items-center">
       <Navbar solid />
       <ToastContainer />
-      <div className="bg-white py-5 px-5 md:px-10 max-w-[90%] rounded-lg flex flex-col relative bottom-[2%] gap-5 w-fit border text-dark">
+      <div className="border border-dark/20 bg-white/60 backdrop-blur-lg w-fit flex flex-col justify-center items-center relative bottom-[3%] rounded-2xl mx-auto text-dark px-6 py-6 max-w-[95%] shadow-xl">
         <div className="flex flex-col justify-center items-center">
-          <h1 className="font-bold text-2xl text-center">OTP Sent!</h1>
-          <p className="text-xs text-center">
+          <h1 className="font-bold text-xl tracking-tight">OTP Sent!</h1>
+          <p className="text-xs text-center text-dark/70 mt-1">
             Verify the OTP sent on: {email}
           </p>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex text-sm md:text-[16px] flex-col gap-4 mt-5">
           <div>
-            <label htmlFor="email" className="font-bold text-sm text-dark/80">
-              OTP
-            </label>
+           <span className="font-medium text-dark/80">
+              Enter OTP
+            </span>
             <OTPInput length={6} onChange={(x) => setOtp(x)} />
           </div>
           {sending ? (
@@ -74,15 +74,6 @@ const [sending, setSending] = useState(false);
               Submit
             </button>
           )}
-          <Link
-            href={"/signin"}
-            className="flex w-fit mx-auto flex-col group justify-center items-center gap-2 text-sm cursor-pointer"
-          >
-            <div className="flex justify-center pl-2 pr-5 items-center gap-2">
-              <ArrowLeft size={16} /> Back to sign in
-            </div>
-            <div className="h-0.5 rounded w-full bg-dark/40 group-hover:opacity-100 transition-all duration-300 opacity-0"></div>
-          </Link>
         </div>
       </div>
     </div>

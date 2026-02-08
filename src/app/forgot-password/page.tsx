@@ -40,18 +40,18 @@ const Page: NextPage<Props> = ({}) => {
     <div className="bg-light w-screen h-screen flex justify-center items-center">
       <Navbar solid />
       <ToastContainer />
-      <div className="bg-white py-5 px-5 md:px-10 max-w-[90%] rounded-lg flex flex-col relative bottom-[2%] gap-5 w-fit border text-dark">
+      <div className="border border-dark/20 bg-white/60 backdrop-blur-lg w-fit flex flex-col justify-center items-center relative bottom-[3%] rounded-2xl mx-auto text-dark px-6 py-6 max-w-[95%] shadow-xl">
         <div className="flex flex-col justify-center items-center">
-          <h1 className="font-bold text-2xl text-center">Forgot Password?</h1>
-          <p className="text-xs text-center">
+          <h1 className="font-bold text-xl tracking-tight">Forgot Password?</h1>
+          <p className="text-xs text-center text-dark/70 mt-1">
             No worries, we'll send you reset instructions.
           </p>
         </div>
-        <div className="flex flex-col gap-2">
-          <div>
-            <label htmlFor="email" className="font-bold text-sm text-dark/80">
+        <div className="flex text-sm md:text-[16px] flex-col gap-4 mt-5">
+          <div className="flex flex-col gap-2">
+            <span className="font-medium text-dark/80">
               Email Address
-            </label>
+            </span>
             <input
               type="email"
               onKeyDown={(e)=>{
@@ -63,15 +63,15 @@ const Page: NextPage<Props> = ({}) => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="john.doe@xyz.com"
-              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-sm md:text-[16px] bg-white w-full p-2"
+              className="border border-dark/30 bg-white/20 backdrop-blur-md px-4 py-2.5 rounded w-full md:w-80 focus:outline-none focus:ring-2 focus:ring-dark/30 transition"
             />
           </div>
           {sending ? (
-            <button className="bg-white flex justify-center items-center text-dark py-2 px-5 w-full my-3 rounded font-medium border border-dark transition-all cursor-wait">
+            <button className="bg-white/30 my-4 flex mx-auto text-white py-2.5 px-6 w-fit rounded-xl font-medium border border-white/40 backdrop-blur-md transition cursor-not-allowed shadow">
               <Spinner light={false} />
             </button>
           ) : (
-            <button onClick={handleSendOtp} className="bg-dark text-white py-2 px-5 w-full my-3 rounded font-medium border border-dark hover:text-dark hover:bg-white transition-all cursor-pointer">
+            <button onClick={handleSendOtp} className="bg-dark my-4 flex mx-auto text-white py-2.5 px-6 w-full justify-center items-center rounded-xl font-medium border border-dark hover:text-dark hover:bg-white transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl">
               Submit
             </button>
           )}

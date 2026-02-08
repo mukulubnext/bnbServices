@@ -44,7 +44,7 @@ export default function OTPInput({ length = 6, onChange }: OTPInputProps) {
           onChange={(e) => handleChange(e.target.value, index)}
           onKeyDown={(e) => handleKeyDown(e, index)}
           className="
-            w-8 h-8
+            w-8 h-10
             md:w-12 md:h-14
             text-center md:text-xl font-bold
             bg-white text-dark
