@@ -47,18 +47,22 @@ const Page: NextPage<Props> = ({}) => {
           <div className="text-dark md:gap-4 font-bold flex-col flex text-2xl md:text-3xl lg:text-4xl md:flex-row">
             <span>{greeting},</span>
             <span>{user.companyName}...</span>
-            {!(user.companyName &&
+            {!(
+              user.companyName &&
               user.address &&
               user.city &&
               user.state &&
               user.zipCode &&
               user.inceptionDate &&
-              user.employeeCount)
-             &&
-             (
-              <Link href={"/profile/add-details"} className="text-[16px] bg-dark text-white flex justify-center items-center px-3 py-1 hover:bg-white hover:text-dark transition-all duration-300 border">Complete Profile</Link>
-             ) 
-            }
+              user.employeeCount
+            ) && (
+              <Link
+                href={"/profile/add-details"}
+                className="text-[16px] bg-dark text-white flex justify-center items-center px-3 py-1 hover:bg-white hover:text-dark transition-all duration-300 border"
+              >
+                Complete Profile
+              </Link>
+            )}
           </div>
           {user.role === "buyer" ? (
             <Buyer isVerified={user.isVerified} />
@@ -169,6 +173,7 @@ function Buyer({ isVerified }: { isVerified: boolean }) {
         }
       }
     } catch (err) {
+      setRange(0);
       console.error(err);
     } finally {
       setLoading(false);
@@ -280,8 +285,8 @@ function Buyer({ isVerified }: { isVerified: boolean }) {
       <hr className="text-dark/22" />
       <div>
         <h1 className="text-dark font-bold text-2xl">Previous Posts</h1>
-        <div className="overflow-x-auto md:overflow-x-visible">
-          <table className="bg-white relative my-2 shadow rounded-md min-w-200 w-full">
+        <div className="relative w-full min-h-50 scrollBar overflow-x-auto">
+          <table className="bg-white relative my-2 shadow rounded-md min-w-225 w-full">
             <thead>
               <tr className="bg-dark/2 text-dark/50">
                 <th
@@ -371,14 +376,6 @@ function Buyer({ isVerified }: { isVerified: boolean }) {
                           className={`flex gap-2 relative max-w-50 items-center`}
                         >
                           {post.items.length ? (
-                            // post.items.map((item: any) => (
-                            //   <div
-                            //   key={item.id}
-                            //   className="py-1 px-3 bg-dark text-white font-medium text-nowrap text-sm w-fit rounded-full"
-                            //   >
-                            //     {item.category.name}
-                            //   </div>
-                            // ))
                             <div
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -397,16 +394,18 @@ function Buyer({ isVerified }: { isVerified: boolean }) {
                       <td className="px-3 py-4 text-center font-bold text-dark">
                         {post.offers.length}
                       </td>
-                      <td className="flex px-3 py-4 top-1 relative justify-center">
-                        <EllipsisComp
-                          postId={post.id}
-                          setDeletePost={setDeletePost}
-                          setDeletePostId={setDeletePostId}
-                          setDeletePostTitle={setDeletePostTitle}
-                          deletePostTitle={deletePostTitle}
-                          setEditPost={setEditPost}
-                          setExpandPost={setExpandPost}
-                        />
+                      <td className="px-3 py-4 relative text-center">
+                        <div className="inline-flex justify-center">
+                          <EllipsisComp
+                            postId={post.id}
+                            setDeletePost={setDeletePost}
+                            setDeletePostId={setDeletePostId}
+                            setDeletePostTitle={setDeletePostTitle}
+                            deletePostTitle={deletePostTitle}
+                            setEditPost={setEditPost}
+                            setExpandPost={setExpandPost}
+                          />
+                        </div>
                       </td>
                     </tr>
                   ))
