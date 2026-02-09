@@ -82,8 +82,13 @@ const Item: NextPage<Props> = ({ value, allCategories, onChange }) => {
             <input
               type="number"
               min={0}
-              value={value.budget}
-              onChange={(e) => update({ budget: e.target.valueAsNumber })}
+              value={value.budget === 0 ? "" : String(value.budget)}
+              onChange={(e) => {
+                const v = e.target.value;
+                if (/^\d*\.?\d*$/.test(v)) {
+                  update({ budget: v === "" ? 0 : Number(v) });
+                }
+              }}
               className="border pl-8 border-dark/20 w-full rounded-md p-2"
             />
             <IndianRupee size={16} className="absolute text-dark left-2" />

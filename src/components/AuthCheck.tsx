@@ -15,7 +15,7 @@ const AuthCheck: NextPage<Props> = ({}) => {
             router.replace("/home")
         }
     },[user, loading])
-  return loading && <div className='bg-light fixed top-0 left-0 w-screen h-screen flex justify-center items-center z-100'>
+  return loading && <div className='bg-light fixed top-0 left-0 w-screen h-screen flex justify-center items-center z-1000'>
     <Spinner light={false} />
   </div>
 }
