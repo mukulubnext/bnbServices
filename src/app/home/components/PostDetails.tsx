@@ -275,289 +275,293 @@ export default function PostDetails({
       }}
       className="flex z-100 absolute top-0 left-0 py-10 w-screen min-h-screen bg-black/80 flex-col"
     >
-      {confirmMakeOffer && (
-        <ConfirmMakeOffer
-          handleMakeOffer={handleMakeOffer}
-          setConfirmMakeOffer={setConfirmMakeOffer}
-        />
-      )}
-      <ToastContainer />
-      <div
-        onClick={(e) => e.stopPropagation()}
-        className="bg-white flex justify-center relative flex-col py-10 px-5 text-dark gap-4 w-[98vw] md:w-[60vw] h-fit rounded-lg mx-auto"
-      >
+      <div className="max-h-[90vh] overflow-y-scroll scrollBar">
+        {confirmMakeOffer && (
+          <ConfirmMakeOffer
+            handleMakeOffer={handleMakeOffer}
+            setConfirmMakeOffer={setConfirmMakeOffer}
+          />
+        )}
+        <ToastContainer />
         <div
-          onClick={() => {
-            setExpandPost(null);
-            setEditPost(null);
-          }}
-          className="transition-all absolute hover:bg-dark/30 top-1 left-[1%] p-2 flex justify-center items-center w-fit rounded-full"
+          onClick={(e) => e.stopPropagation()}
+          className="bg-white flex justify-center relative flex-col py-10 px-5 text-dark gap-4 w-[98vw] md:w-[60vw] rounded-lg mx-auto"
         >
-          <X className="cursor-pointer text-dark" />
-        </div>
-        {isLoading ? (
-          <div className="flex justify-center items-center">
-            <Spinner light={false} />
+          <div
+            onClick={() => {
+              setExpandPost(null);
+              setEditPost(null);
+            }}
+            className="transition-all absolute hover:bg-dark/30 top-1 left-[1%] p-2 flex justify-center items-center w-fit rounded-full"
+          >
+            <X className="cursor-pointer text-dark" />
           </div>
-        ) : !canEdit ? (
-          <>
-            <div className="flex justify-between flex-col items-start md:flex-row md:items-center">
-              <div>
-                <h1 className="font-bold text-2xl md:text-4xl">{title}</h1>
-                <p className="text-xs font-medium text-dark/90">
-                  {createdAt !== updatedAt && "(Edited)"}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs">
-                  Created at:{" "}
-                  {createdAt &&
-                    new Intl.DateTimeFormat("en-GB", {
-                      dateStyle: "short",
-                      timeStyle: "short",
-                      hour12: true,
-                    }).format(new Date(createdAt))}
-                </p>
-                {createdAt && updatedAt !== createdAt && (
-                  <p className="text-xs">
-                    Last Edited:{" "}
-                    {new Intl.DateTimeFormat("en-GB", {
-                      dateStyle: "short",
-                      timeStyle: "short",
-                      hour12: true,
-                    }).format(new Date(updatedAt))}
+          {isLoading ? (
+            <div className="flex justify-center items-center">
+              <Spinner light={false} />
+            </div>
+          ) : !canEdit ? (
+            <>
+              <div className="flex justify-between flex-col items-start md:flex-row md:items-center">
+                <div>
+                  <h1 className="font-bold text-2xl md:text-4xl">{title}</h1>
+                  <p className="text-xs font-medium text-dark/90">
+                    {createdAt !== updatedAt && "(Edited)"}
                   </p>
-                )}
+                </div>
+                <div>
+                  <p className="text-xs">
+                    Created at:{" "}
+                    {createdAt &&
+                      new Intl.DateTimeFormat("en-GB", {
+                        dateStyle: "short",
+                        timeStyle: "short",
+                        hour12: true,
+                      }).format(new Date(createdAt))}
+                  </p>
+                  {createdAt && updatedAt !== createdAt && (
+                    <p className="text-xs">
+                      Last Edited:{" "}
+                      {new Intl.DateTimeFormat("en-GB", {
+                        dateStyle: "short",
+                        timeStyle: "short",
+                        hour12: true,
+                      }).format(new Date(updatedAt))}
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
-            <hr className="text-dark/50" />
-            <p className="whitespace-pre-wrap">
-              <span className="font-semibold">Description:</span>
-              <br />
-              {description}
-            </p>
-            <hr className="text-dark/50" />
-            <div>
-              <span className="font-semibold">Items:</span>
-              <ItemTable items={post.items} />
-            </div>
-            {user && user.role === "buyer" ? (
-              <button
-                onClick={() => setCanEdit(true)}
-                className="flex hover:bg-dark hover:text-white transition-all duration-300 cursor-pointer justify-center items-center gap-2 px-4 py-2 rounded border border-dark bg-white font-medium"
-              >
-                <Pencil size={20} /> Edit
-              </button>
-            ) : (
-              <>
-                <div className="flex justify-center items-center mt-10">
-                  {fetchingBuyer ? (
-                    <div className="flex justify-center items-center">
-                      <Spinner light={false} />
-                    </div>
-                  ) : (
-                    !madeOffer &&
-                    !hasOffer && (
-                      <div className="flex flex-col justify-center items-center">
-                        <button
-                          onClick={() => {
-                            user.credits < post.price
-                              ? router.push("/buy-credits")
-                              : setConfirmMakeOffer(true);
-                          }}
-                          className="flex w-fit hover:bg-transparent text-white hover:text-dark transition-all duration-300 cursor-pointer justify-center items-center gap-2 px-4 py-2 rounded border bg-dark font-medium"
-                        >
-                          Buyer Details -{" "}
-                          <p className="flex justify-center items-center gap-px">
-                            <Coins size={16} /> {post.price}
+              <hr className="text-dark/50" />
+              <p className="whitespace-pre-wrap">
+                <span className="font-semibold">Description:</span>
+                <br />
+                {description}
+              </p>
+              <hr className="text-dark/50" />
+              <div>
+                <span className="font-semibold">Items:</span>
+                <ItemTable items={post.items} />
+              </div>
+              {user && user.role === "buyer" ? (
+                <button
+                  onClick={() => setCanEdit(true)}
+                  className="flex hover:bg-dark hover:text-white transition-all duration-300 cursor-pointer justify-center items-center gap-2 px-4 py-2 rounded border border-dark bg-white font-medium"
+                >
+                  <Pencil size={20} /> Edit
+                </button>
+              ) : (
+                <>
+                  <div className="flex justify-center items-center mt-10">
+                    {fetchingBuyer ? (
+                      <div className="flex justify-center items-center">
+                        <Spinner light={false} />
+                      </div>
+                    ) : (
+                      !madeOffer &&
+                      !hasOffer && (
+                        <div className="flex flex-col justify-center items-center">
+                          <button
+                            onClick={() => {
+                              user.credits < post.price
+                                ? router.push("/buy-credits")
+                                : setConfirmMakeOffer(true);
+                            }}
+                            className="flex w-fit hover:bg-transparent text-white hover:text-dark transition-all duration-300 cursor-pointer justify-center items-center gap-2 px-4 py-2 rounded border bg-dark font-medium"
+                          >
+                            Buyer Details -{" "}
+                            <p className="flex justify-center items-center gap-px">
+                              <Coins size={16} /> {post.price}
+                            </p>
+                          </button>
+                          {user.credits < post.price && (
+                            <div className="flex my-2 justify-center items-center gap-2">
+                              <span className="text-red-500 font-medium">
+                                Not enough credits!
+                              </span>{" "}
+                              <Link
+                                href={"/buy-credits"}
+                                className="underline underline-offset-4"
+                              >
+                                Purchase Now!
+                              </Link>
+                            </div>
+                          )}
+                        </div>
+                      )
+                    )}
+                  </div>
+                  {buyer && hasOffer && (
+                    <>
+                      <div className="w-full max-w-full mx-auto border border-dark/20 rounded-xl p-4 sm:p-6 flex flex-col gap-4 bg-white shadow-sm">
+                        <h1 className="font-semibold text-center text-xl tracking-tight text-dark">
+                          Buyer’s Details
+                        </h1>
+                        <div className="h-px w-full bg-dark/10" />
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 text-sm sm:text-base">
+                          <span className="font-semibold flex items-center gap-2 shrink-0">
+                            <User size={16} /> Buyer
+                          </span>
+                          <span className="wrap-break-word">
+                            {buyer.companyName}
+                          </span>
+                        </div>
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 text-sm sm:text-base">
+                          <span className="font-semibold flex items-center gap-2 shrink-0">
+                            <PhoneCall size={16} /> Phone
+                          </span>
+                          <a
+                            href={`tel:${buyer.phone}`}
+                            className="underline break-all hover:no-underline"
+                          >
+                            {buyer.phone}
+                          </a>
+                        </div>
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 text-sm sm:text-base">
+                          <span className="font-semibold flex items-center gap-2 shrink-0">
+                            <Mail size={16} /> Email
+                          </span>
+                          <a
+                            href={`mailto:${buyer.email}`}
+                            className="underline break-all hover:no-underline"
+                          >
+                            {buyer.email}
+                          </a>
+                        </div>
+                        <div className="flex flex-col gap-1 text-sm sm:text-base">
+                          <span className="font-semibold flex items-center gap-2">
+                            <Pin size={16} /> Address
+                          </span>
+                          <p className="text-dark/80 leading-relaxed wrap-break-word">
+                            {buyer.address}, {buyer.city}, {buyer.state},{" "}
+                            {buyer.zipCode}
                           </p>
-                        </button>
-                        {user.credits < post.price && (
-                          <div className="flex my-2 justify-center items-center gap-2">
-                            <span className="text-red-500 font-medium">
-                              Not enough credits!
-                            </span>{" "}
-                            <Link
-                              href={"/buy-credits"}
-                              className="underline underline-offset-4"
+                        </div>
+                        {buyer.companyWebsite && (
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-1 text-sm sm:text-base">
+                            <span className="font-semibold flex items-center gap-2 shrink-0">
+                              <LinkIcon size={16} /> Website
+                            </span>
+                            <a
+                              href={buyer.companyWebsite}
+                              target="_blank"
+                              className="underline break-all hover:no-underline"
                             >
-                              Purchase Now!
-                            </Link>
+                              {buyer.companyWebsite}
+                            </a>
                           </div>
                         )}
                       </div>
-                    )
+                    </>
+                  )}
+                </>
+              )}
+            </>
+          ) : (
+            user &&
+            user.role === "buyer" && (
+              <>
+                <div className="overflow-y-scroll md:overflow-y-auto flex flex-col max-h-[80vh] gap-4 mt-6">
+                  <label className="flex flex-col gap-2">
+                    <span className="text-dark font-medium">
+                      Title (3-100 characters):
+                    </span>
+                    <input
+                      type="text"
+                      placeholder="Cartons"
+                      value={title}
+                      minLength={3}
+                      maxLength={100}
+                      onChange={(e) => setTitle(e.target.value)}
+                      className="border border-dark/20 rounded-md p-2 focus:outline-none focus:border-dark transition-all"
+                    />
+                  </label>
+                  <label className="flex flex-col gap-2">
+                    <span className="text-dark font-medium">
+                      Description (3-1000 characters):
+                    </span>
+                    <textarea
+                      value={description}
+                      contentEditable={true}
+                      minLength={3}
+                      maxLength={1000}
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder="Need high quality cartons for packaging of Wooden Artifacts"
+                      className="border border-dark/20 rounded-md p-2 h-32 focus:outline-none focus:border-dark transition-all"
+                    />
+                  </label>
+                  <div className="flex flex-col gap-3">
+                    {items.map((item, index) => (
+                      <div
+                        key={index}
+                        className="not-last:border-b group border-dark/40"
+                      >
+                        <div className="flex justify-between group-only:hidden items-center">
+                          <span className="text-dark font-bold">
+                            {index + 1}.
+                          </span>
+
+                          <div
+                            onClick={() =>
+                              setItems((prev) =>
+                                prev.filter((_, i) => i !== index),
+                              )
+                            }
+                            className={`text-red-500 flex justify-between items-center cursor-pointer hover:bg-highlight transition-all duration-300 p-1 rounded-full ${
+                              index === 0 && "hidden"
+                            }`}
+                          >
+                            <X size={16} />
+                          </div>
+                        </div>
+
+                        <Item
+                          value={item}
+                          allCategories={allCategories}
+                          onChange={(updated) => {
+                            setItems((prev) => {
+                              const copy = [...prev];
+                              copy[index] = updated;
+                              return copy;
+                            });
+                          }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={handleAddItem}
+                    className="bg-dark gap-2 border hover:text-dark hover:bg-white transition-all duration-300 cursor-pointer text-white font-bold flex justify-center items-center w-full py-2 px-3"
+                  >
+                    <Plus /> Add Item
+                  </button>
+                  {!posting ? (
+                    <div className="flex flex-col md:flex-row md:gap-2">
+                      <button
+                        onClick={() => handlePost()}
+                        type="submit"
+                        className="bg-dark text-white font-bold py-2 hover:bg-transparent border border-dark hover:text-dark transition-all duration-300 rounded-lg mt-4 md:w-fit px-6"
+                      >
+                        Submit
+                      </button>
+                      <button
+                        onClick={() => handleCancel()}
+                        type="submit"
+                        className="bg-red-500 text-white font-bold py-2 hover:bg-transparent border border-red-500 hover:text-red-500 transition-all duration-300 rounded-lg mt-4 md:w-fit px-6"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="text-highlight font-bold py-2 hover:bg-transparent border border-dark transition-all duration-300 rounded-lg mt-4 w-fit px-8">
+                      <Spinner light={false} />
+                    </div>
                   )}
                 </div>
-                {buyer && hasOffer && (
-                  <>
-                    <div className="w-full max-w-full mx-auto border border-dark/20 rounded-xl p-4 sm:p-6 flex flex-col gap-4 bg-white shadow-sm">
-                      <h1 className="font-semibold text-center text-xl tracking-tight text-dark">
-                        Buyer’s Details
-                      </h1>
-                      <div className="h-px w-full bg-dark/10" />
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 text-sm sm:text-base">
-                        <span className="font-semibold flex items-center gap-2 shrink-0">
-                          <User size={16} /> Buyer
-                        </span>
-                        <span className="wrap-break-word">{buyer.companyName}</span>
-                      </div>
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 text-sm sm:text-base">
-                        <span className="font-semibold flex items-center gap-2 shrink-0">
-                          <PhoneCall size={16} /> Phone
-                        </span>
-                        <a
-                          href={`tel:${buyer.phone}`}
-                          className="underline break-all hover:no-underline"
-                        >
-                          {buyer.phone}
-                        </a>
-                      </div>
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 text-sm sm:text-base">
-                        <span className="font-semibold flex items-center gap-2 shrink-0">
-                          <Mail size={16} /> Email
-                        </span>
-                        <a
-                          href={`mailto:${buyer.email}`}
-                          className="underline break-all hover:no-underline"
-                        >
-                          {buyer.email}
-                        </a>
-                      </div>
-                      <div className="flex flex-col gap-1 text-sm sm:text-base">
-                        <span className="font-semibold flex items-center gap-2">
-                          <Pin size={16} /> Address
-                        </span>
-                        <p className="text-dark/80 leading-relaxed wrap-break-word">
-                          {buyer.address}, {buyer.city}, {buyer.state},{" "}
-                          {buyer.zipCode}
-                        </p>
-                      </div>
-                      {buyer.companyWebsite && (
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 text-sm sm:text-base">
-                          <span className="font-semibold flex items-center gap-2 shrink-0">
-                            <LinkIcon size={16} /> Website
-                          </span>
-                          <a
-                            href={buyer.companyWebsite}
-                            target="_blank"
-                            className="underline break-all hover:no-underline"
-                          >
-                            {buyer.companyWebsite}
-                          </a>
-                        </div>
-                      )}
-                    </div>
-                  </>
-                )}
               </>
-            )}
-          </>
-        ) : (
-          user &&
-          user.role === "buyer" && (
-            <>
-              <div className="overflow-y-scroll md:overflow-y-auto flex flex-col max-h-[80vh] gap-4 mt-6">
-                <label className="flex flex-col gap-2">
-                  <span className="text-dark font-medium">
-                    Title (3-100 characters):
-                  </span>
-                  <input
-                    type="text"
-                    placeholder="Cartons"
-                    value={title}
-                    minLength={3}
-                    maxLength={100}
-                    onChange={(e) => setTitle(e.target.value)}
-                    className="border border-dark/20 rounded-md p-2 focus:outline-none focus:border-dark transition-all"
-                  />
-                </label>
-                <label className="flex flex-col gap-2">
-                  <span className="text-dark font-medium">
-                    Description (3-1000 characters):
-                  </span>
-                  <textarea
-                    value={description}
-                    contentEditable={true}
-                    minLength={3}
-                    maxLength={1000}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Need high quality cartons for packaging of Wooden Artifacts"
-                    className="border border-dark/20 rounded-md p-2 h-32 focus:outline-none focus:border-dark transition-all"
-                  />
-                </label>
-                <div className="flex flex-col gap-3">
-                  {items.map((item, index) => (
-                    <div
-                      key={index}
-                      className="not-last:border-b group border-dark/40"
-                    >
-                      <div className="flex justify-between group-only:hidden items-center">
-                        <span className="text-dark font-bold">
-                          {index + 1}.
-                        </span>
-
-                        <div
-                          onClick={() =>
-                            setItems((prev) =>
-                              prev.filter((_, i) => i !== index),
-                            )
-                          }
-                          className={`text-red-500 flex justify-between items-center cursor-pointer hover:bg-highlight transition-all duration-300 p-1 rounded-full ${
-                            index === 0 && "hidden"
-                          }`}
-                        >
-                          <X size={16} />
-                        </div>
-                      </div>
-
-                      <Item
-                        value={item}
-                        allCategories={allCategories}
-                        onChange={(updated) => {
-                          setItems((prev) => {
-                            const copy = [...prev];
-                            copy[index] = updated;
-                            return copy;
-                          });
-                        }}
-                      />
-                    </div>
-                  ))}
-                </div>
-
-                <button
-                  onClick={handleAddItem}
-                  className="bg-dark gap-2 border hover:text-dark hover:bg-white transition-all duration-300 cursor-pointer text-white font-bold flex justify-center items-center w-full py-2 px-3"
-                >
-                  <Plus /> Add Item
-                </button>
-                {!posting ? (
-                  <div className="flex flex-col md:flex-row md:gap-2">
-                    <button
-                      onClick={() => handlePost()}
-                      type="submit"
-                      className="bg-dark text-white font-bold py-2 hover:bg-transparent border border-dark hover:text-dark transition-all duration-300 rounded-lg mt-4 md:w-fit px-6"
-                    >
-                      Submit
-                    </button>
-                    <button
-                      onClick={() => handleCancel()}
-                      type="submit"
-                      className="bg-red-500 text-white font-bold py-2 hover:bg-transparent border border-red-500 hover:text-red-500 transition-all duration-300 rounded-lg mt-4 md:w-fit px-6"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                ) : (
-                  <div className="text-highlight font-bold py-2 hover:bg-transparent border border-dark transition-all duration-300 rounded-lg mt-4 w-fit px-8">
-                    <Spinner light={false} />
-                  </div>
-                )}
-              </div>
-            </>
-          )
-        )}
+            )
+          )}
+        </div>
       </div>
     </div>
   );
