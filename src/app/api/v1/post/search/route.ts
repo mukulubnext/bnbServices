@@ -102,21 +102,30 @@ export async function POST(req: NextRequest) {
           },
         ],
       },
-      select:{
+      select: {
         id: true,
         title: true,
         createdAt: true,
-        items:{
-            select:{
-                id: true,
-                category:{
-                    select:{
-                        id: true,
-                        name: true
-                    }
-                }
-            }
-        }
+        isFullfilled: true,
+        items: {
+          where: { isDeleted: false },
+          select: {
+            id: true,
+            categoryId: true,
+            units: true,
+            budget: true,
+            details: true,
+            createdAt: true,
+            updatedAt: true,
+            quantity: true,
+            quantityUnit: true,
+            category: { select: { name: true } },
+            subCategory: { select: { name: true } },
+          },
+        },
+        offers: {
+          select: { id: true },
+        },
       },
       orderBy: {
         createdAt: "desc",
