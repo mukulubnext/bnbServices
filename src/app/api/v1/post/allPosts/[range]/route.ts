@@ -30,6 +30,7 @@ export async function GET(
         isActive: true,
         createdAt: true,
         offers: true,
+        isFullfilled: true,
         items: {
           select: {
             id: true,

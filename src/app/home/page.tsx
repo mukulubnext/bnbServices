@@ -285,7 +285,7 @@ function Buyer({ isVerified }: { isVerified: boolean }) {
       <hr className="text-dark/22" />
       <div>
         <h1 className="text-dark font-bold text-2xl">Previous Posts</h1>
-        <div className="relative w-full min-h-50 scrollBar overflow-x-auto">
+        <div className="relative w-full not-md:pb-40 scrollBar not-md:overflow-x-auto ">
           <table className="bg-white relative my-2 shadow rounded-md min-w-225 w-full">
             <thead>
               <tr className="bg-dark/2 text-dark/50">
@@ -371,20 +371,34 @@ function Buyer({ isVerified }: { isVerified: boolean }) {
                           dateStyle: "short",
                         }).format(new Date(post.createdAt))}
                       </td>
-                      <td className="px-3 py-4 bottom-1 relative flex gap-2 items-center text-dark/70">
+                      <td className="px-3 py-3 top-1 relative flex gap-2 items-center text-dark/70">
                         <span
-                          className={`flex gap-2 relative max-w-50 items-center`}
+                          className={`flex gap-2 relative items-center`}
                         >
                           {post.items.length ? (
-                            <div
+                            post.isFullfilled ? (
+                              <div
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setItems(post.items);
                               }}
-                              className="text-sm px-3 py-1 active:scale-95 active:-translate-y-0.5 border font-medium rounded transition-all select-none hover:-translate-y-1 duration-300 cursor-pointer"
+                              className="text-sm px-3 py-1 bg-dark text-white active:scale-95 active:-translate-y-0.5 border font-medium rounded transition-all select-none hover:-translate-y-0.5 duration-300 cursor-pointer"
+                            >
+                              Fulfilled
+                            </div>
+                            )
+                            :
+                            (
+                              <div
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setItems(post.items);
+                              }}
+                              className="text-sm px-3 py-1 active:scale-95 active:-translate-y-0.5 border font-medium rounded transition-all select-none hover:-translate-y-0.5 duration-300 cursor-pointer"
                             >
                               View Items
                             </div>
+                            )
                           ) : (
                             <p className="text-black/50">no items</p>
                           )}
@@ -404,6 +418,7 @@ function Buyer({ isVerified }: { isVerified: boolean }) {
                             deletePostTitle={post.title}
                             setEditPost={setEditPost}
                             setExpandPost={setExpandPost}
+                            isFullfilled={post.isFullfilled}
                           />
                         </div>
                       </td>
@@ -462,6 +477,7 @@ type Post = {
   createdAt: string;
   category?: { name: string };
   items: any[];
+  isFullfilled: boolean;
 };
 
 function Seller({
@@ -685,12 +701,25 @@ function Seller({
                           dateStyle: "short",
                         }).format(new Date(post.createdAt))}
                       </td>
-                      <td className="px-3 py-4 bottom-1 relative flex gap-2 items-center text-dark/70">
+                      <td className="px-3 py-4 relative flex gap-2 items-center text-dark/70">
                         <span
                           className={`flex gap-2 relative max-w-50 items-center no-scrollbar ${post.items.length > 2 ? " overflow-x-scroll" : ""}`}
                         >
                           {post.items.length ? (
-                            <div
+                            post.isFullfilled ? (
+                              <div
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setItems(post.items);
+                              }}
+                              className="text-sm px-3 bg-dark text-white py-1 active:scale-95 active:-translate-y-0.5 border font-medium rounded transition-all select-none hover:-translate-y-1 duration-300 cursor-pointer"
+                            >
+                              Fulfilled
+                            </div>
+                            )
+                            :
+                            (
+                              <div
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setItems(post.items);
@@ -699,6 +728,7 @@ function Seller({
                             >
                               View Items
                             </div>
+                            )
                           ) : (
                             <p className="text-black/50">no items</p>
                           )}

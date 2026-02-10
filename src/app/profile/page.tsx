@@ -14,6 +14,7 @@ import {
   LockKeyhole,
   Mail,
   MapPin,
+  Pencil,
   Phone,
   Plus,
   ScrollTextIcon,
@@ -200,7 +201,7 @@ const Page: NextPage<Props> = ({}) => {
                 )}
                 {selected === 1 && (
                   <div className="flex flex-col gap-6">
-                    <h1 className="font-semibold flex flex-col md:flex-row justify-between md:items-center text-dark text-2xl">
+                    <h1 className="font-semibold flex flex-col gap-2 md:flex-row justify-between md:items-center text-dark text-2xl">
                       Company Details
                       {!user.companyName ||
                       !user.address ||
@@ -219,9 +220,9 @@ const Page: NextPage<Props> = ({}) => {
                       ) : (
                         <Link
                           href={"/profile/add-details"}
-                          className="font-bold text-center text-sm border hover:text-dark hover:bg-white transition-all duration-300 px-3 py-2 bg-dark rounded-md text-white"
+                          className="font-bold flex justify-center gap-2 items-center text-center text-sm border hover:text-dark hover:bg-white transition-all duration-300 px-3 py-2 bg-dark rounded-md text-white"
                         >
-                          Edit Details
+                          <Pencil size={16} /> Edit Details
                         </Link>
                       )}
                     </h1>

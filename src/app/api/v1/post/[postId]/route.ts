@@ -17,6 +17,7 @@ export async function GET(
       createdAt: true,
       updatedAt: true,
       price: true,
+      isFullfilled: true,
       items: {
         where: { isDeleted: false },
         select: {

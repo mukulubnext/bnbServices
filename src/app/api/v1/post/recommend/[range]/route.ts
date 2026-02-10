@@ -107,6 +107,7 @@ export async function GET(
         id: true,
         title: true,
         createdAt: true,
+        isFullfilled: true,
         items: {
           where: { isDeleted: false },
           select: {
