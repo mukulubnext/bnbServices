@@ -71,8 +71,8 @@ const Item: NextPage<Props> = ({ value, allCategories, onChange }) => {
           <input
             type="number"
             min={1}
-            onScroll={(e) => e.preventDefault()}
             value={value.units}
+            onWheel={(e) => e.currentTarget.blur()}
             onChange={(e) => update({ units: e.target.valueAsNumber })}
             className="border border-dark/20 rounded-md w-full p-2"
           />
@@ -85,6 +85,7 @@ const Item: NextPage<Props> = ({ value, allCategories, onChange }) => {
               type="number"
               min={0}
               value={value.budget === 0 ? "" : String(value.budget)}
+              onWheel={(e) => e.currentTarget.blur()}
               onChange={(e) => {
                 const v = e.target.value;
                 if (/^\d*\.?\d*$/.test(v)) {
@@ -104,9 +105,10 @@ const Item: NextPage<Props> = ({ value, allCategories, onChange }) => {
           <div className="flex items-start focus-within:border-dark justify-between border border-dark/20 rounded-md">
             <input
               id="quantity"
-              onScroll={(e) => e.preventDefault()}
               type="number"
               min={1}
+              onWheel={(e) => e.currentTarget.blur()}
+              onScroll={(e) => e.preventDefault()}
               value={value.quantity}
               onChange={(e) => update({ quantity: e.target.valueAsNumber })}
               className="w-full focus:outline-0 p-2"
