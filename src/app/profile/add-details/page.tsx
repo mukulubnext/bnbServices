@@ -409,6 +409,10 @@ function AdditionalInfo() {
     const interestedSubCategories = interestedCategories.flatMap(
       (cat) => cat.subCategories,
     );
+    if(interestedCategories.length === 0){
+      toast.error("Please select atleast one category");
+      return;
+    }
     const body = {
       interestedCategories: interestedCategories,
       interestedSubCategories: interestedSubCategories,
@@ -446,7 +450,7 @@ function AdditionalInfo() {
       <div className="w-full flex flex-col gap-4">
         <div className="w-full flex flex-col">
           <label className="font-medium text-xl text-dark">
-            Interested Categories
+            Interested Categories (Choose atleast 1)
           </label>
           <InterestedCategories
             interestedCategories={interestedCategories}
