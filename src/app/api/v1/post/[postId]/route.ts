@@ -32,7 +32,7 @@ export async function GET(
     );
   }
   const post = await prisma.posts.findUnique({
-    where: { id: postId, isDeleted: false },
+    where: { id: postId },
     select: {
       id: true,
       title: true,

@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     );
   }
   const post = await prisma.posts.findUnique({
-    where: { id: postId, isDeleted: false },
+    where: { id: postId },
   });
   if (!post) {
     return NextResponse.json({ status: "failed", message: "Post not found" }, {
