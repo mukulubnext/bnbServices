@@ -24,7 +24,7 @@ const Page: NextPage<Props> = ({}) => {
             alt="Contact Background"
           />
         </div>
-        <div className="relative z-10 max-w-6xl mx-auto px-6 w-full">
+        <div className="relative z-10 max-w-6xl flex flex-col justify-center items-center px-6 w-full">
           <div className="text-center mb-8">
             <h2 className="text-4xl md:text-5xl font-bold mb-4 text-light">
               Get in Touch
@@ -36,7 +36,7 @@ const Page: NextPage<Props> = ({}) => {
           </div>
           <div className="grid md:grid-cols-2 gap-8">
             <div
-              className="backdrop-blur-xl border p-8 rounded-3xl transition-colors"
+             className="backdrop-blur-xl border p-4 sm:p-8 rounded-3xl transition-colors"
               style={{
                 backgroundColor: "rgba(255,255,255,0.03)",
                 borderColor: "rgba(255,255,255,0.1)",
@@ -57,22 +57,22 @@ const Page: NextPage<Props> = ({}) => {
                   href="mailto:boxesnbottles028@gmail.com"
                   className="flex items-center gap-4 p-4 rounded-2xl transition-colors hover:bg-white/5"
                 >
-                  <Mail className="text-highlight" />
-                  <div>
+                  <Mail className="text-highlight shrink-0" />
+                    <div className="min-w-0">
                     <p className="text-xs uppercase font-bold tracking-wider text-muted">
                       Email Support
                     </p>
-                    <a className="font-medium text-light">
+                    <p className="font-medium text-light">
                       boxesnbottles028@gmail.com
-                    </a>
+                    </p>
                   </div>
                 </a>
                 <a
                   href="https://wa.me/1234567890"
                   className="flex items-center gap-4 p-4 rounded-2xl transition-colors hover:bg-white/5"
                 >
-                  <MessageCircle className="text-highlight" />
-                  <div>
+                  <MessageCircle className="text-highlight shrink-0" />
+                  <div className="min-w-0">
                     <p className="text-xs uppercase font-bold tracking-wider text-muted">
                       WhatsApp Chat
                     </p>
@@ -82,7 +82,7 @@ const Page: NextPage<Props> = ({}) => {
               </div>
             </div>
             <div
-              className="backdrop-blur-xl border p-8 rounded-3xl transition-colors"
+              className="backdrop-blur-xl border p-4 sm:p-8 rounded-3xl transition-colors"
               style={{
                 backgroundColor: "rgba(255,255,255,0.03)",
                 borderColor: "rgba(255,255,255,0.1)",
@@ -103,8 +103,8 @@ const Page: NextPage<Props> = ({}) => {
                   href="tel:+919463303177"
                   className="flex items-center gap-4 p-4 rounded-2xl transition-colors hover:bg-white/5"
                 >
-                  <Phone className="text-highlight" />
-                  <div>
+                  <Phone className="text-highlight shrink-0" />
+                  <div className="min-w-0">
                     <p className="text-xs uppercase font-bold tracking-wider text-muted">
                       Call Our Sales Team
                     </p>
@@ -113,7 +113,7 @@ const Page: NextPage<Props> = ({}) => {
                 </a>
                 <div className="flex items-center gap-4 p-4 rounded-2xl">
                   <MapPin className="text-highlight shrink-0" />
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-xs uppercase text-muted font-bold tracking-wider">
                       Headquarters
                     </p>
@@ -124,12 +124,6 @@ const Page: NextPage<Props> = ({}) => {
                 </div>
               </div>
             </div>
-          </div>
-          <div className="mt-12 text-center">
-            <button className="inline-flex hover:shadow-2xl duration-300 bg-light text-dark items-center gap-2 px-8 py-4 rounded-full font-bold shadow-xl transition-all">
-              <MapPin size={18} />
-              Open in Google Maps
-            </button>
           </div>
         </div>
       </section>
