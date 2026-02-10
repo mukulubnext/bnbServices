@@ -63,9 +63,12 @@ const Page: NextPage<Props> = ({}) => {
       setUpdatingCategories(true);
 
       const payload = {
-        interestedCategories: editableCategories.map((cat) => ({id: cat.id, name:cat.name})),
+        interestedCategories: editableCategories.map((cat) => ({
+          id: cat.id,
+          name: cat.name,
+        })),
         interestedSubCategories: editableCategories.flatMap((cat) =>
-          cat.subCategories.map((sub: any) => ({id: sub.id, name:sub.name})),
+          cat.subCategories.map((sub: any) => ({ id: sub.id, name: sub.name })),
         ),
       };
 
@@ -105,7 +108,7 @@ const Page: NextPage<Props> = ({}) => {
   }, [user, loading, router]);
 
   return (
-    <div className="min-h-screen pt-[5vh] relative bg-light">
+    <div className="min-h-screen py-[5vh] overflow-x-hidden relative bg-light">
       {!loading && user ? (
         <>
           <ToastContainer />
@@ -160,16 +163,19 @@ const Page: NextPage<Props> = ({}) => {
                           </div>
                         </div>
                       )}
-                      {
-                        user.isVerified ? (
-                          <p className="text-dark font-bold flex gap-2 items-center">Verified <CheckCircle size={16}/></p>
-                        )
-                        :
-                        (
-                          <p className="text-yellow-500 font-bold flex gap-2 items-center">Verifying <Timer size={16}/></p>
-                        )
-                      }
-                      <Link href={"/change-password"} className="text-white bg-dark py-2 px-5 w-fit rounded font-medium border border-dark hover:text-dark hover:bg-white transition-all cursor-pointer">
+                      {user.isVerified ? (
+                        <p className="text-dark font-bold flex gap-2 items-center">
+                          Verified <CheckCircle size={16} />
+                        </p>
+                      ) : (
+                        <p className="text-yellow-500 font-bold flex gap-2 items-center">
+                          Verifying <Timer size={16} />
+                        </p>
+                      )}
+                      <Link
+                        href={"/change-password"}
+                        className="text-white bg-dark py-2 px-5 w-fit rounded font-medium border border-dark hover:text-dark hover:bg-white transition-all cursor-pointer"
+                      >
                         Change Password
                       </Link>
                       <div className="absolute bottom-10 left-1/2 -translate-x-1/2">
@@ -194,8 +200,30 @@ const Page: NextPage<Props> = ({}) => {
                 )}
                 {selected === 1 && (
                   <div className="flex flex-col gap-6">
-                    <h1 className="font-semibold text-dark text-2xl">
+                    <h1 className="font-semibold flex flex-col md:flex-row justify-between md:items-center text-dark text-2xl">
                       Company Details
+                      {!user.companyName ||
+                      !user.address ||
+                      !user.city ||
+                      !user.state ||
+                      !user.zipCode ||
+                      !user.inceptionDate ||
+                      !user.employeeCount ||
+                      !user.companyWebsite ? (
+                        <Link
+                          href={"/profile/add-details"}
+                          className="font-bold text-center text-sm border hover:text-dark hover:bg-white transition-all duration-300 px-3 py-2 bg-dark rounded-md text-white"
+                        >
+                          Update Details
+                        </Link>
+                      ) : (
+                        <Link
+                          href={"/profile/add-details"}
+                          className="font-bold text-center text-sm border hover:text-dark hover:bg-white transition-all duration-300 px-3 py-2 bg-dark rounded-md text-white"
+                        >
+                          Edit Details
+                        </Link>
+                      )}
                     </h1>
                     <div className="flex flex-col text-black/50 gap-4">
                       <div>
@@ -203,7 +231,11 @@ const Page: NextPage<Props> = ({}) => {
                           <Building /> Company Name:
                         </p>
                         <div className="border cursor-not-allowed border-dark/20 rounded-md p-2 mt-1">
-                          {user.companyName ?? <span className="text-yellow-500 flex items-center gap-2"><TriangleAlert size={20}/> Update needed</span>}
+                          {user.companyName ?? (
+                            <span className="text-yellow-500 flex items-center gap-2">
+                              <TriangleAlert size={20} /> Update needed
+                            </span>
+                          )}
                         </div>
                       </div>
                       {user.role === "seller" && (
@@ -212,7 +244,11 @@ const Page: NextPage<Props> = ({}) => {
                             <Building /> GST Number:
                           </p>
                           <div className="border cursor-not-allowed border-dark/20 rounded-md p-2 mt-1">
-                            {user.gstNumber ?? <span className="text-yellow-500 flex items-center gap-2"><TriangleAlert size={20}/> Update needed</span>}
+                            {user.gstNumber ?? (
+                              <span className="text-yellow-500 flex items-center gap-2">
+                                <TriangleAlert size={20} /> Update needed
+                              </span>
+                            )}
                           </div>
                         </div>
                       )}
@@ -221,7 +257,11 @@ const Page: NextPage<Props> = ({}) => {
                           <MapPin /> Address:
                         </p>
                         <div className="border cursor-not-allowed border-dark/20 rounded-md p-2 mt-1">
-                          {user.address ?? <span className="text-yellow-500 flex items-center gap-2"><TriangleAlert size={20}/> Update needed</span>}
+                          {user.address ?? (
+                            <span className="text-yellow-500 flex items-center gap-2">
+                              <TriangleAlert size={20} /> Update needed
+                            </span>
+                          )}
                         </div>
                       </div>
                       <div>
@@ -229,7 +269,11 @@ const Page: NextPage<Props> = ({}) => {
                           <MapPin /> City:
                         </p>
                         <div className="border cursor-not-allowed border-dark/20 rounded-md p-2 mt-1">
-                          {user.city ?? <span className="text-yellow-500 flex items-center gap-2"><TriangleAlert size={20}/> Update needed</span>}
+                          {user.city ?? (
+                            <span className="text-yellow-500 flex items-center gap-2">
+                              <TriangleAlert size={20} /> Update needed
+                            </span>
+                          )}
                         </div>
                       </div>
                       <div>
@@ -237,7 +281,11 @@ const Page: NextPage<Props> = ({}) => {
                           <MapPin /> State:
                         </p>
                         <div className="border cursor-not-allowed border-dark/20 rounded-md p-2 mt-1">
-                          {user.state ?? <span className="text-yellow-500 flex items-center gap-2"><TriangleAlert size={20}/> Update needed</span>}
+                          {user.state ?? (
+                            <span className="text-yellow-500 flex items-center gap-2">
+                              <TriangleAlert size={20} /> Update needed
+                            </span>
+                          )}
                         </div>
                       </div>
                       <div>
@@ -245,7 +293,11 @@ const Page: NextPage<Props> = ({}) => {
                           <MapPin /> Pin Code:
                         </p>
                         <div className="border cursor-not-allowed border-dark/20 rounded-md p-2 mt-1">
-                          {user.zipCode ?? <span className="text-yellow-500 flex items-center gap-2"><TriangleAlert size={20}/> Update needed</span>}
+                          {user.zipCode ?? (
+                            <span className="text-yellow-500 flex items-center gap-2">
+                              <TriangleAlert size={20} /> Update needed
+                            </span>
+                          )}
                         </div>
                       </div>
                       <div>
@@ -253,7 +305,11 @@ const Page: NextPage<Props> = ({}) => {
                           <Users /> Employee Count:
                         </p>
                         <div className="border cursor-not-allowed border-dark/20 rounded-md p-2 mt-1">
-                          {user.employeeCount ?? <span className="text-yellow-500 flex items-center gap-2"><TriangleAlert size={20}/> Update needed</span>}
+                          {user.employeeCount ?? (
+                            <span className="text-yellow-500 flex items-center gap-2">
+                              <TriangleAlert size={20} /> Update needed
+                            </span>
+                          )}
                         </div>
                       </div>
                       <div>
@@ -261,24 +317,12 @@ const Page: NextPage<Props> = ({}) => {
                           <LinkIcon /> Website:
                         </p>
                         <div className="border cursor-not-allowed border-dark/20 rounded-md p-2 mt-1">
-                          {user.companyWebsite ?? <span className="text-yellow-500 flex items-center gap-2"><TriangleAlert size={20}/> Update needed</span>}
+                          {user.companyWebsite ?? (
+                            <span className="text-yellow-500 flex items-center gap-2">
+                              <TriangleAlert size={20} /> Update needed
+                            </span>
+                          )}
                         </div>
-                      </div>
-                      <div className="mt-4">
-                        {
-                          (!user.companyName ||
-                          !user.address ||
-                          !user.city ||
-                          !user.state ||
-                          !user.zipCode ||
-                          !user.inceptionDate ||
-                          !user.employeeCount || !user.companyWebsite) && (
-                            <Link href={"/profile/add-details"} className="font-bold border hover:text-dark hover:bg-white transition-all duration-300 px-3 py-2 bg-dark rounded-md text-white">
-                              Update Details
-                            </Link>
-                          )
-                        }
-
                       </div>
                     </div>
                   </div>

@@ -28,27 +28,6 @@ const Page: NextPage<Props> = ({}) => {
       router.replace("/signin");
       return;
     }
-
-    const hasProfile =
-      user.companyName &&
-      user.address &&
-      user.city &&
-      user.state &&
-      user.zipCode &&
-      user.inceptionDate &&
-      user.employeeCount;
-
-    if (!hasProfile) {
-      setStepNumber(1);
-      return;
-    }
-
-    if (!user.interestedCategories || user.interestedCategories.length === 0) {
-      setStepNumber(2);
-      return;
-    }
-
-    router.replace("/home");
   }, [loading, user, router]);
 
   if (loading || !user) {
@@ -211,7 +190,7 @@ function Profile({ user }: { user: any }) {
             />
           </div>
         </div>
-        {user.role === "seller" && (
+        {user.role === "seller" && !user.gstNumber && (
           <div className="w-full flex justify-center flex-col">
             <label htmlFor="gst" className="font-medium text-xl text-dark">
               GST Number
@@ -252,7 +231,7 @@ function Profile({ user }: { user: any }) {
             />
           </div>
         </div>
-        <div className="flex justify-between w-full gap-6">
+        <div className="flex flex-col md:flex-row justify-between w-full gap-6">
           <div className="w-full flex justify-center flex-col">
             <label htmlFor="city" className="font-medium text-xl text-dark">
               City

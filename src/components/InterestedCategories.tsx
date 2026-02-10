@@ -37,7 +37,7 @@ const InterestedCategories: NextPage<Props> = ({
   }, []);
 
   return (
-    <div className="select-none p-3 flex flex-col gap-4 w-full text-dark rounded-md">
+    <div className="select-none p-3 flex flex-col bg-white border-dark/20 border gap-4 w-full text-dark rounded-md">
       {interestedCategories.length > 0 ? (
         <div className="flex border px-5 py-3 rounded-xl border-dark items-center relative">
           <div className="flex flex-wrap gap-2 items-center">
