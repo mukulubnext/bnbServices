@@ -222,9 +222,9 @@ enum QuantityUnit{
   kg
   g
   L
-  mL
-  mm
+  ml
   m
   cm
-  gsm
+  mm
+  GSM
 }

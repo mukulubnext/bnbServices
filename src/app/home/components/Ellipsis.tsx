@@ -4,7 +4,7 @@ import axios from "axios";
 import { CheckCircle, EllipsisVertical, Pencil, Trash2 } from "lucide-react";
 import { NextPage } from "next";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 
 interface Props {
@@ -33,6 +33,7 @@ const EllipsisComp: NextPage<Props> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [fulfilled, setIsFullfilled] = useState(isFullfilled);
+  const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -40,6 +41,23 @@ const EllipsisComp: NextPage<Props> = ({
     window.addEventListener("ellipsis-opened", closeMenu);
     return () => window.removeEventListener("ellipsis-opened", closeMenu);
   }, []);
+  useEffect(() => {
+  const handleClickOutside = (e: MouseEvent) => {
+    if (
+      menuRef.current &&
+      !menuRef.current.contains(e.target as Node)
+    ) {
+      setIsOpen(false);
+    }
+  };
+
+  document.addEventListener("mousedown", handleClickOutside);
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);
+
 
   const toggleMenu = () => {
     if (!isOpen) {
@@ -68,6 +86,7 @@ const EllipsisComp: NextPage<Props> = ({
 
   return (
     <div
+      ref={menuRef}
       onMouseDown={(e) => e.preventDefault()}
       onClick={(e) => {
         e.stopPropagation();
@@ -107,7 +126,7 @@ const EllipsisComp: NextPage<Props> = ({
                 }}
                 className="w-full z-30 flex gap-2 items-center text-left px-4 py-2 hover:bg-dark/10"
               >
-                <CheckCircle size={16} /> Fulfill
+                <CheckCircle size={16} /> Fulfilled
               </button>
             ) : (
               <button className="flex justify-center items-center p-1">

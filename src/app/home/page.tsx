@@ -16,6 +16,7 @@ import { toast, ToastContainer } from "react-toastify";
 import PostDetails from "./components/PostDetails";
 import AllItems from "./components/AllItems";
 import { useDebounce } from "@/hooks/useDebounce";
+import { shrinkString } from "@/lib/shrink";
 
 interface Props {}
 
@@ -278,7 +279,7 @@ function Buyer({ isVerified }: { isVerified: boolean }) {
           />
         )}
         <p className="text-lg md:text-2xl text-dark">
-          Need to buy something? Make a post!
+          Need to buy something? Make a requirment!
         </p>
         {isVerified ? (
           <Link
@@ -286,7 +287,7 @@ function Buyer({ isVerified }: { isVerified: boolean }) {
             className="flex gap-4 justify-center items-center w-full bg-dark md:max-w-[40%] text-highlight font-bold py-2 md:text-2xl hover:bg-transparent border border-dark hover:text-dark transition-all duration-300 rounded-lg"
           >
             <Pencil size={20} />
-            Post
+            Requirments
           </Link>
         ) : (
           <p className="text-dark flex flex-col sm:flex-row gap-2 justify-center items-center text-center">
@@ -309,7 +310,7 @@ function Buyer({ isVerified }: { isVerified: boolean }) {
                   }`}
                 >
                   <div className="flex items-center select-none">
-                    Title
+                    Requirment
                     <SortIndicator
                       active={sort.key === "title"}
                       order={sort.order}
@@ -363,7 +364,7 @@ function Buyer({ isVerified }: { isVerified: boolean }) {
                   }`}
                 >
                   <div className="flex items-center justify-center select-none">
-                    Interests
+                    Interested
                     <SortIndicator
                       active={sort.key === "offers"}
                       order={sort.order}
@@ -385,7 +386,7 @@ function Buyer({ isVerified }: { isVerified: boolean }) {
                       className="text-black/90 cursor-pointer hover:bg-dark/5 transition-all duration-300 border-t border-b last:border-b-0 border-dark/20 even:bg-dark/2"
                     >
                       <td className="px-3 py-4 font-medium text-dark text-left">
-                        {post.title}
+                        {shrinkString(post.title,16)}
                       </td>
 
                       <td className="px-3 py-4 text-dark/70">
@@ -449,8 +450,8 @@ function Buyer({ isVerified }: { isVerified: boolean }) {
                 ) : (
                   <tr className="bg-white text-center w-full">
                     <td>
-                      <p className="text-center pt-2 pb-5 relative md:left-15/10 text-dark/50">
-                        No posts made
+                      <p className="text-center pt-2 pb-5 relative md:left-14/10 text-dark/50">
+                        No requirments added
                       </p>
                     </td>
                   </tr>
@@ -643,7 +644,7 @@ function Seller({
         {items && <AllItems items={items} setItems={setItems} />}
         <div className="flex flex-col gap-2">
           <h1 className="text-dark p-2 font-bold text-2xl">
-            Posts you might be interested in
+            Requirments you can fulfill
           </h1>
           {expandPost && (
             <PostDetails
@@ -676,7 +677,7 @@ function Seller({
                     }`}
                   >
                     <div className="flex items-center select-none">
-                      Title
+                      Requirments
                       <SortIndicator
                         active={sort.key === "title"}
                         order={sort.order}
@@ -716,7 +717,7 @@ function Seller({
                       className="text-black/90 cursor-pointer hover:bg-dark/5 transition-all duration-300 border-t border-b last:border-b-0 border-dark/20 even:bg-dark/2"
                     >
                       <td className="p-3 font-medium text-dark">
-                        {post.title}
+                        {shrinkString(post.title,16)}
                       </td>
                       <td className="p-3 text-dark/70">
                         {new Intl.DateTimeFormat("en-GB", {

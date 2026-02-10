@@ -40,7 +40,7 @@ const Page: NextPage = () => {
       budget: 0,
       subCategoryId: undefined,
       quantity: 1,
-      quantityUnit: "L",
+      quantityUnit: "kg",
     },
   ]);
 
@@ -67,7 +67,7 @@ const Page: NextPage = () => {
         budget: 0,
         subCategoryId: undefined,
         quantity: 1,
-        quantityUnit: "L",
+        quantityUnit: "kg",
       },
     ]);
   };
@@ -103,7 +103,7 @@ const Page: NextPage = () => {
             budget: 0,
             subCategoryId: undefined,
             quantity: 1,
-            quantityUnit: "L",
+            quantityUnit: "kg",
           },
         ]);
         router.replace('/home')
@@ -117,7 +117,7 @@ const Page: NextPage = () => {
     }
   };
 
-  if (!loading && !user.isVerified) {
+  if (!loading && user && !user.isVerified) {
     return (
       <div className="min-h-screen py-[10vh] items-center relative bg-light">
         <Navbar solid />

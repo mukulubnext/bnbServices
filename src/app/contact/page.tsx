@@ -36,7 +36,7 @@ const Page: NextPage<Props> = ({}) => {
           </div>
           <div className="grid md:grid-cols-2 gap-8">
             <div
-             className="backdrop-blur-xl border p-4 sm:p-8 rounded-3xl transition-colors"
+              className="backdrop-blur-xl border p-4 sm:p-8 rounded-3xl transition-colors"
               style={{
                 backgroundColor: "rgba(255,255,255,0.03)",
                 borderColor: "rgba(255,255,255,0.1)",
@@ -58,7 +58,7 @@ const Page: NextPage<Props> = ({}) => {
                   className="flex items-center gap-4 p-4 rounded-2xl transition-colors hover:bg-white/5"
                 >
                   <Mail className="text-highlight shrink-0" />
-                    <div className="min-w-0">
+                  <div className="min-w-0">
                     <p className="text-xs uppercase font-bold tracking-wider text-muted">
                       Email Support
                     </p>
@@ -68,15 +68,15 @@ const Page: NextPage<Props> = ({}) => {
                   </div>
                 </a>
                 <a
-                  href="https://wa.me/1234567890"
+                  href="tel:+919463303177"
                   className="flex items-center gap-4 p-4 rounded-2xl transition-colors hover:bg-white/5"
                 >
-                  <MessageCircle className="text-highlight shrink-0" />
+                  <Phone className="text-highlight shrink-0" />
                   <div className="min-w-0">
                     <p className="text-xs uppercase font-bold tracking-wider text-muted">
-                      WhatsApp Chat
+                      Call Our Sales Team
                     </p>
-                    <p className="font-medium text-light">Start Conversation</p>
+                    <p className="font-medium text-light">+91 9463303177</p>
                   </div>
                 </a>
               </div>
@@ -92,7 +92,7 @@ const Page: NextPage<Props> = ({}) => {
                 <span className="w-10 bg-highlight/22 h-10 rounded-full flex items-center justify-center">
                   <ExternalLink size={20} />
                 </span>
-                Business & Sales
+                Business Related
               </h3>
               <p className="mb-8 leading-relaxed text-muted">
                 Interested in enterprise plans? Connect with our executives to
@@ -100,28 +100,17 @@ const Page: NextPage<Props> = ({}) => {
               </p>
               <div className="flex flex-col gap-4">
                 <a
-                  href="tel:+919463303177"
+                  href="https://wa.me/+919463303177"
                   className="flex items-center gap-4 p-4 rounded-2xl transition-colors hover:bg-white/5"
                 >
-                  <Phone className="text-highlight shrink-0" />
+                  <MessageCircle className="text-highlight shrink-0" />
                   <div className="min-w-0">
                     <p className="text-xs uppercase font-bold tracking-wider text-muted">
-                      Call Our Sales Team
+                      WhatsApp Chat
                     </p>
-                    <p className="font-medium text-light">+91 9463303177</p>
+                    <p className="font-medium text-light">Start Conversation</p>
                   </div>
                 </a>
-                <div className="flex items-center gap-4 p-4 rounded-2xl">
-                  <MapPin className="text-highlight shrink-0" />
-                  <div className="min-w-0">
-                    <p className="text-xs uppercase text-muted font-bold tracking-wider">
-                      Headquarters
-                    </p>
-                    <p className="font-medium text-light">
-                      123 Innovation Drive, Silicon Valley, CA
-                    </p>
-                  </div>
-                </div>
               </div>
             </div>
           </div>

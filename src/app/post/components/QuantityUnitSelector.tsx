@@ -1,7 +1,7 @@
 import { QuantityUnit } from "@prisma/client";
 import { ChevronDown } from "lucide-react";
 import { NextPage } from "next";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface Props {
   quantityUnit: string;
@@ -20,8 +20,26 @@ interface ItemData {
 const QuantityUnitSelector: NextPage<Props> = ({ quantityUnit, onChange }) => {
   const [expanded, setExpanded] = useState(false);
   const values = QuantityUnit;
+  const menuRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(e.target as Node)
+      ) {
+        setExpanded(false);
+      }
+    };
+  
+    document.addEventListener("mousedown", handleClickOutside);
+  
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   return (
     <div
+      ref={menuRef}
       className={`flex flex-col relative px-1 border border-dark/20 z-100 ${expanded ? "rounded-t": "rounded"}`}
       onClick={(e) => {
         e.stopPropagation();

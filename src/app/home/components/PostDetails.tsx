@@ -263,7 +263,7 @@ export default function PostDetails({
         budget: 0,
         subCategoryId: undefined,
         quantity: 1,
-        quantityUnit: "L",
+        quantityUnit: "kg",
       },
     ]);
   };
@@ -304,7 +304,7 @@ export default function PostDetails({
             <>
               <div className="flex justify-between flex-col items-start md:flex-row md:items-center">
                 <div>
-                  <h1 className="font-bold text-2xl md:text-4xl">{title}</h1>
+                  <h1 className="font-bold text-xl md:text-3xl">{title}</h1>
                   <p className="text-xs font-medium text-dark/90">
                     {createdAt !== updatedAt && "(Edited)"}
                   </p>

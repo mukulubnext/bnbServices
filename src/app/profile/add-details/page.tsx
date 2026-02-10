@@ -282,7 +282,7 @@ function Profile({ user }: { user: any }) {
               htmlFor="inception"
               className="font-medium text-xl text-dark"
             >
-              Inception Date
+              Incorporation Date
             </label>
             <div className="flex justify-center relative items-center w-full">
               <input
