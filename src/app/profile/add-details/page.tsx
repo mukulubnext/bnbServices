@@ -126,7 +126,7 @@ function Profile({ user }: { user: any }) {
       toast.error("Please fill all the fields!");
       return;
     }
-    const body = user.role === "buyer" ? {
+    const body = user.role === "buyer" || user.gstNumber ? {
       companyName: companyName,
       address: addressLine1 + " " + addressLine2,
       city: city,
@@ -409,10 +409,6 @@ function AdditionalInfo() {
     const interestedSubCategories = interestedCategories.flatMap(
       (cat) => cat.subCategories,
     );
-    if(interestedCategories.length === 0){
-      toast.error("Please select atleast one category");
-      return;
-    }
     const body = {
       interestedCategories: interestedCategories,
       interestedSubCategories: interestedSubCategories,
@@ -422,13 +418,16 @@ function AdditionalInfo() {
       ...body,
     };
     try {
+      if(interestedCategories.length === 0){
+        toast.error("Please select atleast one category");
+      }
       const res = await axios.post("/api/v2/profile/additional", payload);
       if (res.data.status === "success") {
         toast.success("Registered successfully!");
         Object.keys(localStorage)
           .filter((k) => k.startsWith("register_"))
           .forEach((k) => localStorage.removeItem(k));
-        await refresh();
+        refresh();
         router.push("/home");
       } else {
         toast.error(res.data.message ?? "Something went wrong!");

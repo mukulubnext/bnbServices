@@ -41,7 +41,7 @@ const Page: NextPage<Props> = ({}) => {
     }
   }, [user, loading, router]);
   return (
-    <div className="flex flex-col px-[5%] pb-10 pt-24 md:pt-30 gap-5 min-h-screen bg-light">
+    <div className="flex flex-col px-[5%] pb-20 pt-24 md:pt-30 gap-5 min-h-screen bg-light">
       {!loading && user ? (
         <>
           <Navbar solid={true} />
@@ -339,9 +339,7 @@ function Buyer({ isVerified }: { isVerified: boolean }) {
                     sort.key === "category" && "text-dark"
                   }`}
                 >
-                  <div className="flex items-center select-none">
-                    Items
-                  </div>
+                  <div className="flex items-center select-none">Items</div>
                 </th>
                 <th
                   onClick={() => handleSort("offers")}
@@ -350,7 +348,7 @@ function Buyer({ isVerified }: { isVerified: boolean }) {
                   }`}
                 >
                   <div className="flex items-center justify-center select-none">
-                    Clicks
+                    Seen By
                     <SortIndicator
                       active={sort.key === "clicks"}
                       order={sort.order}
@@ -386,7 +384,7 @@ function Buyer({ isVerified }: { isVerified: boolean }) {
                       className="text-black/90 cursor-pointer hover:bg-dark/5 transition-all duration-300 border-t border-b last:border-b-0 border-dark/20 even:bg-dark/2"
                     >
                       <td className="px-3 py-4 font-medium text-dark text-left">
-                        {shrinkString(post.title,16)}
+                        {shrinkString(post.title, 30)}
                       </td>
 
                       <td className="px-3 py-4 text-dark/70">
@@ -395,39 +393,37 @@ function Buyer({ isVerified }: { isVerified: boolean }) {
                         }).format(new Date(post.createdAt))}
                       </td>
                       <td className="px-3 py-3 top-1 relative flex gap-2 items-center text-dark/70">
-                        <span
-                          className={`flex gap-2 relative items-center`}
-                        >
+                        <span className={`flex gap-2 relative items-center`}>
                           {post.items.length ? (
                             post.isFullfilled ? (
                               <div
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setItems(post.items);
-                              }}
-                              className="text-sm px-3 py-1 bg-dark text-white active:scale-95 active:-translate-y-0.5 border font-medium rounded transition-all select-none hover:-translate-y-0.5 duration-300 cursor-pointer"
-                            >
-                              Fulfilled
-                            </div>
-                            )
-                            :
-                            (
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setItems(post.items);
+                                }}
+                                className="text-sm px-3 py-1 bg-dark text-white active:scale-95 active:-translate-y-0.5 border font-medium rounded transition-all select-none hover:-translate-y-0.5 duration-300 cursor-pointer"
+                              >
+                                Fulfilled
+                              </div>
+                            ) : (
                               <div
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setItems(post.items);
-                              }}
-                              className="text-sm px-3 py-1 active:scale-95 active:-translate-y-0.5 border font-medium rounded transition-all select-none hover:-translate-y-0.5 duration-300 cursor-pointer"
-                            >
-                              View Items
-                            </div>
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setItems(post.items);
+                                }}
+                                className="text-sm px-3 py-1 active:scale-95 active:-translate-y-0.5 border font-medium rounded transition-all select-none hover:-translate-y-0.5 duration-300 cursor-pointer"
+                              >
+                                View Items
+                              </div>
                             )
                           ) : (
                             <p className="text-black/50">no items</p>
                           )}
                         </span>
                       </td>
-                      <td className="px-3 py-4 text-center font-bold text-dark">{post.clicks.length}</td>
+                      <td className="px-3 py-4 text-center font-bold text-dark">
+                        {post.clicks.length}
+                      </td>
                       <td className="px-3 py-4 text-center font-bold text-dark">
                         {post.offers.length}
                       </td>
@@ -644,7 +640,7 @@ function Seller({
         {items && <AllItems items={items} setItems={setItems} />}
         <div className="flex flex-col gap-2">
           <h1 className="text-dark p-2 font-bold text-2xl">
-            Requirments you can fulfill
+            Orders you can fulfill
           </h1>
           {expandPost && (
             <PostDetails
@@ -666,8 +662,8 @@ function Seller({
               placeholder="Search"
             />
           </div>
-          <div className="overflow-x-auto">
-            <table className="bg-white shadow rounded-md w-full min-w-200">
+          <div className="">
+            <table className="bg-white hidden md:table shadow rounded-md w-full">
               <thead>
                 <tr className="bg-dark/2 text-dark/50">
                   <th
@@ -677,7 +673,7 @@ function Seller({
                     }`}
                   >
                     <div className="flex items-center select-none">
-                      Requirments
+                      Requirment
                       <SortIndicator
                         active={sort.key === "title"}
                         order={sort.order}
@@ -717,7 +713,7 @@ function Seller({
                       className="text-black/90 cursor-pointer hover:bg-dark/5 transition-all duration-300 border-t border-b last:border-b-0 border-dark/20 even:bg-dark/2"
                     >
                       <td className="p-3 font-medium text-dark">
-                        {shrinkString(post.title,16)}
+                        {shrinkString(post.title, 30)}
                       </td>
                       <td className="p-3 text-dark/70">
                         {new Intl.DateTimeFormat("en-GB", {
@@ -731,26 +727,24 @@ function Seller({
                           {post.items.length ? (
                             post.isFullfilled ? (
                               <div
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setItems(post.items);
-                              }}
-                              className="text-sm px-3 bg-dark text-white py-1 active:scale-95 active:-translate-y-0.5 border font-medium rounded transition-all select-none hover:-translate-y-1 duration-300 cursor-pointer"
-                            >
-                              Fulfilled
-                            </div>
-                            )
-                            :
-                            (
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setItems(post.items);
+                                }}
+                                className="text-sm px-3 bg-dark text-white py-1 active:scale-95 active:-translate-y-0.5 border font-medium rounded transition-all select-none hover:-translate-y-1 duration-300 cursor-pointer"
+                              >
+                                Fulfilled
+                              </div>
+                            ) : (
                               <div
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setItems(post.items);
-                              }}
-                              className="text-sm px-3 py-1 active:scale-95 active:-translate-y-0.5 border font-medium rounded transition-all select-none hover:-translate-y-1 duration-300 cursor-pointer"
-                            >
-                              View Items
-                            </div>
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setItems(post.items);
+                                }}
+                                className="text-sm px-3 py-1 active:scale-95 active:-translate-y-0.5 border font-medium rounded transition-all select-none hover:-translate-y-1 duration-300 cursor-pointer"
+                              >
+                                View Items
+                              </div>
                             )
                           ) : (
                             <p className="text-black/50">no items</p>
@@ -792,6 +786,60 @@ function Seller({
                 </tbody>
               )}
             </table>
+          </div>
+          <div className="md:hidden bg-white rounded-md shadow w-full px-3 py-2 space-y-3">
+            {posts.map((post) => {
+              const total = post.items.reduce(
+                (acc, item) => acc + Number(item.budget) * Number(item.units),
+                0,
+              );
+
+              return (
+                <div
+                  onClick={() => {
+                    setExpandPost(post.id);
+                  }}
+                  key={post.id}
+                  className="w-full rounded-xl hover:bg-dark/5 border border-dark/10 p-4 flex flex-col gap-3 active:scale-[0.99] transition"
+                >
+                  <div className="flex justify-between items-start gap-3">
+                    <p className="text-dark font-semibold leading-snug">
+                      {shrinkString(post.title, 34)}
+                    </p>
+
+                    <span
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setItems(post.items);
+                      }}
+                      className="text-dark font-semibold whitespace-nowrap cursor-pointer"
+                    >
+                      ₹{total}
+                    </span>
+                  </div>
+
+                  {/* DATE */}
+                  <p className="text-sm text-dark/60">
+                    {new Intl.DateTimeFormat("en-GB", {
+                      dateStyle: "medium",
+                    }).format(new Date(post.createdAt))}
+                  </p>
+
+                  {/* ACTIONS */}
+                  <div className="flex justify-end pt-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setExpandPost(post.id);
+                      }}
+                      className="px-5 py-1.5 rounded-full bg-dark text-white text-sm font-medium active:scale-95 transition"
+                    >
+                      View
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </>

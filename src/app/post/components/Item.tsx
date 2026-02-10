@@ -71,6 +71,7 @@ const Item: NextPage<Props> = ({ value, allCategories, onChange }) => {
           <input
             type="number"
             min={1}
+            onScroll={(e) => e.preventDefault()}
             value={value.units}
             onChange={(e) => update({ units: e.target.valueAsNumber })}
             className="border border-dark/20 rounded-md w-full p-2"
@@ -80,6 +81,7 @@ const Item: NextPage<Props> = ({ value, allCategories, onChange }) => {
           <span className="text-dark font-medium">Estimated Price / Unit</span>
           <div className="relative flex items-center">
             <input
+              onScroll={(e) => e.preventDefault()}
               type="number"
               min={0}
               value={value.budget === 0 ? "" : String(value.budget)}
@@ -102,6 +104,7 @@ const Item: NextPage<Props> = ({ value, allCategories, onChange }) => {
           <div className="flex items-start focus-within:border-dark justify-between border border-dark/20 rounded-md">
             <input
               id="quantity"
+              onScroll={(e) => e.preventDefault()}
               type="number"
               min={1}
               value={value.quantity}

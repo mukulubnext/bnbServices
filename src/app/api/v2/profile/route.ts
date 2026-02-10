@@ -48,6 +48,7 @@ export async function POST(req: NextRequest) {
       where: { id: id },
       select: {
         role: true,
+        gstNumber: true,
       }
     });
     if(!user){
@@ -56,7 +57,7 @@ export async function POST(req: NextRequest) {
         { status: 404 }
       );
     }
-    if(user.role === "seller" && !gstNumber){
+    if(user.role === "seller" && !user.gstNumber && !gstNumber){
       return NextResponse.json(
         { status: "failed", message: "Please fill GST Number" },
         { status: 400 }
