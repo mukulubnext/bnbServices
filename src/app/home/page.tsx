@@ -788,7 +788,8 @@ function Seller({
             </table>
           </div>
           <div className="md:hidden bg-white rounded-md shadow w-full px-3 py-2 space-y-3">
-            {posts.map((post) => {
+            
+            {(!loading && !loadingMore) ? (posts.length > 0 ? posts.map((post) => {
               const total = post.items.reduce(
                 (acc, item) => acc + Number(item.budget) * Number(item.units),
                 0,
@@ -806,7 +807,6 @@ function Seller({
                     <p className="text-dark font-semibold leading-snug">
                       {shrinkString(post.title, 34)}
                     </p>
-
                     <span
                       onClick={(e) => {
                         e.stopPropagation();
@@ -817,15 +817,11 @@ function Seller({
                       ₹{total}
                     </span>
                   </div>
-
-                  {/* DATE */}
                   <p className="text-sm text-dark/60">
                     {new Intl.DateTimeFormat("en-GB", {
                       dateStyle: "medium",
                     }).format(new Date(post.createdAt))}
                   </p>
-
-                  {/* ACTIONS */}
                   <div className="flex justify-end pt-2">
                     <button
                       onClick={(e) => {
@@ -839,7 +835,19 @@ function Seller({
                   </div>
                 </div>
               );
-            })}
+            }):
+          (
+            <div className="flex my-5 text-sm justify-center items-center">
+              <p className="text-dark/50">No posts found</p>
+            </div>
+          )
+        )
+          :
+            (
+              <div className="flex my-5 justify-center items-center">
+                <Spinner light={false} />
+              </div>
+            )}
           </div>
         </div>
       </>
