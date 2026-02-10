@@ -85,6 +85,7 @@ model Posts {
   userId              Int
   user                User        @relation(fields: [userId], references: [id])
   offers              Offers[]
+  clicks              Int[]
 
   price               Int
 
@@ -180,7 +181,6 @@ model OTP {
 
   @@index([identifier, channel, purpose])
 }
-
 model Credits{
   id            Int        @id @default(autoincrement())
   credits       Int

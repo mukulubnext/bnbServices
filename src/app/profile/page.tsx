@@ -109,7 +109,7 @@ const Page: NextPage<Props> = ({}) => {
   }, [user, loading, router]);
 
   return (
-    <div className="min-h-screen py-[5vh] overflow-x-hidden relative bg-light">
+    <div className="min-h-screen py-[5vh] pb-[7vh] overflow-x-hidden relative bg-light">
       {!loading && user ? (
         <>
           <ToastContainer />
