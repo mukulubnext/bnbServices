@@ -401,7 +401,7 @@ function Buyer({ isVerified }: { isVerified: boolean }) {
                             setDeletePost={setDeletePost}
                             setDeletePostId={setDeletePostId}
                             setDeletePostTitle={setDeletePostTitle}
-                            deletePostTitle={deletePostTitle}
+                            deletePostTitle={post.title}
                             setEditPost={setEditPost}
                             setExpandPost={setExpandPost}
                           />
