@@ -85,7 +85,7 @@ model Posts {
   userId              Int
   user                User        @relation(fields: [userId], references: [id])
   offers              Offers[]
-  clicks              Int[]
+  clicks              Int[]       @default([])
 
   price               Int
 

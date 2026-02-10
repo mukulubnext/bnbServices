@@ -7,7 +7,30 @@ export async function GET(
   ctx: { params: Promise<{ postId: string }> },
 ) {
   const postId = Number((await ctx.params).postId);
-
+  const token = req.cookies.get("token")?.value;
+  if (!token) {
+    return NextResponse.json(
+      { status: "failed", message: "Unauthorized" },
+      { status: 401 },
+    );
+  }
+  const decrypted = await decrypt(token);
+  if (!decrypted) {
+    return NextResponse.json(
+      { status: "failed", message: "Invalid token" },
+      { status: 401 },
+    );
+  }
+  const userId = decrypted.id;
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+  if (!user) {
+    return NextResponse.json(
+      { status: "failed", message: "User not found" },
+      { status: 404 },
+    );
+  }
   const post = await prisma.posts.findUnique({
     where: { id: postId, isDeleted: false },
     select: {
@@ -18,6 +41,7 @@ export async function GET(
       updatedAt: true,
       price: true,
       isFullfilled: true,
+      clicks: true,
       items: {
         where: { isDeleted: false },
         select: {
@@ -41,6 +65,23 @@ export async function GET(
       },
     },
   });
+  if (user.role === "seller") {
+    await prisma.posts.updateMany({
+      where: {
+        id: postId,
+        NOT: {
+          clicks: {
+            has: Number(userId),
+          },
+        },
+      },
+      data: {
+        clicks: {
+          push: Number(userId),
+        },
+      },
+    });
+  }
   if (!post) {
     return NextResponse.json({ status: "failed", message: "Post not found" });
   }

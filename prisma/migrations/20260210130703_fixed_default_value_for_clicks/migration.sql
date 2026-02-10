@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Posts" ALTER COLUMN "clicks" SET DEFAULT ARRAY[]::INTEGER[];

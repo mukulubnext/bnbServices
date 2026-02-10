@@ -31,6 +31,7 @@ export async function GET(
         createdAt: true,
         offers: true,
         isFullfilled: true,
+        clicks: true,
         items: {
           select: {
             id: true,

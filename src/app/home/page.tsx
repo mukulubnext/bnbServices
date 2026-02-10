@@ -95,7 +95,7 @@ const Page: NextPage<Props> = ({}) => {
 export default Page;
 
 function Buyer({ isVerified }: { isVerified: boolean }) {
-  type SortKey = "title" | "date" | "category" | "active" | "offers";
+  type SortKey = "title" | "date" | "category" | "offers" | "clicks";
   type SortOrder = "asc" | "desc";
 
   const [posts, setPosts] = useState([]);
@@ -149,6 +149,11 @@ function Buyer({ isVerified }: { isVerified: boolean }) {
           return order === "asc"
             ? a.offers.length - b.offers.length
             : b.offers.length - a.offers.length;
+
+        case "clicks":
+          return order === "asc"
+            ? a.clicks.length - b.clicks.length
+            : b.clicks.length - a.clicks.length;
 
         default:
           return 0;
@@ -224,6 +229,13 @@ function Buyer({ isVerified }: { isVerified: boolean }) {
     sort.key === "offers" &&
       sort.order === "desc" &&
       posts.sort((a: any, b: any) => b.offers.length - a.offers.length);
+
+    sort.key === "clicks" &&
+      sort.order === "asc" &&
+      posts.sort((a: any, b: any) => a.clicks.length - b.clicks.length);
+    sort.key === "clicks" &&
+      sort.order === "desc" &&
+      posts.sort((a: any, b: any) => b.clicks.length - a.clicks.length);
   }, [sort]);
 
   const handleLoadMore = () => {
@@ -234,6 +246,7 @@ function Buyer({ isVerified }: { isVerified: boolean }) {
     setRange(nextRange);
     fetchPosts(nextRange);
   };
+
   const handleSort = (key: SortKey) => {
     setSort((prev) => {
       if (prev.key === key) {
@@ -327,13 +340,8 @@ function Buyer({ isVerified }: { isVerified: boolean }) {
                 >
                   <div className="flex items-center select-none">
                     Items
-                    <SortIndicator
-                      active={sort.key === "category"}
-                      order={sort.order}
-                    />
                   </div>
                 </th>
-
                 <th
                   onClick={() => handleSort("offers")}
                   className={`p-3 cursor-pointer text-center ${
@@ -341,7 +349,21 @@ function Buyer({ isVerified }: { isVerified: boolean }) {
                   }`}
                 >
                   <div className="flex items-center justify-center select-none">
-                    Views
+                    Clicks
+                    <SortIndicator
+                      active={sort.key === "clicks"}
+                      order={sort.order}
+                    />
+                  </div>
+                </th>
+                <th
+                  onClick={() => handleSort("offers")}
+                  className={`p-3 cursor-pointer text-center ${
+                    sort.key === "offers" && "text-dark"
+                  }`}
+                >
+                  <div className="flex items-center justify-center select-none">
+                    Interests
                     <SortIndicator
                       active={sort.key === "offers"}
                       order={sort.order}
@@ -404,7 +426,7 @@ function Buyer({ isVerified }: { isVerified: boolean }) {
                           )}
                         </span>
                       </td>
-
+                      <td className="px-3 py-4 text-center font-bold text-dark">{post.clicks.length}</td>
                       <td className="px-3 py-4 text-center font-bold text-dark">
                         {post.offers.length}
                       </td>
