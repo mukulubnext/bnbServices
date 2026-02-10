@@ -35,7 +35,7 @@ const TransactionTable: NextPage<Props> = ({}) => {
   }
   
   return (
-    <div className="w-full h-[50vh] border border-dark/40 rounded-lg">
+    <div className="w-full h-[50vh] border overflow-y-scroll thin-scrollbar border-dark/40 text-xs md:text-sm lg:text-[16px] rounded-lg">
       {!transactions || transactions.length === 0 ? (
         <div className="flex h-full relative bottom-[5%] text-black/40 justify-center items-center">
           No previous record.
@@ -52,7 +52,9 @@ const TransactionTable: NextPage<Props> = ({}) => {
           <tbody className="text-dark">
             {transactions.map((trans: any) => (
               <tr key={trans.id}>
-                <td className="border border-dark/20 p-2">{trans.createdAt}</td>
+                <td className="border border-dark/20 p-2">{new Intl.DateTimeFormat("en-GB", {
+                          dateStyle: "short",
+                        }).format(new Date(trans.createdAt))}</td>
                 <td className="border text-center border-dark/20">
                   {trans.type}
                 </td>
