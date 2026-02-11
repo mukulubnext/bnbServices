@@ -191,12 +191,12 @@ function Profile({ user }: { user: any }) {
   return (
     <>
       <div className=" text-dark mb-5">
-        <h1 className="font-bold text-4xl">Add Profile Details</h1>
-        <p>Complete your buyer profile by filling necessary details</p>
+        <h1 className="font-bold text-xl md:text-3xl">Add Profile Details</h1>
+        <p className="not-md:text-sm">Complete your buyer profile by filling necessary details</p>
       </div>
       <div className="w-full flex justify-center items-center flex-col gap-4">
         <div className="w-full flex justify-center flex-col">
-          <label htmlFor="company" className="font-medium text-xl text-dark">
+          <label htmlFor="company" className="font-medium  text-sm md:text-xl text-dark">
             Company Name
           </label>
           <div className="flex justify-center relative items-center w-full">
@@ -210,7 +210,7 @@ function Profile({ user }: { user: any }) {
         </div>
         {user.role === "seller" && !user.gstNumber && (
           <div className="w-full flex justify-center flex-col">
-            <label htmlFor="gst" className="font-medium text-xl text-dark">
+            <label htmlFor="gst" className="font-medium text-sm md:text-xl text-dark">
               GST Number
             </label>
             <div className="flex justify-center relative items-center w-full">
@@ -224,7 +224,7 @@ function Profile({ user }: { user: any }) {
           </div>
         )}
         <div className="w-full flex justify-center flex-col">
-          <label htmlFor="address1" className="font-medium text-xl text-dark">
+          <label htmlFor="address1" className="font-medium text-sm md:text-xl text-dark">
             Address Line 1
           </label>
           <div className="flex justify-center relative items-center w-full">
@@ -237,7 +237,7 @@ function Profile({ user }: { user: any }) {
           </div>
         </div>
         <div className="w-full flex justify-center flex-col">
-          <label htmlFor="address2" className="font-medium text-xl text-dark">
+          <label htmlFor="address2" className="font-medium text-sm md:text-xl text-dark">
             Address Line 2
           </label>
           <div className="flex justify-center relative items-center w-full">
@@ -251,7 +251,7 @@ function Profile({ user }: { user: any }) {
         </div>
         <div className="flex flex-col md:flex-row justify-between w-full gap-6">
           <div className="w-full flex justify-center flex-col">
-            <label htmlFor="city" className="font-medium text-xl text-dark">
+            <label htmlFor="city" className="font-medium text-sm md:text-xl text-dark">
               City
             </label>
             <div className="flex justify-center relative items-center w-full">
@@ -264,7 +264,7 @@ function Profile({ user }: { user: any }) {
             </div>
           </div>
           <div className="w-full flex justify-center flex-col">
-            <label htmlFor="state" className="font-medium text-xl text-dark">
+            <label htmlFor="state" className="font-medium text-sm md:text-xl text-dark">
               State
             </label>
             <div className="flex justify-center relative items-center w-full">
@@ -277,7 +277,7 @@ function Profile({ user }: { user: any }) {
             </div>
           </div>
           <div className="w-full flex justify-center flex-col">
-            <label htmlFor="zip" className="font-medium text-xl text-dark">
+            <label htmlFor="zip" className="font-medium text-sm md:text-xl text-dark">
               Zip Code
             </label>
             <div className="flex justify-center relative items-center w-full">
@@ -298,7 +298,7 @@ function Profile({ user }: { user: any }) {
           <div className="w-full flex justify-center flex-col">
             <label
               htmlFor="inception"
-              className="font-medium text-xl text-dark"
+              className="font-medium text-sm md:text-xl text-dark"
             >
               Incorporation Date
             </label>
@@ -315,7 +315,7 @@ function Profile({ user }: { user: any }) {
           <div className="w-full flex justify-center flex-col">
             <label
               htmlFor="employeeCount"
-              className="font-medium text-xl text-dark"
+              className="font-medium text-sm md:text-xl text-dark"
             >
               Employee Count
             </label>
@@ -374,7 +374,7 @@ function Profile({ user }: { user: any }) {
           <div className="w-full flex justify-center flex-col">
             <label
               htmlFor="legalExplanation"
-              className="font-medium text-xl text-dark"
+              className="font-medium text-sm md:text-xl text-dark"
             >
               Please explain
             </label>
@@ -480,7 +480,7 @@ function AdditionalInfo({ user }: { user: any }) {
 
       <div className="w-full flex flex-col gap-4">
         <div className="w-full flex flex-col">
-          <label className="font-medium text-xl text-dark">
+          <label className="font-medium text-sm md:text-xl text-dark">
             Interested Categories (Choose atleast 1)
           </label>
           <InterestedCategories
@@ -490,7 +490,7 @@ function AdditionalInfo({ user }: { user: any }) {
         </div>
 
         <div className="w-full flex flex-col">
-          <label className="font-medium text-xl text-dark">
+          <label className="font-medium text-sm md:text-xl text-dark">
             Link for company website
           </label>
           <div className="relative">
