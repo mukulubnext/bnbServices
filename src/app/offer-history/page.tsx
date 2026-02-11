@@ -42,7 +42,7 @@ const Page: NextPage<Props> = ({}) => {
     getOffers();
   }, []);
   return (
-    <div className="bg-light w-screen py-[10vh] min-h-screen">
+    <div className="bg-light w-screen py-[max(96px,10vh)] min-h-screen">
       <Navbar solid />
       <LiquidGlassMenu />
       {expandPost && (

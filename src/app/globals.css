@@ -25,3 +25,6 @@
   scrollbar-width: thin;
   scroll-behavior: smooth;
 }
+button{
+  cursor: pointer;
+}
