@@ -1,37 +1,101 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<h1>BNB Services</h1>
 
-## Getting Started
+<p>A platform for buyers and sellers to connect and exchange services.</p>
 
-First, run the development server:
+<h3>Tech Stack</h3>
+<hr style="height:1px; margin: 10px 0" />
+<div>
+    <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" />
+    <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" />
+    <img src="https://img.shields.io/badge/Typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
+    <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
+    <img src="https://img.shields.io/badge/Prisma-3700B3?style=for-the-badge&logo=prisma&logoColor=white" />
+    <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" />
+    <ul>
+        <li style="font-weight: bold;">
+            Frontend + Backend: <span style="font-weight: normal;">Next.JS</span>
+        </li>
+        <li style="font-weight: bold;">
+            Styling: <span style="font-weight: normal;">Tailwind CSS</span>
+        </li>
+        <li style="font-weight: bold;">
+            Database: <span style="font-weight: normal;">PostgreSQL</span>
+        </li>
+        <li style="font-weight: bold;">
+            ORM: <span style="font-weight: normal;">Prisma</span>
+        </li>
+    </ul>
+</div>
+<h3>Quick Start</h3>
+<hr style="height:1px; margin: 10px 0" />
+<div>
+    <h4>Prerequisites</h4>
+    <ul>
+        <li style="font-weight: bold;">
+            <span style="font-weight: normal;">Node.js, npm</span>
+        </li>
+        <li style="font-weight: bold;">
+            <span style="font-weight: normal;">PostgreSQL Database</span>
+        </li>
+        <li style="font-weight: bold;">
+            <span style="font-weight: normal;">Firebase Project with Billing Setuped</span>
+        </li>
+    </ul>
+</div>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+<h4>Installation</h4>
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. Clone the repository
+    ```bash
+        git clone https://github.com/mukulubnext/bnbServices
+    ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+2. Install all the dependencies
+    ```bash
+        npm install
+    ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. Setup `.env` file similar to `.env.example` with your own values
 
-## Learn More
+4. Start the development server with
+    ```bash
+        npm run dev
+    ```
 
-To learn more about Next.js, take a look at the following resources:
+<h4>Project Structure</h4>
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+    src/
+        app/                        # Pages and API Routes
+            api/                    # API Routes
+                vx/                 # Version number x
+                  auth/             # Authentication Routes
+                  category/         # Category Routes
+                  post/             # Post Routes
+                  offer/            # Offer Routes
+                  transactions/     # Transaction Routes
+                  user/             # User Routes
+                  credits/          # Credits Routes
+                  otp/              # OTP Routes
+            .
+            .
+            (route)/                # Pages
+                components/         # Page Components
+                page.tsx
+            .
+            .
+        components/                 # Global Components
+        context/
+            AuthContext.tsx         # Auth Context - returns {user, loading, refresh}
+        hooks/
+            useDebounce.tsx         # Debounce Hook
+            usePersistedState.tsx   # Persistent State Hook for saving form data in localStorage
+        lib/                        # Utility Functions
+        mail/                       # Email Templates in EJS
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+<hr>
+<h3>Database Model</h3>
+<hr>
+<img src="./public/db.svg" alt="Database Model">
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# bnbServices
+<h6>All individual pages are further documented in there respective files with inline comments.</h6>
+<h6>For any development/code related issues contact - <a href="https://github.com/CodewithMukal">Here</a></h6>
