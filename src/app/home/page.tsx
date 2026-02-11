@@ -1,6 +1,6 @@
 "use client";
 import Navbar from "@/components/Navbar";
-import { Pencil, Search, Timer } from "lucide-react";
+import { Eye, MousePointerClick, Pencil, Search, Timer } from "lucide-react";
 import { NextPage } from "next";
 import { useEffect, useMemo, useState } from "react";
 import LiquidGlassMenu from "../../components/LiquidGlassMenu";
@@ -299,8 +299,8 @@ function Buyer({ isVerified }: { isVerified: boolean }) {
       <hr className="text-dark/22" />
       <div>
         <h1 className="text-dark font-bold text-2xl">Previous Posts</h1>
-        <div className="relative w-full not-md:pb-40 scrollBar not-md:overflow-x-auto ">
-          <table className="bg-white relative my-2 shadow rounded-md min-w-225 w-full">
+        <div className="relative w-full not-md:pb-40 scrollBar hidden md:table">
+          <table className="bg-white relative my-2 shadow rounded-md w-full">
             <thead>
               <tr className="bg-dark/2 text-dark/50">
                 <th
@@ -481,6 +481,91 @@ function Buyer({ isVerified }: { isVerified: boolean }) {
               </tbody>
             )}
           </table>
+        </div>
+        <div className="md:hidden mt-2 bg-white rounded-md shadow w-full px-3 py-2 space-y-3">
+          {!loading && !loadingMore ? (
+            posts.length > 0 ? (
+              posts.map((post: any) => {
+                const total = post.items.reduce(
+                  (acc: any, item: any) =>
+                    acc + Number(item.budget) * Number(item.units),
+                  0,
+                );
+
+                return (
+                  <div
+                    onClick={() => {
+                      setExpandPost(post.id);
+                    }}
+                    key={post.id}
+                    className="w-full rounded-xl hover:bg-dark/5 border border-dark/10 p-4 flex flex-col gap-3 active:scale-[0.99] transition"
+                  >
+                    <div className="flex justify-between gap-2">
+                      <div className="flex flex-col justify-between items-start gap-3">
+                        <p className="text-dark font-semibold leading-snug">
+                          {shrinkString(post.title, 34)}
+                        </p>
+                        <span
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setItems(post.items);
+                          }}
+                          className="text-dark underline underline-offset-4 font-semibold whitespace-nowrap cursor-pointer"
+                        >
+                          ₹{total}
+                        </span>
+                      </div>
+                      <div className="inline-flex h-fit justify-center">
+                          <EllipsisComp
+                            postId={post.id}
+                            setDeletePost={setDeletePost}
+                            setDeletePostId={setDeletePostId}
+                            setDeletePostTitle={setDeletePostTitle}
+                            deletePostTitle={post.title}
+                            setEditPost={setEditPost}
+                            setExpandPost={setExpandPost}
+                            isFullfilled={post.isFullfilled}
+                          />
+                        </div>
+                    </div>
+                    <p className="text-sm text-dark/60">
+                      {new Intl.DateTimeFormat("en-GB", {
+                        dateStyle: "medium",
+                      }).format(new Date(post.createdAt))}
+                    </p>
+                    <div className="flex justify-between items-center pt-2">
+                      <div className="flex text-dark/70 text-sm flex-col items-start justify-start gap-0.5">
+                        <span className="flex items-center gap-1">
+                          <MousePointerClick size={16} /> Clicks:{" "}
+                          <p className="font-bold">{post.clicks.length}</p>
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Eye size={16} /> Interested: <p className="font-bold">{post.offers.length}</p>
+                        </span>
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setExpandPost(post.id);
+                        }}
+                        className="px-5 py-1.5 rounded-full bg-dark text-white text-sm font-medium active:scale-95 transition"
+                      >
+                        View
+                      </button>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="flex my-5 text-sm justify-center items-center">
+                <p className="text-dark/50">No posts found</p>
+              </div>
+            )
+          ) : (
+            <div className="flex my-5 justify-center items-center">
+              <Spinner light={false} />
+            </div>
+          )}
         </div>
       </div>
     </>
@@ -788,62 +873,62 @@ function Seller({
             </table>
           </div>
           <div className="md:hidden bg-white rounded-md shadow w-full px-3 py-2 space-y-3">
-            
-            {(!loading && !loadingMore) ? (posts.length > 0 ? posts.map((post) => {
-              const total = post.items.reduce(
-                (acc, item) => acc + Number(item.budget) * Number(item.units),
-                0,
-              );
+            {!loading && !loadingMore ? (
+              posts.length > 0 ? (
+                posts.map((post) => {
+                  const total = post.items.reduce(
+                    (acc, item) =>
+                      acc + Number(item.budget) * Number(item.units),
+                    0,
+                  );
 
-              return (
-                <div
-                  onClick={() => {
-                    setExpandPost(post.id);
-                  }}
-                  key={post.id}
-                  className="w-full rounded-xl hover:bg-dark/5 border border-dark/10 p-4 flex flex-col gap-3 active:scale-[0.99] transition"
-                >
-                  <div className="flex justify-between items-start gap-3">
-                    <p className="text-dark font-semibold leading-snug">
-                      {shrinkString(post.title, 34)}
-                    </p>
-                    <span
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setItems(post.items);
-                      }}
-                      className="text-dark font-semibold whitespace-nowrap cursor-pointer"
-                    >
-                      ₹{total}
-                    </span>
-                  </div>
-                  <p className="text-sm text-dark/60">
-                    {new Intl.DateTimeFormat("en-GB", {
-                      dateStyle: "medium",
-                    }).format(new Date(post.createdAt))}
-                  </p>
-                  <div className="flex justify-end pt-2">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
+                  return (
+                    <div
+                      onClick={() => {
                         setExpandPost(post.id);
                       }}
-                      className="px-5 py-1.5 rounded-full bg-dark text-white text-sm font-medium active:scale-95 transition"
+                      key={post.id}
+                      className="w-full rounded-xl hover:bg-dark/5 border border-dark/10 p-4 flex flex-col gap-3 active:scale-[0.99] transition"
                     >
-                      View
-                    </button>
-                  </div>
+                      <div className="flex justify-between items-start gap-3">
+                        <p className="text-dark font-semibold leading-snug">
+                          {shrinkString(post.title, 34)}
+                        </p>
+                        <span
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setItems(post.items);
+                          }}
+                          className="text-dark underline underline-offset-4 font-semibold whitespace-nowrap cursor-pointer"
+                        >
+                          ₹{total}
+                        </span>
+                      </div>
+                      <p className="text-sm text-dark/60">
+                        {new Intl.DateTimeFormat("en-GB", {
+                          dateStyle: "medium",
+                        }).format(new Date(post.createdAt))}
+                      </p>
+                      <div className="flex justify-end pt-2">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setExpandPost(post.id);
+                          }}
+                          className="px-5 py-1.5 rounded-full bg-dark text-white text-sm font-medium active:scale-95 transition"
+                        >
+                          View
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="flex my-5 text-sm justify-center items-center">
+                  <p className="text-dark/50">No posts found</p>
                 </div>
-              );
-            }):
-          (
-            <div className="flex my-5 text-sm justify-center items-center">
-              <p className="text-dark/50">No posts found</p>
-            </div>
-          )
-        )
-          :
-            (
+              )
+            ) : (
               <div className="flex my-5 justify-center items-center">
                 <Spinner light={false} />
               </div>
