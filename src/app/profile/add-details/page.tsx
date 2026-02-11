@@ -46,7 +46,7 @@ const Page: NextPage<Props> = ({}) => {
           {!loading ? (
             <>
               {stepNumber === 1 && <Profile user={user} />}
-              {stepNumber === 2 && <AdditionalInfo />}
+              {stepNumber === 2 && <AdditionalInfo user={user} />}
             </>
           ) : (
             <div className="flex justify-center items-center">
@@ -113,6 +113,22 @@ function Profile({ user }: { user: any }) {
   );
   const [gstNumber, setGstNumber] = usePersistedState("profile_gstNumber", "");
   const [isLoading, setLoading] = useState(false);
+  useEffect(() => {
+    if (user) {
+      setCompanyName(user.companyName);
+      setAddressLine1(user.address);
+      setCity(user.city);
+      setStateName(user.state);
+      setZipCode(user.zipCode);
+      setInceptionDate(
+        new Date(user.inceptionDate).toISOString().split("T")[0],
+      );
+      setEmployeeCount(user.employeeCount);
+      setPastLegalAction(user.pastLegalAction);
+      setPastLegalExplanation(user.pastLegalExplanation);
+      setGstNumber(user.gstNumber);
+    }
+  }, []);
   const handleSubmit = async () => {
     if (
       !companyName ||
@@ -126,29 +142,31 @@ function Profile({ user }: { user: any }) {
       toast.error("Please fill all the fields!");
       return;
     }
-    const body = user.role === "buyer" || user.gstNumber ? {
-      companyName: companyName,
-      address: addressLine1 + " " + addressLine2,
-      city: city,
-      state: stateName,
-      zipCode: zipCode,
-      inceptionDate: inceptionDate,
-      employeeCount: employeeCount,
-      pastLegalAction: pastLegalAction,
-      pastLegalExplanation: pastLegalExplanation,
-    }:
-    {
-      companyName: companyName,
-      address: addressLine1 + " " + addressLine2,
-      city: city,
-      state: stateName,
-      zipCode: zipCode,
-      inceptionDate: inceptionDate,
-      employeeCount: employeeCount,
-      pastLegalAction: pastLegalAction,
-      pastLegalExplanation: pastLegalExplanation,
-      gstNumber: gstNumber,
-    };
+    const body =
+      user.role === "buyer" || user.gstNumber
+        ? {
+            companyName: companyName,
+            address: addressLine1 + " " + addressLine2,
+            city: city,
+            state: stateName,
+            zipCode: zipCode,
+            inceptionDate: inceptionDate,
+            employeeCount: employeeCount,
+            pastLegalAction: pastLegalAction,
+            pastLegalExplanation: pastLegalExplanation,
+          }
+        : {
+            companyName: companyName,
+            address: addressLine1 + " " + addressLine2,
+            city: city,
+            state: stateName,
+            zipCode: zipCode,
+            inceptionDate: inceptionDate,
+            employeeCount: employeeCount,
+            pastLegalAction: pastLegalAction,
+            pastLegalExplanation: pastLegalExplanation,
+            gstNumber: gstNumber,
+          };
     setLoading(true);
     try {
       const res = await axios.post("/api/v2/profile", body);
@@ -324,8 +342,8 @@ function Profile({ user }: { user: any }) {
         </div>
         <div className="flex justify-between w-full">
           <p className="font-medium text-dark">
-            Any past legal action/specification that may affect {user.role === "buyer" ? "seller" : "buyer"} in
-            future?
+            Any past legal action/specification that may affect{" "}
+            {user.role === "buyer" ? "seller" : "buyer"} in future?
           </p>
           <div>
             <label className="inline-flex items-center mr-6">
@@ -387,7 +405,7 @@ function Profile({ user }: { user: any }) {
   );
 }
 
-function AdditionalInfo() {
+function AdditionalInfo({ user }: { user: any }) {
   const [interestedCategories, setInterestedCategories] = usePersistedState<
     any[]
   >("register_seller_interestedCategories", []);
@@ -404,6 +422,20 @@ function AdditionalInfo() {
 
   const { stepNumber, setStepNumber, data, setData } = context;
 
+  useEffect(() => {
+    if (user) {
+      const formatted = user.interestedCategories.map((cat: any) => ({
+        id: cat.id,
+        name: cat.name,
+        subCategories: user.interestedSubCategories.filter(
+          (sub: any) => sub.categoryId === cat.id,
+        ),
+      }));
+      setInterestedCategories(formatted);
+      setWebsite(user.companyWebsite);
+    }
+  }, []);
+
   const handleSubmit = async () => {
     setLoading(true);
     const interestedSubCategories = interestedCategories.flatMap(
@@ -418,7 +450,7 @@ function AdditionalInfo() {
       ...body,
     };
     try {
-      if(interestedCategories.length === 0){
+      if (interestedCategories.length === 0) {
         toast.error("Please select atleast one category");
       }
       const res = await axios.post("/api/v2/profile/additional", payload);
