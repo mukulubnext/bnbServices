@@ -1,11 +1,13 @@
 // Notification Component
 
 "use client";
+import { useAuth } from "@/context/AuthContext";
 import { useEffect, useRef, useState } from "react";
 
 export default function Notification() {
   const [visible, setVisible] = useState(false);
   const [opacity, setOpacity] = useState(1);
+  const {user} = useAuth();
 
   const stayTimer = useRef<NodeJS.Timeout | null>(null);
   const fadeInterval = useRef<NodeJS.Timeout | null>(null);
@@ -67,7 +69,8 @@ export default function Notification() {
 
   if (!visible) return null;
 
-  return (
+  if(user && user.role === "seller"){
+    return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-1000 w-[95%] max-w-xl">
       <div
         onMouseEnter={handleHover}
@@ -97,3 +100,5 @@ export default function Notification() {
     </div>
   );
 }
+
+  }

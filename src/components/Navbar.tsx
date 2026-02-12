@@ -221,7 +221,6 @@ const Navbar: NextPage<Props> = ({ solid, userProp }: Props) => {
         </div>
       </div>
     </nav>
-    <Banner />
     </>
   );
 };
