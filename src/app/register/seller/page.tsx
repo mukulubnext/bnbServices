@@ -128,6 +128,21 @@ function Register() {
   const [fireBaseId, setFireBaseId] = useState("");
   const router = useRouter();
 
+  const getUser = async () => {
+    try {
+      const res = await axios.get("/api/v1/auth/user");
+      const u = res.data.user;
+      if (res.data.status === "success") {
+        router.replace('/profile/add-details');
+      }
+    } catch (e) {
+      router.replace('/profile/add-details');
+      console.log(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!recaptchaVerifierRef.current) {
       recaptchaVerifierRef.current = new RecaptchaVerifier(
@@ -262,7 +277,7 @@ function Register() {
           Object.keys(localStorage)
             .filter((k) => k.startsWith("register_"))
             .forEach((k) => localStorage.removeItem(k));
-          router.push("/profile/add-details");
+          await getUser();
       }
       }
       catch(err:any){

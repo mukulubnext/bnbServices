@@ -17,13 +17,13 @@ export async function POST(req: NextRequest) {
         name: z.string(),
       }),
     ),
-    companyWebsite: z.string().max(100).optional(),
+    companyWebsite: z.string().max(100).optional().nullable(),
   });
   try {
     let { interestedCategories, interestedSubCategories, companyWebsite } =
       reqBody.parse(await req.json());
     const token = req.cookies.get("token")?.value;
-    if(companyWebsite!.length > 0 && !companyWebsite?.startsWith("http")){
+    if(companyWebsite && companyWebsite!.length > 0 && !companyWebsite?.startsWith("http")){
         companyWebsite = "https://" + companyWebsite;
     }
     if (!token) {

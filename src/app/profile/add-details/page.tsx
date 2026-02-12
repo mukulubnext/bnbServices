@@ -18,17 +18,12 @@ interface Props {}
 const Page: NextPage<Props> = ({}) => {
   const [stepNumber, setStepNumber] = useState(1);
   const [data, setData] = useState<any>({});
-  const { user, loading } = useAuth();
-  const isAuthReady = !loading && user;
+  const { user, loading , refresh} = useAuth();
   const router = useRouter();
-  useEffect(() => {
-    if (loading) return;
 
-    if (!user) {
-      router.replace("/signin");
-      return;
-    }
-  }, [loading, user, router]);
+  useEffect(() => {
+    refresh();
+  }, []);
 
   if (loading || !user) {
     return (
@@ -115,18 +110,18 @@ function Profile({ user }: { user: any }) {
   const [isLoading, setLoading] = useState(false);
   useEffect(() => {
     if (user) {
-      setCompanyName(user.companyName);
-      setAddressLine1(user.address);
-      setCity(user.city);
-      setStateName(user.state);
-      setZipCode(user.zipCode);
-      setInceptionDate(
+      user.companyName && setCompanyName(user.companyName);
+      user.address && setAddressLine1(user.address);
+      user.city && setCity(user.city);
+      user.state && setStateName(user.state);
+      user.zipCode && setZipCode(user.zipCode);
+      user.inceptionDate && setInceptionDate(
         new Date(user.inceptionDate).toISOString().split("T")[0],
       );
-      setEmployeeCount(user.employeeCount);
-      setPastLegalAction(user.pastLegalAction);
-      setPastLegalExplanation(user.pastLegalExplanation);
-      setGstNumber(user.gstNumber);
+      user.employeeCount && setEmployeeCount(user.employeeCount);
+      user.pastLegalAction && setPastLegalAction(user.pastLegalAction);
+      user.pastLegalExplanation && setPastLegalExplanation(user.pastLegalExplanation);
+      user.gstNumber && setGstNumber(user.gstNumber);
     }
   }, []);
   const handleSubmit = async () => {
@@ -165,7 +160,7 @@ function Profile({ user }: { user: any }) {
             employeeCount: employeeCount,
             pastLegalAction: pastLegalAction,
             pastLegalExplanation: pastLegalExplanation,
-            gstNumber: gstNumber,
+            gstNumber: gstNumber.length === 15 ? gstNumber : null,
           };
     setLoading(true);
     try {
@@ -211,7 +206,7 @@ function Profile({ user }: { user: any }) {
         {user.role === "seller" && !user.gstNumber && (
           <div className="w-full flex justify-center flex-col">
             <label htmlFor="gst" className="font-medium text-sm md:text-xl text-dark">
-              GST Number
+              GST Number <span className="text-xs text-dark/60">(Optional)</span>
             </label>
             <div className="flex justify-center relative items-center w-full">
               <input
@@ -444,7 +439,7 @@ function AdditionalInfo({ user }: { user: any }) {
     const body = {
       interestedCategories: interestedCategories,
       interestedSubCategories: interestedSubCategories,
-      companyWebsite: website,
+      companyWebsite: website && website.length > 0 ? website : null,
     };
     const payload = {
       ...body,
@@ -452,6 +447,7 @@ function AdditionalInfo({ user }: { user: any }) {
     try {
       if (interestedCategories.length === 0) {
         toast.error("Please select atleast one category");
+        return;
       }
       const res = await axios.post("/api/v2/profile/additional", payload);
       if (res.data.status === "success") {

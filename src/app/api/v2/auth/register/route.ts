@@ -101,8 +101,18 @@ export async function POST(req: NextRequest) {
       });
     }
     await sendEmail(user.email, html, "Welcome to Bottles n Boxes");
-    return res;
-  } catch (err) {
+    const token = await encrypt({ id: user.id, email: user.email, role: user.role });
+    res.cookies.set("token", token, {
+        path: "/",
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 * 7 ,
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        secure: process.env.NODE_ENV === "production",
+      });
+      return res;
+  } 
+  
+  catch (err) {
     console.error(err);
     if (err instanceof z.ZodError) {
       return NextResponse.json(
