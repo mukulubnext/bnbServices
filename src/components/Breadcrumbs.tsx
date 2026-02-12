@@ -3,9 +3,7 @@ import { usePathname } from "next/navigation";
 
 export default function () {
   const pathname = usePathname();
-  const segments = pathname.split("/").filter(Boolean);
-
-  
+  const segments = pathname.split("/").filter(Boolean); // Split the pathname into segments    /home/about => ['home', 'about']
 
   return (
     <nav className="text-sm absolute top-2 left-[5%] z-10 text-dark/70">
@@ -16,6 +14,7 @@ export default function () {
           </Link>
         </li>
 
+        {/* Render the breadcrumb segments */}
         {segments.map((segment, index) => {
           const href = "/" + segments.slice(0, index + 1).join("/");
           const isLast = index === segments.length - 1;

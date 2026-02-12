@@ -1,3 +1,5 @@
+// Notification Component
+
 "use client";
 import { useEffect, useRef, useState } from "react";
 

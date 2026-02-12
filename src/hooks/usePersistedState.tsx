@@ -1,3 +1,15 @@
+// Hook to persist state in localStorage
+// Saves data in localStorage and returns the state and a function to update the state
+
+// Usage: 
+// const [state, setState] = usePersistedState("key", "initialValue");
+
+// Used in:
+//  -> Registeration Page
+//  -> Additional Details Page
+
+"use client";
+
 import { useEffect, useState } from "react";
 
 export function usePersistedState<T>(key: string, initialValue: T) {

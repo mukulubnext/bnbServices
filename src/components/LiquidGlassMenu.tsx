@@ -1,3 +1,5 @@
+// Liquid Glass Menu Component
+
 "use client";
 import { LiquidGlassCard } from "@/components/LiquidGlass";
 import { useAuth } from "@/context/AuthContext";
@@ -46,7 +48,7 @@ export default function LiquidGlassMenu() {
             </Link>
           </div>
         )}
-        {!loading && user && user.role === "buyer" ? (
+        {!loading && user && user.role === "buyer" ? ( // If buyer render post button else if seller render offer-history button else render a skeleton if loading
           <>
             {pathname === "/post" ? (
               <LiquidGlassCard

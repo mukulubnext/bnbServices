@@ -1,3 +1,5 @@
+// Loading overlay to show while user is being fetched
+
 "use client"
 import { useAuth } from '@/context/AuthContext'
 import { NextPage } from 'next'

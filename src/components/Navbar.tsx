@@ -16,6 +16,7 @@ interface Props {
 }
 
 const Navbar: NextPage<Props> = ({ solid, userProp }: Props) => {
+  // States
   const [isScrolled, setScrolled] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
   const { user, loading } = useAuth();
@@ -24,6 +25,8 @@ const Navbar: NextPage<Props> = ({ solid, userProp }: Props) => {
     { name: "About", path: "/about" },
     { name: "Contact", path: "/contact" },
   ];
+
+  // Effects
   useEffect(() => {
     if (solid) {
       setScrolled(true);
@@ -35,6 +38,7 @@ const Navbar: NextPage<Props> = ({ solid, userProp }: Props) => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
   return (
     <>
       <nav
@@ -67,18 +71,18 @@ const Navbar: NextPage<Props> = ({ solid, userProp }: Props) => {
       </div>
       <div className="hidden md:flex justify-center items-center gap-4 h-full">
         {!loading && user && user.role === "seller" && (
-          <Link
+          <Link // If seller render credit balance
             href="/buy-credits"
             className="
-    group relative flex items-center gap-3 px-4 py-1
-    rounded-2xl
-    bg-white/10 backdrop-blur-md
-    border border-white/20
-    text-light
-    hover:bg-white/20
-    transition-all duration-300
-    shadow-lg hover:shadow-2xl
-  "
+              group relative flex items-center gap-3 px-4 py-1
+              rounded-2xl
+              bg-white/10 backdrop-blur-md
+              border border-white/20
+              text-light
+              hover:bg-white/20
+              transition-all duration-300
+              shadow-lg hover:shadow-2xl
+            "
           >
             <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition pointer-events-none" />
             <div className="relative p-2 rounded-xl bg-white/20 border border-white/30">
@@ -92,7 +96,7 @@ const Navbar: NextPage<Props> = ({ solid, userProp }: Props) => {
           </Link>
         )}
         {!loading ? (
-          !user ? (
+          !user ? (   // If user is not logged in
             <>
               <Link
                 className="flex px-6 py-2.5 rounded-full text-sm bg-light text-dark font-bold transition-all transform hover:-translate-y-0.5 duration-300 shadow-md"
@@ -107,7 +111,7 @@ const Navbar: NextPage<Props> = ({ solid, userProp }: Props) => {
                 Sign In
               </Link>
             </>
-          ) : (
+          ) : ( // If user is logged in shows profile badge
             <Link
               className="flex w-10 h-10 justify-center p-2.5 rounded-full text-sm bg-light text-dark font-bold transition-all transform hover:-translate-y-0.5 duration-300 shadow-md"
               href={"/profile"}
@@ -119,6 +123,7 @@ const Navbar: NextPage<Props> = ({ solid, userProp }: Props) => {
           <Spinner light={true} />
         )}
       </div>
+      {/* Hamburger Menu Button */}
       <button className="md:hidden transition-colors duration-300 p-2 hover:bg-white/10 rounded-lg flex justify-center items-center">
         <Menu
           onClick={() => setMenuOpen(true)}
@@ -131,6 +136,8 @@ const Navbar: NextPage<Props> = ({ solid, userProp }: Props) => {
           size={28}
         />
       </button>
+
+      {/* Expanded Hamburger Menu */}
       <div
         className={`absolute top-full left-0 w-full shadow-2xl transition-all duration-300 ease-in-out md:hidden overflow-hidden ${
           isMenuOpen
@@ -174,17 +181,17 @@ const Navbar: NextPage<Props> = ({ solid, userProp }: Props) => {
                   <Link
                     href="/buy-credits"
                     className="
-    group relative flex items-center gap-5 px-4 py-2
-    rounded-2xl
-    w-full
-    justify-center
-    bg-white/10 backdrop-blur-md
-    border border-white/20
-    text-light
-    hover:bg-white/20
-    transition-all duration-300
-    shadow-lg hover:shadow-2xl
-  "
+                    group relative flex items-center gap-5 px-4 py-2
+                    rounded-2xl
+                    w-full
+                    justify-center
+                    bg-white/10 backdrop-blur-md
+                    border border-white/20
+                    text-light
+                    hover:bg-white/20
+                    transition-all duration-300
+                    shadow-lg hover:shadow-2xl
+                  "
                   >
                     <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition pointer-events-none" />
                     <div className="flex items-center gap-2">
@@ -218,12 +225,14 @@ const Navbar: NextPage<Props> = ({ solid, userProp }: Props) => {
     </>
   );
 };
+
 interface Navitems {
   name: string;
   path: string;
   click?: () => void;
 }
-function NavLink({ name, path }: Navitems) {
+
+function NavLink({ name, path }: Navitems) { // NavLink Component
   return (
     <Link
       className={`text-sm group font-medium transition-all relative ${
@@ -240,7 +249,7 @@ function NavLink({ name, path }: Navitems) {
     </Link>
   );
 }
-function MenuLink({ name, path, click }: Navitems) {
+function MenuLink({ name, path, click }: Navitems) {    // MenuLink Component
   return (
     <Link
       className={`text-lg text-left flex justify-between items-center group font-medium transition-all relative ${

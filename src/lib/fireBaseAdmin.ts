@@ -1,3 +1,6 @@
+// Firebase Admin Configuration
+// Kindly add your Firebase Admin configuration json in .env file as shown in .env.example
+
 import admin from "firebase-admin";
 
 if (!admin.apps.length) {

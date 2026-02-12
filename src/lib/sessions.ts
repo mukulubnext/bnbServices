@@ -1,3 +1,6 @@
+// Sessions Helper
+// Kindly add your session secret in .env file as shown in .env.example
+
 import "server-only";
 import { SignJWT, jwtVerify } from "jose";
 
@@ -11,7 +14,7 @@ export interface SessionPayload extends JWTPayload {
 const secretKey = process.env.SESSION_SECRET;
 const encodedKey = new TextEncoder().encode(secretKey);
 
-export async function encrypt(payload: any, exp?: string) {
+export async function encrypt(payload: any, exp?: string) {   // Function responsible for encrypting an object into JWT
   return new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
@@ -19,7 +22,7 @@ export async function encrypt(payload: any, exp?: string) {
     .sign(encodedKey);
 }
 
-export async function decrypt(
+export async function decrypt(                                // Function responsible for decrypting JWT into object
   session?: string
 ): Promise<SessionPayload | null> {
   if (!session) return null;

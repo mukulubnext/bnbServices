@@ -15,13 +15,15 @@ const InterestedCategories: NextPage<Props> = ({
   interestedCategories,
   setInterestedCategories,
 }: Props) => {
-  const [expanded, setExpanded] = useState(true);
-  const [categories, setCategories] = useState<any[]>([]);
 
-  const [catExpanded, setCatExpanded] = useState<number | undefined>(undefined);
+  // States
+  const [expanded, setExpanded] = useState(true);       // Expanded -> opens the menu -> always true after UI changed
+  const [categories, setCategories] = useState<any[]>([]);   // Categories -> stores all categories
+
+  const [catExpanded, setCatExpanded] = useState<number | undefined>(undefined);   // catExpanded -> stores the id of the category that is expanded
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchCategories = async () => { // Fetches all categories from the server and stores them in categories state
       try {
         const res = await axios.get("/api/v1/category");
         if (res.data.status === "success") {
@@ -38,7 +40,7 @@ const InterestedCategories: NextPage<Props> = ({
 
   return (
     <div className="select-none p-3 flex flex-col bg-white border-dark border gap-4 w-full text-dark rounded-md">
-      {interestedCategories.length > 0 ? (
+      {interestedCategories.length > 0 ? ( // If there are interested categories, render them
         <div className="flex border px-5 py-3 rounded-xl border-dark items-center relative">
           <div className="flex flex-wrap gap-2 items-center">
             {interestedCategories.map((cat) => (
@@ -49,7 +51,7 @@ const InterestedCategories: NextPage<Props> = ({
                 <span className="uppercase font-semibold border-r border-light/20 px-2">
                   {cat.name}
                 </span>
-                {cat.subCategories.map((sub: any) => (
+                {cat.subCategories.map((sub: any) => (   // Render all subcategories of the category
                   <span
                     key={sub.id}
                     className="flex items-center gap-1 bg-white/10 px-2 py-0.5 rounded-full text-sm"
@@ -58,7 +60,7 @@ const InterestedCategories: NextPage<Props> = ({
                     <X
                       size={12}
                       className="cursor-pointer hover:text-red-400"
-                      onClick={(e) => {
+                      onClick={(e) => {     // Remove the subcategory from the interested categories
                         e.stopPropagation();
                         setInterestedCategories(
                           (prev) =>
@@ -73,7 +75,7 @@ const InterestedCategories: NextPage<Props> = ({
                                     }
                                   : c,
                               )
-                              .filter((c) => c.subCategories.length > 0), // 🧠 auto-remove empty cat
+                              .filter((c) => c.subCategories.length > 0), // auto-remove empty cat
                         );
                       }}
                     />
@@ -83,7 +85,7 @@ const InterestedCategories: NextPage<Props> = ({
                 <X
                   size={14}
                   className="ml-2 hover:text-red-400"
-                  onClick={(e) => {
+                  onClick={(e) => {               // Remove the category from the interested categories
                     e.stopPropagation();
                     setInterestedCategories((prev) =>
                       prev.filter((c) => c.id !== cat.id),

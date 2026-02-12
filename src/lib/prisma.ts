@@ -1,3 +1,6 @@
+// Prisma Client
+// Kindly add your Postgres database connection string in .env file as shown in .env.example
+
 import { PrismaClient } from '@prisma/client'
 import { PrismaPg } from '@prisma/adapter-pg'
 

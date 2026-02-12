@@ -1,3 +1,6 @@
+// Firebase Configuration
+// Kindly add your Firebase configuration in .env file as shown in .env.example
+
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 const firebaseConfig = {

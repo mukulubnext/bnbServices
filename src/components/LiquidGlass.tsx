@@ -1,3 +1,5 @@
+// This component is not written by me and was imported from - https://www.ui-layouts.com/components/liquid-glass
+
 // @ts-nocheck
 'use client';
 import React, { useState } from 'react';
