@@ -8,6 +8,7 @@ import Spinner from "./Spinner";
 import { useAuth } from "@/context/AuthContext";
 import N from "../../public/N.png";
 import Image from "next/image";
+import Banner from "./Banner";
 
 interface Props {
   solid?: boolean;
@@ -35,7 +36,8 @@ const Navbar: NextPage<Props> = ({ solid, userProp }: Props) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
   return (
-    <nav
+    <>
+      <nav
       className={`w-screen z-100 fixed flex justify-between px-6 md:justify-around items-center transition-all duration-300 top-0 left-0 py-4 text-light ${
         isScrolled || isMenuOpen
           ? "bg-dark border-b border-white/5"
@@ -212,6 +214,8 @@ const Navbar: NextPage<Props> = ({ solid, userProp }: Props) => {
         </div>
       </div>
     </nav>
+    <Banner />
+    </>
   );
 };
 interface Navitems {

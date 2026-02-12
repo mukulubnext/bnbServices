@@ -57,12 +57,6 @@ export async function POST(req: NextRequest) {
         { status: 404 }
       );
     }
-    if(user.role === "seller" && !user.gstNumber && !gstNumber){
-      return NextResponse.json(
-        { status: "failed", message: "Please fill GST Number" },
-        { status: 400 }
-      );
-    }
     const updateUser = await prisma.user.update({
       where: { id: id },
       data: {
