@@ -36,9 +36,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       ) {
         router.push("/profile/add-details");
       }
-      if (u.role === "seller" && !u.gstNumber) {
-        router.push("/profile/add-details");
-      }
     } catch (e) {
       console.log(e);
     } finally {
