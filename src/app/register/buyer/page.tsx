@@ -58,9 +58,7 @@ const Page: NextPage<Props> = ({}) => {
         <Breadcrumbs />
         <div className="flex flex-col gap-4 px-[5%] py-[10%] relative md:py-[5%] md:w-[50vw] min-h-screen h-fit">
           {!loading ? (
-            <>
-              {stepNumber === 1 && <Register />}
-            </>
+            <>{stepNumber === 1 && <Register />}</>
           ) : (
             <div className="flex justify-center items-center">
               <Spinner light={false} />
@@ -92,6 +90,26 @@ const Page: NextPage<Props> = ({}) => {
 export default Page;
 
 function Register() {
+  const RESEND_TIME = 60;
+  const [emailResendTimer, setEmailResendTimer] = useState(0);
+  const [phoneResendTimer, setPhoneResendTimer] = useState(0);
+
+  useEffect(() => {
+    if (emailResendTimer === 0) return;
+    const timer = setInterval(() => {
+      setEmailResendTimer((t) => t - 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [emailResendTimer]);
+
+  useEffect(() => {
+    if (phoneResendTimer === 0) return;
+    const timer = setInterval(() => {
+      setPhoneResendTimer((t) => t - 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [phoneResendTimer]);
+
   const context = useContext(StepContext);
   if (!context) return null;
 
@@ -152,6 +170,7 @@ function Register() {
         if (res.data.exists) {
           toast.error("Phone already exists!");
           setSentPhoneOTP(false);
+          setPhoneResendTimer(RESEND_TIME);
         } else {
           const formattedPhone = phone.startsWith("+") ? phone : `+91${phone}`;
           const confirmation = await signInWithPhoneNumber(
@@ -162,8 +181,7 @@ function Register() {
           confirmationRef.current = confirmation;
           setSentPhoneOTP(true);
         }
-      }
-      else {
+      } else {
         toast.error(res.data.message ?? "Something went wrong!");
       }
     } catch (err) {
@@ -205,6 +223,7 @@ function Register() {
       if (res.data.status === "success") {
         toast.success("OTP sent successfully.");
         setSentMailOTP(true);
+        setEmailResendTimer(RESEND_TIME);
       } else {
         toast.error(res.data.message);
         setSentMailOTP(false);
@@ -282,11 +301,16 @@ function Register() {
     <>
       <div className=" text-dark mb-5">
         <h1 className="font-bold text-xl md:text-4xl">Register with Us</h1>
-        <p className="text-sm md:text-[16px]">Become a part of BnB by entering the details below</p>
+        <p className="text-sm md:text-[16px]">
+          Become a part of BnB by entering the details below
+        </p>
       </div>
       <div className="w-full flex justify-center items-center flex-col gap-4">
         <div className="w-full flex justify-center flex-col">
-          <label htmlFor="email" className="font-medium  text-sm md:text-lg text-dark">
+          <label
+            htmlFor="email"
+            className="font-medium  text-sm md:text-lg text-dark"
+          >
             Email Address
           </label>
           <div className="flex justify-center relative items-center w-full">
@@ -325,7 +349,10 @@ function Register() {
         </div>
         {sentMailOTP && !confirmMailOTP && (
           <div className="w-full flex justify-center flex-col">
-            <label htmlFor="email" className="font-medium  text-sm md:text-lg text-dark">
+            <label
+              htmlFor="email"
+              className="font-medium  text-sm md:text-lg text-dark"
+            >
               Email OTP
             </label>
             <div className="flex justify-center relative items-center w-full">
@@ -359,10 +386,27 @@ function Register() {
                 </button>
               )}
             </div>
+            <div className="flex justify-end mt-2 text-sm">
+              {emailResendTimer > 0 ? (
+                <span className="text-dark/70">
+                  Resend OTP in {emailResendTimer}s
+                </span>
+              ) : (
+                <button
+                  onClick={handleSendMailOTP}
+                  className="text-dark font-semibold hover:underline"
+                >
+                  Resend OTP
+                </button>
+              )}
+            </div>
           </div>
         )}
         <div className="w-full flex justify-center flex-col">
-          <label htmlFor="phone" className="font-medium  text-sm md:text-lg text-dark">
+          <label
+            htmlFor="phone"
+            className="font-medium  text-sm md:text-lg text-dark"
+          >
             Phone Number
           </label>
           <div className="flex justify-center relative items-center w-full">
@@ -401,7 +445,10 @@ function Register() {
         </div>
         {sentPhoneOTP && !confirmPhoneOTP && (
           <div className="w-full flex justify-center flex-col">
-            <label htmlFor="email" className="font-medium  text-sm md:text-lg text-dark">
+            <label
+              htmlFor="email"
+              className="font-medium  text-sm md:text-lg text-dark"
+            >
               Phone OTP
             </label>
             <div className="flex justify-center relative items-center w-full">
@@ -431,10 +478,27 @@ function Register() {
                 </button>
               )}
             </div>
+            <div className="flex justify-end mt-2 text-sm">
+              {phoneResendTimer > 0 ? (
+                <span className="text-dark/70">
+                  Resend OTP in {phoneResendTimer}s
+                </span>
+              ) : (
+                <button
+                  onClick={handleSendPhoneOTP}
+                  className="text-dark font-semibold hover:underline"
+                >
+                  Resend OTP
+                </button>
+              )}
+            </div>
           </div>
         )}
         <div className="w-full flex justify-center flex-col">
-          <label htmlFor="confirm" className="font-medium  text-sm md:text-lg text-dark">
+          <label
+            htmlFor="confirm"
+            className="font-medium  text-sm md:text-lg text-dark"
+          >
             Password
           </label>
           <div className="flex justify-center relative items-center w-full">

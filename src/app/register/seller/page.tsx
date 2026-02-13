@@ -59,7 +59,7 @@ const Page: NextPage<Props> = ({}) => {
       <div className="flex relative md:flex-row flex-col-reverse bg-light">
         <Breadcrumbs />
         <div className="flex flex-col gap-4 px-[5%] py-[10%] md:py-[5%] md:w-[50vw] min-h-screen h-fit">
-          {stepNumber === 1 && <Register />}   
+          {stepNumber === 1 && <Register />}
         </div>
         <div className="relative">
           <Breadcrumbs />
@@ -86,6 +86,26 @@ const Page: NextPage<Props> = ({}) => {
 export default Page;
 
 function Register() {
+  const RESEND_TIME = 60;
+  const [emailResendTimer, setEmailResendTimer] = useState(0);
+  const [phoneResendTimer, setPhoneResendTimer] = useState(0);
+
+  useEffect(() => {
+    if (emailResendTimer === 0) return;
+    const timer = setInterval(() => {
+      setEmailResendTimer((t) => t - 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [emailResendTimer]);
+
+  useEffect(() => {
+    if (phoneResendTimer === 0) return;
+    const timer = setInterval(() => {
+      setPhoneResendTimer((t) => t - 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [phoneResendTimer]);
+
   const context = useContext(StepContext);
   if (!context) return null;
   const [email, setEmail] = usePersistedState("register_seller_email", "");
@@ -133,10 +153,10 @@ function Register() {
       const res = await axios.get("/api/v1/auth/user");
       const u = res.data.user;
       if (res.data.status === "success") {
-        router.replace('/profile/add-details');
+        router.replace("/profile/add-details");
       }
     } catch (e) {
-      router.replace('/profile/add-details');
+      router.replace("/profile/add-details");
       console.log(e);
     } finally {
       setLoading(false);
@@ -176,8 +196,7 @@ function Register() {
           confirmationRef.current = confirmation;
           setSentPhoneOTP(true);
         }
-      }
-      else {
+      } else {
         toast.error(res.data.message ?? "Something went wrong!");
       }
     } catch (err) {
@@ -251,7 +270,7 @@ function Register() {
     }
   };
   const handleSubmit = async () => {
-    if (!email || !password || !phone || !confirmPassword ) {
+    if (!email || !password || !phone || !confirmPassword) {
       toast.error("Please fill all the fields!");
       return;
     }
@@ -260,34 +279,31 @@ function Register() {
       return;
     }
     if (password === confirmPassword) {
-      try{
+      try {
         setLoading(true);
-      const res = await axios.post(`/api/v2/auth/register`, {
-        email: email,
-        password: password,
-        phone: phone,
-        role: role,
-        isEmailVerified: confirmMailOTP,
-        isPhoneVerified: confirmPhoneOTP,
-        fireBaseId: fireBaseId,
-        sellerType: sellerType,
-      });
-      if (res.data.status === "success") {
+        const res = await axios.post(`/api/v2/auth/register`, {
+          email: email,
+          password: password,
+          phone: phone,
+          role: role,
+          isEmailVerified: confirmMailOTP,
+          isPhoneVerified: confirmPhoneOTP,
+          fireBaseId: fireBaseId,
+          sellerType: sellerType,
+        });
+        if (res.data.status === "success") {
           toast.success("Registered successfully!");
           Object.keys(localStorage)
             .filter((k) => k.startsWith("register_"))
             .forEach((k) => localStorage.removeItem(k));
           await getUser();
-      }
-      }
-      catch(err:any){
+        }
+      } catch (err: any) {
         toast.error(err.response?.data?.message || "Something went wrong!");
-      }
-      finally{
+      } finally {
         setLoading(false);
       }
-    } 
-    else {
+    } else {
       toast.warning("Password and Confirm Password must be same");
     }
   };
@@ -295,20 +311,25 @@ function Register() {
     <>
       <div className=" text-dark mb-5">
         <h1 className="font-bold text-xl md:text-4xl">Register with Us</h1>
-        <p className="text-sm md:text-[16px]">Become a part of BnB by entering the details below</p>
+        <p className="text-sm md:text-[16px]">
+          Become a part of BnB by entering the details below
+        </p>
       </div>
       <div className="w-full flex justify-center items-center flex-col gap-4">
         <div className="w-full flex justify-center flex-col">
-          <label htmlFor="email" className="font-medium text-sm md:text-lg text-dark">
+          <label
+            htmlFor="email"
+            className="font-medium text-sm md:text-lg text-dark"
+          >
             Email Address
           </label>
           <div className="flex justify-center relative items-center w-full">
             <input
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              onKeyDown={(e)=>{
-                if(e.key === "Enter" && (!sentEmailOTP || !sendingMailOTP)){
-                  handleSendMailOTP()
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && (!sentEmailOTP || !sendingMailOTP)) {
+                  handleSendMailOTP();
                 }
               }}
               type="email"
@@ -338,16 +359,19 @@ function Register() {
         </div>
         {sentEmailOTP && !confirmMailOTP && (
           <div className="w-full flex justify-center flex-col">
-            <label htmlFor="email" className="font-medium text-sm md:text-lg text-dark">
+            <label
+              htmlFor="email"
+              className="font-medium text-sm md:text-lg text-dark"
+            >
               Email OTP
             </label>
             <div className="flex justify-center relative items-center w-full">
               <input
                 value={emailOTP}
                 onChange={(e) => setEmailOTP(e.target.value)}
-                onKeyDown={(e)=>{
-                  if(e.key === "Enter" && !confirmingMailOTP){
-                    handleconfirmMailOTP()
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !confirmingMailOTP) {
+                    handleconfirmMailOTP();
                   }
                 }}
                 type="text"
@@ -371,26 +395,44 @@ function Register() {
                 </button>
               )}
             </div>
+            <div className="flex justify-end mt-2 text-sm">
+              {emailResendTimer > 0 ? (
+                <span className="text-dark/70">
+                  Resend OTP in {emailResendTimer}s
+                </span>
+              ) : (
+                <button
+                  onClick={handleSendMailOTP}
+                  className="text-dark font-semibold hover:underline"
+                >
+                  Resend OTP
+                </button>
+              )}
+            </div>
           </div>
         )}
         <div className="w-full flex justify-center flex-col">
-          <label htmlFor="phone" className="font-medium text-sm md:text-lg text-dark">
+          <label
+            htmlFor="phone"
+            className="font-medium text-sm md:text-lg text-dark"
+          >
             Phone Number
           </label>
           <div className="flex justify-center relative items-center w-full">
             <input
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              onKeyDown={(e)=>{
-                  if(e.key === "Enter" && (!sentPhoneOTP || !sendingPhoneOTP)){
-                    handleSendPhoneOTP()
-                  }
-                }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && (!sentPhoneOTP || !sendingPhoneOTP)) {
+                  handleSendPhoneOTP();
+                }
+              }}
               type="tel"
               id="phone"
               className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-2.5 md:py-3.5 px-4 w-full"
             />
-            {!confirmPhoneOTP && !sentPhoneOTP &&
+            {!confirmPhoneOTP &&
+              !sentPhoneOTP &&
               (!sendingPhoneOTP ? (
                 <button
                   onClick={handleSendPhoneOTP}
@@ -412,16 +454,19 @@ function Register() {
         </div>
         {sentPhoneOTP && !confirmPhoneOTP && (
           <div className="w-full flex justify-center flex-col">
-            <label htmlFor="email" className="font-medium text-sm md:text-lg text-dark">
+            <label
+              htmlFor="email"
+              className="font-medium text-sm md:text-lg text-dark"
+            >
               Phone OTP
             </label>
             <div className="flex justify-center relative items-center w-full">
               <input
                 value={phoneOTP}
                 onChange={(e) => setPhoneOTP(e.target.value)}
-                onKeyDown={(e)=>{
-                  if(e.key === "Enter" && !confirmingPhoneOTP){
-                    handleConfirmPhoneOTP()
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !confirmingPhoneOTP) {
+                    handleConfirmPhoneOTP();
                   }
                 }}
                 type="text"
@@ -429,29 +474,40 @@ function Register() {
                 id="email"
                 className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-2.5 md:py-3.5 px-4 w-full"
               />
-              {
-                !confirmingPhoneOTP ? (
-                  <button
-                    onClick={handleConfirmPhoneOTP}
-                    className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
-                  >
-                    <Check />
-                  </button>
-                )
-                :
-                (
-                  <button
-                    className="h-full cursor-pointer transition-all duration-300 rounded-md border border-dark absolute text-lg bg-white px-6 right-0 font-bold text-white"
-                  >
-                    <Spinner light={false} />
-                  </button>
-                )
-              }
+              {!confirmingPhoneOTP ? (
+                <button
+                  onClick={handleConfirmPhoneOTP}
+                  className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
+                >
+                  <Check />
+                </button>
+              ) : (
+                <button className="h-full cursor-pointer transition-all duration-300 rounded-md border border-dark absolute text-lg bg-white px-6 right-0 font-bold text-white">
+                  <Spinner light={false} />
+                </button>
+              )}
+            </div>
+            <div className="flex justify-end mt-2 text-sm">
+              {phoneResendTimer > 0 ? (
+                <span className="text-dark/70">
+                  Resend OTP in {phoneResendTimer}s
+                </span>
+              ) : (
+                <button
+                  onClick={handleSendPhoneOTP}
+                  className="text-dark font-semibold hover:underline"
+                >
+                  Resend OTP
+                </button>
+              )}
             </div>
           </div>
         )}
         <div className="w-full flex justify-center flex-col">
-          <label htmlFor="confirm" className="font-medium text-sm md:text-lg text-dark">
+          <label
+            htmlFor="confirm"
+            className="font-medium text-sm md:text-lg text-dark"
+          >
             Password
           </label>
           <div className="flex justify-center relative items-center w-full">
@@ -466,7 +522,11 @@ function Register() {
               onClick={() => setShowPass((e) => !e)}
               className="absolute cursor-pointer text-dark px-6 right-0"
             >
-              {showPass ? <EyeClosed className="w-5 h-5 md:w-7 md:h-7" /> : <Eye className="w-5 h-5 md:w-7 md:h-7" />}
+              {showPass ? (
+                <EyeClosed className="w-5 h-5 md:w-7 md:h-7" />
+              ) : (
+                <Eye className="w-5 h-5 md:w-7 md:h-7" />
+              )}
             </button>
           </div>
         </div>
@@ -496,12 +556,18 @@ function Register() {
               onClick={() => setShowConfirm((e) => !e)}
               className="absolute cursor-pointer text-dark px-6 right-0"
             >
-              {showConfirm ? <EyeClosed className="w-5 h-5 md:w-7 md:h-7" /> : <Eye className="w-5 h-5 md:w-7 md:h-7" />}
+              {showConfirm ? (
+                <EyeClosed className="w-5 h-5 md:w-7 md:h-7" />
+              ) : (
+                <Eye className="w-5 h-5 md:w-7 md:h-7" />
+              )}
             </button>
           </div>
         </div>
         <div className="flex flex-col md:flex-row items-start md:justify-start gap-2 w-full md:items-center">
-          <p className="text-dark text-sm md:text-[16px] font-semibold">Choose your seller type:</p>
+          <p className="text-dark text-sm md:text-[16px] font-semibold">
+            Choose your seller type:
+          </p>
           <div className="flex justify-center items-center gap-2">
             <button
               onClick={() => setSellerType("manufacturer")}
@@ -544,4 +610,3 @@ function Register() {
     </>
   );
 }
-
