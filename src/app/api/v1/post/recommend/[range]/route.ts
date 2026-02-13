@@ -50,7 +50,6 @@ export async function GET(
 
     // ---------------- BASE FILTER ----------------
     const baseWhere = {
-      isActive: true,
       isDeleted: false,
     };
 
