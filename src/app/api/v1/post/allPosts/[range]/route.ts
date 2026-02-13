@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { decrypt } from "@/lib/sessions";
+import { withRateLimit } from "@/lib/withRateLimit";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
@@ -20,14 +21,19 @@ export async function GET(
 
   const skip = (range - 1) * PAGE_SIZE;
   const take = PAGE_SIZE;
-
+  const limited = await withRateLimit(req, "read");
+        if (limited) {
+          return NextResponse.json({
+            status: "failed",
+            message: "Too many requests!, try again later",
+          });
+        }
   try {
     const posts = await prisma.posts.findMany({
       where: { userId: userId, isDeleted: false },
       select: {
         id: true,
         title: true,
-        isActive: true,
         createdAt: true,
         offers: true,
         isFullfilled: true,

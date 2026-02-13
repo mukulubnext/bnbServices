@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { decrypt } from "@/lib/sessions";
+import { withRateLimit } from "@/lib/withRateLimit";
 import { NextRequest, NextResponse } from "next/server";
 
 const PAGE_SIZE = 10;
@@ -8,6 +9,13 @@ export async function GET(
   req: NextRequest,
   ctx: { params: Promise<{ range: string }> },
 ) {
+  const limited = await withRateLimit(req, "read");
+        if (limited) {
+          return NextResponse.json({
+            status: "failed",
+            message: "Too many requests!, try again later",
+          });
+        }
   try {
     // ---------------- AUTH ----------------
     const token = req.cookies.get("token")?.value;

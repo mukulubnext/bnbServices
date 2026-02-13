@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { withRateLimit } from "@/lib/withRateLimit";
 
 export async function POST(req: NextRequest) {
+  const limited = await withRateLimit(req, "read");
+        if (limited) {
+          return NextResponse.json({
+            status: "failed",
+            message: "Too many requests!, try again later",
+          });
+        }
   try {
     const { q }= await req.json();
 
@@ -16,7 +24,6 @@ export async function POST(req: NextRequest) {
 
     const posts = await prisma.posts.findMany({
       where: {
-        isActive: true,
         isDeleted: false,
         OR: [
           // Post title

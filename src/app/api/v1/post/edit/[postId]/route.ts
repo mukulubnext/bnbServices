@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z, ZodError } from "zod";
 import { calculateAmount } from "../../create/route";
 import { QuantityUnit } from "@prisma/client";
+import { withRateLimit } from "@/lib/withRateLimit";
 
 const reqBody = z.object({
   title: z.string().min(3).max(100),
@@ -27,6 +28,13 @@ export async function PUT(
   req: NextRequest,
   ctx: { params: Promise<{ postId: string }> },
 ) {
+  const limited = await withRateLimit(req, "write");
+        if (limited) {
+          return NextResponse.json({
+            status: "failed",
+            message: "Too many requests!, try again later",
+          });
+        }
   try {
     /* ---------- auth ---------- */
     const token = req.cookies.get("token")?.value;

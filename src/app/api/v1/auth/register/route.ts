@@ -3,8 +3,16 @@ import * as z from "zod";
 import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
 import InterestedCategories from "@/components/InterestedCategories";
+import { withRateLimit } from "@/lib/withRateLimit";
 
 export async function POST(req: NextRequest) {
+  const limited = await withRateLimit(req,"auth");
+        if(limited){
+          return NextResponse.json({
+            status: "failed",
+            message: "Too many requests!, try again later"
+          })
+        }
   const reqBody = z.object({
     email: z.email(),
     password: z

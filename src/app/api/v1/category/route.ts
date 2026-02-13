@@ -1,10 +1,18 @@
 import prisma from "@/lib/prisma";
 import { decrypt } from "@/lib/sessions";
+import { withRateLimit } from "@/lib/withRateLimit";
 import { NextRequest, NextResponse } from "next/server";
 import z from "zod";
 
 export async function GET(req: NextRequest) {
   try {
+    const limited = await withRateLimit(req, "read");
+      if (limited) {
+        return NextResponse.json({
+          status: "failed",
+          message: "Too many requests!, try again later",
+        });
+      }
     const categories = await prisma.category.findMany({
       select: {
         id: true,
@@ -37,6 +45,13 @@ export async function PUT(req: NextRequest){
             name: z.string()
         })),
     })
+    const limited = await withRateLimit(req, "write");
+      if (limited) {
+        return NextResponse.json({
+          status: "failed",
+          message: "Too many requests!, try again later",
+        });
+      }
     try{
         const {interestedCategories, interestedSubCategories} = reqBody.parse(await req.json())
         const token = req.cookies.get("token")?.value;

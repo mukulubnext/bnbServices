@@ -89,7 +89,6 @@ model Posts {
 
   price               Int
 
-  isActive            Boolean     @default(true)
   isFullfilled        Boolean     @default(false)
 
   isDeleted           Boolean?    @default(false)

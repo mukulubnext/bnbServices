@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { decrypt } from "@/lib/sessions";
+import { withRateLimit } from "@/lib/withRateLimit";
 import { QuantityUnit } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { z, ZodError } from "zod";
@@ -38,6 +39,13 @@ export function calculateAmount(amount: number) {
 
 export async function POST(req: NextRequest) {
   try {
+    const limited = await withRateLimit(req, "write");
+          if (limited) {
+            return NextResponse.json({
+              status: "failed",
+              message: "Too many requests!, try again later",
+            });
+          }
     const token = req.cookies.get("token")?.value;
     const decrypted = await decrypt(token);
 

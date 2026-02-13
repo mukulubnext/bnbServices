@@ -1,9 +1,17 @@
 import prisma from "@/lib/prisma";
 import { decrypt } from "@/lib/sessions";
+import { withRateLimit } from "@/lib/withRateLimit";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
+  const limited = await withRateLimit(req, "read");
+        if (limited) {
+          return NextResponse.json({
+            status: "failed",
+            message: "Too many requests!, try again later",
+          });
+        }
   if (!token) {
     return NextResponse.json(
       { status: "failed", message: "Unauthorized" },

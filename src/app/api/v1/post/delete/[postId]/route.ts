@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { decrypt } from "@/lib/sessions";
+import { withRateLimit } from "@/lib/withRateLimit";
 import { NextRequest, NextResponse } from "next/server";
 import z, { ZodError } from "zod";
 
@@ -8,6 +9,13 @@ export async function DELETE(
   ctx: { params: Promise<{ postId: string }> }
 ) {
   try {
+    const limited = await withRateLimit(req, "write");
+          if (limited) {
+            return NextResponse.json({
+              status: "failed",
+              message: "Too many requests!, try again later",
+            });
+          }
     const postId = Number((await ctx.params).postId);
     if (Number.isNaN(postId)) {
       return NextResponse.json(

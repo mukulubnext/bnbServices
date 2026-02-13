@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { decrypt } from "@/lib/sessions";
+import { withRateLimit } from "@/lib/withRateLimit";
 import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 import z from "zod";
@@ -8,6 +9,13 @@ export async function POST(
   req: NextRequest,
   ctx: { params: Promise<{ token: string }> },
 ) {
+  const limited = await withRateLimit(req,"auth");
+  if(limited){
+    return NextResponse.json({
+      status: "failed",
+      message: "Too many requests!, try again later"
+    })
+  }
   const reqBody = z.object({
     newPassword: z
       .string()

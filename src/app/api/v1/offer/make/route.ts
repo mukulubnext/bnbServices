@@ -1,10 +1,18 @@
 import prisma from "@/lib/prisma";
 import { decrypt } from "@/lib/sessions";
+import { withRateLimit } from "@/lib/withRateLimit";
 import { TransactionType } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import z from "zod";
 
 export async function POST(req: NextRequest){
+    const limited = await withRateLimit(req, "write");
+          if (limited) {
+            return NextResponse.json({
+              status: "failed",
+              message: "Too many requests!, try again later",
+            });
+          }
     const reqBody = z.object({
         postId: z.number().min(1),
     })

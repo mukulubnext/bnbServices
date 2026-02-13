@@ -4,8 +4,16 @@ import { renderOtpTemplate, sendEmail } from "@/lib/mail";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { OTPChannel, OTPPurpose } from "@prisma/client";
+import { withRateLimit } from "@/lib/withRateLimit";
 
 export async function POST(req: NextRequest) {
+  const limited = await withRateLimit(req, "otp");
+        if (limited) {
+          return NextResponse.json({
+            status: "failed",
+            message: "Too many requests!, try again later",
+          });
+        }
   const reqBody = z.object({
     email: z.email(),
   });

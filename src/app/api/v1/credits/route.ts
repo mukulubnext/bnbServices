@@ -1,9 +1,17 @@
 import prisma from "@/lib/prisma";
 import { decrypt } from "@/lib/sessions";
+import { withRateLimit } from "@/lib/withRateLimit";
 import { NextRequest, NextResponse } from "next/server";
 import z from "zod";
 
 export async function GET(req: NextRequest) {
+  const limited = await withRateLimit(req, "read");
+        if (limited) {
+          return NextResponse.json({
+            status: "failed",
+            message: "Too many requests!, try again later",
+          });
+        }
   const token = req.cookies.get("token")?.value;
   if (!token) {
     return NextResponse.json(
@@ -62,6 +70,13 @@ export function calculatePoints(amount: number): number {
   return points;
 }
 export async function POST(req: NextRequest) {
+  const limited = await withRateLimit(req, "read");
+      if (limited) {
+        return NextResponse.json({
+          status: "failed",
+          message: "Too many requests!, try again later",
+        });
+      }
   const token = req.cookies.get("token")?.value;
   if (!token) {
     return NextResponse.json(

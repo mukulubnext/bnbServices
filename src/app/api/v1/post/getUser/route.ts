@@ -1,8 +1,16 @@
 import prisma from "@/lib/prisma";
+import { withRateLimit } from "@/lib/withRateLimit";
 import { NextRequest, NextResponse } from "next/server";
 import z from "zod";
 
 export async function POST(req: NextRequest) {
+  const limited = await withRateLimit(req, "read");
+        if (limited) {
+          return NextResponse.json({
+            status: "failed",
+            message: "Too many requests!, try again later",
+          });
+        }
   try {
     const { postId } = await req.json();
     const postIdZod = z.number("Post ID should be a number").min(1);

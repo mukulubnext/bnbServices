@@ -4,8 +4,16 @@ import { NextRequest, NextResponse } from "next/server";
 import z from "zod";
 import { SignJWT } from "jose";
 import { encrypt } from "@/lib/sessions";
+import { withRateLimit } from "@/lib/withRateLimit";
 
 export async function POST(req: NextRequest) {
+  const limited = await withRateLimit(req, "auth");
+  if (limited) {
+    return NextResponse.json({
+      status: "failed",
+      message: "Too many requests!, try again later",
+    });
+  }
   const reqBody = z.object({
     email: z.email(),
     password: z
@@ -23,17 +31,21 @@ export async function POST(req: NextRequest) {
       if (!user) {
         return NextResponse.json(
           { status: "failed", message: "User not found!" },
-          { status: 404 }
+          { status: 404 },
         );
       }
       const match = await bcrypt.compare(password, user.password);
       if (!match) {
         return NextResponse.json(
           { status: "failed", message: "Incorrect Password!" },
-          { status: 400 }
+          { status: 400 },
         );
       }
-      const token = await encrypt({ id: user.id, email: user.email, role: user.role });
+      const token = await encrypt({
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      });
       const res = NextResponse.json({ status: "success" }, { status: 200 });
       res.cookies.set("token", token, {
         path: "/",
@@ -46,13 +58,13 @@ export async function POST(req: NextRequest) {
     } catch (e) {
       return NextResponse.json(
         { status: "failed", message: "Invalid request body!" },
-        { status: 400 }
+        { status: 400 },
       );
     }
   } catch (err: any) {
     return NextResponse.json(
       { status: "failed", message: err.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

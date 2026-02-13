@@ -1,8 +1,16 @@
 import admin from "@/lib/fireBaseAdmin";
+import { withRateLimit } from "@/lib/withRateLimit";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
+    const limited = await withRateLimit(req, "otp");
+          if (limited) {
+            return NextResponse.json({
+              status: "failed",
+              message: "Too many requests!, try again later",
+            });
+          }
     const { idToken } = await req.json();
     if (!idToken)
       return NextResponse.json(

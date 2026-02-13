@@ -1,10 +1,18 @@
 import prisma from "@/lib/prisma";
+import { withRateLimit } from "@/lib/withRateLimit";
 import { OTPChannel, OTPPurpose } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 import z, { email, ZodError } from "zod";
 
 export async function POST(req: NextRequest){
+    const limited = await withRateLimit(req, "otp");
+          if (limited) {
+            return NextResponse.json({
+              status: "failed",
+              message: "Too many requests!, try again later",
+            });
+          }
     try{
         const reqBody = z.object({
         email: z.email("Invalid email."),
