@@ -51,6 +51,7 @@ export async function GET(
     // ---------------- BASE FILTER ----------------
     const baseWhere = {
       isDeleted: false,
+      userId: {not: userId}
     };
 
     // ---------------- 1️⃣ INTERESTED POSTS ----------------

@@ -50,6 +50,7 @@ export async function GET(
       price: true,
       isFullfilled: true,
       clicks: true,
+      userId: true,
       items: {
         where: { isDeleted: false },
         select: {

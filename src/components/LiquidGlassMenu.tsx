@@ -4,7 +4,15 @@
 import { LiquidGlassCard } from "@/components/LiquidGlass";
 import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
-import { History, House, Phone, Plus, ScrollTextIcon, User } from "lucide-react";
+import {
+  Compass,
+  History,
+  House,
+  Phone,
+  Plus,
+  ScrollTextIcon,
+  User,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -12,7 +20,7 @@ import { useEffect, useState } from "react";
 export default function LiquidGlassMenu() {
   const router = useRouter();
   const pathname = usePathname();
-  const {user, loading} = useAuth();
+  const { user, loading } = useAuth();
   return (
     <LiquidGlassCard
       shadowIntensity="lg"
@@ -48,6 +56,34 @@ export default function LiquidGlassMenu() {
             </Link>
           </div>
         )}
+        {user.role === "buyer" &&
+          (pathname === "/explore" ? (
+            <LiquidGlassCard
+              blurIntensity="sm"
+              draggable={false}
+              glowIntensity="lg"
+              shadowIntensity="md"
+              className="md:w-16 cursor-pointer md:h-16 w-12 h-12 rounded-full  "
+            >
+              <Link
+                href={"/explore"}
+                className="relative z-30 flex items-center justify-center text-dark text-2xl w-full h-full "
+              >
+                <Compass className="w-6 h-6 md:w-8 md:h-8 hover:scale-105" />
+                <span className="sr-only">Explore</span>
+              </Link>
+            </LiquidGlassCard>
+          ) : (
+            <div className="md:w-16 cursor-pointer md:h-16 w-12 h-12 rounded-full  ">
+              <Link
+                href={"/explore"}
+                className="relative z-30 flex items-center justify-center text-dark text-2xl w-full h-full "
+              >
+                <Compass className="w-6 h-6 md:w-8 md:h-8 hover:scale-105" />
+                <span className="sr-only">Explore</span>
+              </Link>
+            </div>
+          ))}
         {!loading && user && user.role === "buyer" ? ( // If buyer render post button else if seller render offer-history button else render a skeleton if loading
           <>
             {pathname === "/post" ? (
@@ -110,10 +146,7 @@ export default function LiquidGlassMenu() {
           </>
         ) : (
           <div className="md:w-16 cursor-pointer md:h-16 p-2 w-12 h-12 rounded-full  ">
-            <div
-              className="relative z-30 flex items-center bg-black/40 animate-pulse rounded-full  justify-center text-dark text-2xl w-full h-full "
-            >
-            </div>
+            <div className="relative z-30 flex items-center bg-black/40 animate-pulse rounded-full  justify-center text-dark text-2xl w-full h-full "></div>
           </div>
         )}
         {pathname === "/profile" ? (

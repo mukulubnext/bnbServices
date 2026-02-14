@@ -114,6 +114,7 @@ export async function POST(req: NextRequest) {
         title: true,
         createdAt: true,
         isFullfilled: true,
+        clicks: true,
         items: {
           where: { isDeleted: false },
           select: {

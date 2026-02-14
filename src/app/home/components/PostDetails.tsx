@@ -343,12 +343,14 @@ export default function PostDetails({
                 <ItemTable items={post.items} />
               </div>
               {user && user.role === "buyer" ? (
-                <button
+                user.id === post.userId && (
+                  <button
                   onClick={() => setCanEdit(true)}
                   className="flex hover:bg-dark hover:text-white transition-all duration-300 cursor-pointer justify-center items-center gap-2 px-4 py-2 rounded border border-dark bg-white font-medium"
                 >
                   <Pencil size={20} /> Edit
                 </button>
+                )
               ) : (
                 <>
                   <div className="flex justify-center items-center mt-10">

@@ -537,7 +537,7 @@ function Buyer({ isVerified }: { isVerified: boolean }) {
                       <div className="flex text-dark/70 text-sm flex-col items-start justify-start gap-0.5">
                         <span className="flex items-center gap-1">
                           <MousePointerClick size={16} /> Clicks:{" "}
-                          <p className="font-bold">{post.clicks.length}</p>
+                          <p className="font-bold">{post.clicks.length ?? 0}</p>
                         </span>
                         <span className="flex items-center gap-1">
                           <Eye size={16} /> Interested: <p className="font-bold">{post.offers.length}</p>
@@ -694,7 +694,6 @@ function Seller({
 
     fetchResults();
   }, [debounced]);
-  console.log(isVerified);
   if (!isVerified) {
     return (
       <div className="bg-white min-h-[70vh] gap-4 px-2 text-center flex justify-center items-center flex-col text-dark">
