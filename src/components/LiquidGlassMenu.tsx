@@ -56,7 +56,7 @@ export default function LiquidGlassMenu() {
             </Link>
           </div>
         )}
-        {user.role === "buyer" &&
+        {!loading && user && user.role === "buyer" &&
           (pathname === "/explore" ? (
             <LiquidGlassCard
               blurIntensity="sm"
