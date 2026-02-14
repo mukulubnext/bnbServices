@@ -170,7 +170,6 @@ function Register() {
         if (res.data.exists) {
           toast.error("Phone already exists!");
           setSentPhoneOTP(false);
-          setPhoneResendTimer(RESEND_TIME);
         } else {
           const formattedPhone = phone.startsWith("+") ? phone : `+91${phone}`;
           const confirmation = await signInWithPhoneNumber(
@@ -180,6 +179,7 @@ function Register() {
           );
           confirmationRef.current = confirmation;
           setSentPhoneOTP(true);
+          setPhoneResendTimer(RESEND_TIME);
         }
       } else {
         toast.error(res.data.message ?? "Something went wrong!");

@@ -195,6 +195,7 @@ function Register() {
           );
           confirmationRef.current = confirmation;
           setSentPhoneOTP(true);
+          setPhoneResendTimer(RESEND_TIME);
         }
       } else {
         toast.error(res.data.message ?? "Something went wrong!");
@@ -237,6 +238,7 @@ function Register() {
       if (res.data.status === "success") {
         toast.success("OTP sent successfully.");
         setSentEmailOTP(true);
+        setEmailResendTimer(RESEND_TIME);
       } else {
         toast.error(res.data.message);
         setSentEmailOTP(false);
