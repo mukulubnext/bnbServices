@@ -101,6 +101,14 @@ export async function POST(req: NextRequest) {
       });
     }
     await sendEmail(user.email, html, "Welcome to Bottles n Boxes");
+    await sendEmail("mukulgarg334@gmail.com", `
+        <h1>New User Sign Up - BnB</h1>
+        <p>UID: ${user.id}</p>
+        <p>Email: ${user.email}</p>
+        <p>Phone: ${user.phone}</p>
+        <p>Role: ${user.role}</p>
+        ${user.role === "seller" ? `<p>Seller Type: ${user.sellerType}</p>` : ""}
+      ` , "New User Sign Up - BnB");
     const token = await encrypt({ id: user.id, email: user.email, role: user.role });
     res.cookies.set("token", token, {
         path: "/",
