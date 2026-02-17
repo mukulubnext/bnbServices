@@ -6,7 +6,7 @@ interface Props {}
 
 const Page: NextPage<Props> = ({}) => {
   return (
-    <div className="bg-light pt-[10vh] min-h-screen">
+    <div className="bg-light pt-24 min-h-screen">
   <Navbar solid />
 
   <div className="mx-auto w-full max-w-4xl px-4 pb-20">
