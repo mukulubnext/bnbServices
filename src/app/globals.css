@@ -72,3 +72,25 @@ button{
 .notif-hide {
   animation: notif-exit 2s ease forwards;
 }
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #f5f5f4 25%,
+    #ffffff 37%,
+    #1f7a4d 45%,
+    #ffffff 53%,
+    #f5f5f4 65%
+  );
+  background-size: 400% 100%;
+  animation: skeleton-shimmer 5s ease-in-out infinite;
+}

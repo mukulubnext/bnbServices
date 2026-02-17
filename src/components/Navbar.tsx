@@ -24,6 +24,7 @@ const Navbar: NextPage<Props> = ({ solid, userProp }: Props) => {
     { name: "Home", path: "/" },
     { name: "About", path: "/about" },
     { name: "Contact", path: "/contact" },
+    { name: "Categories", path: "/categories" },
   ];
 
   // Effects
