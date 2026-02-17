@@ -325,6 +325,7 @@ function Register() {
                 onChange={(e) => setEmail(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && (!sentMailOTP || !sendingMailOTP)) {
+                    e.preventDefault()
                     handleSendMailOTP();
                   }
                 }}
@@ -335,14 +336,18 @@ function Register() {
               {!sendingMailOTP && !confirmMailOTP ? (
                 !sentMailOTP && (
                   <button
-                    onClick={handleSendMailOTP}
+                  type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSendMailOTP();
+                    }}
                     className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-sm md:text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
                   >
                     Send OTP
                   </button>
                 )
               ) : (
-                <button className="h-full cursor-not-allowed transition-all duration-300 rounded-md border border-dark absolute text-sm md:text-lg bg-white px-6 right-0 font-bold text-white">
+                <button type="button" className="h-full cursor-not-allowed transition-all duration-300 rounded-md border border-dark absolute text-sm md:text-lg bg-white px-6 right-0 font-bold text-white">
                   <Spinner light={false} />
                 </button>
               )}
@@ -367,6 +372,7 @@ function Register() {
                   onChange={(e) => setEmailOTP(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !confirmingMailOTP) {
+                      e.preventDefault();
                       handleConfirmMailOTP();
                     }
                   }}
@@ -378,16 +384,19 @@ function Register() {
                 />
                 {!confirmingMailOTP ? (
                   <button
-                    onClick={handleConfirmMailOTP}
+                  type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleConfirmMailOTP();
+                    }}
                     className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
                   >
                     <Check />
                   </button>
                 ) : (
-                  <button
-                    onClick={handleConfirmMailOTP}
-                    className="h-full cursor-pointer transition-all duration-300 rounded-md border border-dark absolute text-lg bg-white px-6 right-0 font-bold text-white"
-                  >
+                  <button 
+                  type="button"
+                  className="h-full cursor-pointer transition-all duration-300 rounded-md border border-dark absolute text-lg bg-white px-6 right-0 font-bold text-white">
                     <Spinner light={false} />
                   </button>
                 )}
@@ -399,7 +408,11 @@ function Register() {
                   </span>
                 ) : (
                   <button
-                    onClick={handleSendMailOTP}
+                  type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSendMailOTP();
+                    }}
                     className="text-dark font-semibold hover:underline"
                   >
                     Resend OTP
@@ -424,6 +437,7 @@ function Register() {
                     e.key === "Enter" &&
                     (!sentPhoneOTP || !sendingPhoneOTP)
                   ) {
+                    e.preventDefault();
                     handleSendPhoneOTP();
                   }
                 }}
@@ -435,13 +449,19 @@ function Register() {
                 !confirmPhoneOTP &&
                 (!sendingPhoneOTP ? (
                   <button
-                    onClick={handleSendPhoneOTP}
+                  type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSendPhoneOTP();
+                    }}
                     className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-sm md:text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
                   >
                     Send OTP
                   </button>
                 ) : (
-                  <button className="h-full cursor-not-allowed transition-all duration-300 rounded-md border border-dark absolute text-sm md:text-lg bg-white px-6 right-0 font-bold text-white">
+                  <button 
+                  type="button"
+                  className="h-full cursor-not-allowed transition-all duration-300 rounded-md border border-dark absolute text-sm md:text-lg bg-white px-6 right-0 font-bold text-white">
                     <Spinner light={false} />
                   </button>
                 ))}
@@ -468,6 +488,7 @@ function Register() {
                   maxLength={6}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !confirmingPhoneOTP) {
+                      e.preventDefault()
                       handleConfirmPhoneOTP();
                     }
                   }}
@@ -476,13 +497,19 @@ function Register() {
                 />
                 {!confirmingPhoneOTP ? (
                   <button
-                    onClick={handleConfirmPhoneOTP}
+                  type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleConfirmPhoneOTP();
+                    }}
                     className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
                   >
                     <Check />
                   </button>
                 ) : (
-                  <button className="h-full cursor-pointer transition-all duration-300 rounded-md border border-dark absolute text-lg bg-white px-6 right-0 font-bold text-white">
+                  <button
+                  type="button"
+                  className="h-full cursor-pointer transition-all duration-300 rounded-md border border-dark absolute text-lg bg-white px-6 right-0 font-bold text-white">
                     <Spinner light={false} />
                   </button>
                 )}
@@ -494,7 +521,11 @@ function Register() {
                   </span>
                 ) : (
                   <button
-                    onClick={handleSendPhoneOTP}
+                  type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSendPhoneOTP();
+                    }}
                     className="text-dark font-semibold hover:underline"
                   >
                     Resend OTP
@@ -519,7 +550,11 @@ function Register() {
                 className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-2.5 md:py-3.5 px-4 w-full"
               />
               <button
-                onClick={() => setShowPass((e) => !e)}
+              type="button"
+                onClick={(x) => {
+                  x.preventDefault();
+                  setShowPass((e) => !e);
+                }}
                 className="absolute cursor-pointer text-dark px-6 right-0"
               >
                 {showPass ? <EyeClosed size={24} /> : <Eye size={24} />}
@@ -549,7 +584,11 @@ function Register() {
                 className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-2.5 md:py-3.5 px-4 w-full"
               />
               <button
-                onClick={() => setShowConfirm((e) => !e)}
+              type="button"
+                onClick={(x) => {
+                  x.preventDefault();
+                  setShowConfirm((e) => !e);
+                }}
                 className="absolute cursor-pointer text-dark px-6 right-0"
               >
                 {showConfirm ? <EyeClosed size={24} /> : <Eye size={24} />}

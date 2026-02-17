@@ -317,10 +317,12 @@ function Register() {
           Become a part of BnB by entering the details below
         </p>
       </div>
-      <form onSubmit={(e)=>{
-        e.preventDefault();
-        handleSubmit();
-      }}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit();
+        }}
+      >
         <div className="w-full flex justify-center items-center flex-col gap-4">
           <div className="w-full flex justify-center flex-col">
             <label
@@ -335,6 +337,7 @@ function Register() {
                 onChange={(e) => setEmail(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && (!sentEmailOTP || !sendingMailOTP)) {
+                    e.preventDefault();
                     handleSendMailOTP();
                   }
                 }}
@@ -345,7 +348,11 @@ function Register() {
               {!confirmMailOTP && !sendingMailOTP ? (
                 !sentEmailOTP && (
                   <button
-                    onClick={handleSendMailOTP}
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSendMailOTP();
+                    }}
                     className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-xs md:text-sm bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
                   >
                     Send OTP
@@ -377,6 +384,7 @@ function Register() {
                   onChange={(e) => setEmailOTP(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !confirmingMailOTP) {
+                      e.preventDefault();
                       handleconfirmMailOTP();
                     }
                   }}
@@ -387,14 +395,18 @@ function Register() {
                 />
                 {!confirmingMailOTP ? (
                   <button
-                    onClick={handleconfirmMailOTP}
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleconfirmMailOTP();
+                    }}
                     className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
                   >
                     <Check />
                   </button>
                 ) : (
                   <button
-                    onClick={handleconfirmMailOTP}
+                    type="button"
                     className="h-full cursor-pointer transition-all duration-300 rounded-md border border-dark absolute text-lg bg-white px-6 right-0 font-bold text-white"
                   >
                     <Spinner light={false} />
@@ -408,7 +420,10 @@ function Register() {
                   </span>
                 ) : (
                   <button
-                    onClick={handleSendMailOTP}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSendMailOTP();
+                    }}
                     className="text-dark font-semibold hover:underline"
                   >
                     Resend OTP
@@ -433,6 +448,7 @@ function Register() {
                     e.key === "Enter" &&
                     (!sentPhoneOTP || !sendingPhoneOTP)
                   ) {
+                    e.preventDefault();
                     handleSendPhoneOTP();
                   }
                 }}
@@ -444,7 +460,10 @@ function Register() {
                 !sentPhoneOTP &&
                 (!sendingPhoneOTP ? (
                   <button
-                    onClick={handleSendPhoneOTP}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSendPhoneOTP();
+                    }}
                     className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-xs md:text-sm bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
                   >
                     Send OTP
@@ -475,6 +494,7 @@ function Register() {
                   onChange={(e) => setPhoneOTP(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && !confirmingPhoneOTP) {
+                      e.preventDefault();
                       handleConfirmPhoneOTP();
                     }
                   }}
@@ -485,7 +505,10 @@ function Register() {
                 />
                 {!confirmingPhoneOTP ? (
                   <button
-                    onClick={handleConfirmPhoneOTP}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleConfirmPhoneOTP();
+                    }}
                     className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
                   >
                     <Check />
@@ -503,7 +526,11 @@ function Register() {
                   </span>
                 ) : (
                   <button
-                    onClick={handleSendPhoneOTP}
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSendPhoneOTP();
+                    }}
                     className="text-dark font-semibold hover:underline"
                   >
                     Resend OTP
@@ -528,7 +555,10 @@ function Register() {
                 className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-2.5 md:py-3.5 px-4 w-full"
               />
               <button
-                onClick={() => setShowPass((e) => !e)}
+                onClick={(x) => {
+                  x.preventDefault();
+                  setShowPass((e) => !e);
+                }}
                 className="absolute cursor-pointer text-dark px-6 right-0"
               >
                 {showPass ? (
@@ -562,7 +592,10 @@ function Register() {
                 className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-2.5 md:py-3.5 px-4 w-full"
               />
               <button
-                onClick={() => setShowConfirm((e) => !e)}
+                onClick={(x) => {
+                  x.preventDefault();
+                  setShowConfirm((e) => !e);
+                }}
                 className="absolute cursor-pointer text-dark px-6 right-0"
               >
                 {showConfirm ? (
@@ -579,14 +612,20 @@ function Register() {
             </p>
             <div className="flex justify-center items-center gap-2">
               <button
-                onClick={() => setSellerType("manufacturer")}
+                onClick={(x) => {
+                  x.preventDefault();
+                  setSellerType("manufacturer");
+                }}
                 className={`flex justify-center items-center ${sellerType === "manufacturer" ? "bg-dark text-white" : "text-dark"} transition-all text-sm md:text-[16px] duration-300 font-bold py-2 px-4 rounded-lg`}
               >
                 Manufacturer
               </button>
               <p className="text-lg text-dark">/</p>
               <button
-                onClick={() => setSellerType("supplier")}
+                onClick={(x) => {
+                  x.preventDefault();
+                  setSellerType("supplier");
+                }}
                 className={`flex justify-center items-center ${sellerType === "supplier" ? "bg-dark text-white" : "text-dark"} transition-all text-sm md:text-[16px] duration-300 font-bold py-2 px-4 rounded-lg`}
               >
                 Supplier
@@ -602,9 +641,7 @@ function Register() {
               Submit
             </button>
           ) : (
-            <button
-              className="text-xl my-6 flex justify-center items-center font-bold bg-muted w-full py-4 ring-1 ring-dark transition-all duration-300"
-            >
+            <button className="text-xl my-6 flex justify-center items-center font-bold bg-muted w-full py-4 ring-1 ring-dark transition-all duration-300">
               <Spinner light={false} />
             </button>
           )}
