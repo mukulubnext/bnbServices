@@ -19,14 +19,14 @@ const Page: NextPage<Props> = ({}) => {
   const [showPass, setShowPass] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const {user, loading, refresh} = useAuth();
+  const { user, loading, refresh } = useAuth();
   const passwordRef = useRef<HTMLInputElement>(null);
   const submitRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
-      if (!loading && user) {
-        router.push("/home");
-      }
-    }, [user, loading, router]);
+    if (!loading && user) {
+      router.push("/home");
+    }
+  }, [user, loading, router]);
 
   const handleSubmit = async () => {
     if (!email || !password) {
@@ -66,93 +66,102 @@ const Page: NextPage<Props> = ({}) => {
               <h1 className="font-bold text-4xl">Sign In</h1>
               <p>Access your Buyer/Seller account </p>
             </div>
-            <div className="flex flex-col gap-2">
-              <div className="w-full flex justify-center flex-col">
-                <label
-                  htmlFor="email"
-                  className="font-medium md:text-xl text-dark"
-                >
-                  Email Address
-                </label>
-                <div className="flex justify-center relative items-center w-full">
-                  <input
-                    value={email}
-                    onKeyDown={(e)=>{
-                      if(e.key==="Enter"){
-                        e.preventDefault();
-                        passwordRef.current?.focus();
-                      }
-                    }}  
-                    onChange={(e) => setEmail(e.target.value)}
-                    type="email"
-                    id="email"
-                    className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-sm md:text-lg bg-white p-2.5 md:p-4 w-full"
-                  />
-                </div>
-              </div>
-              <div className="w-full flex justify-center flex-col">
-                <label
-                  htmlFor="password"
-                  className="font-medium md:text-xl text-dark"
-                >
-                  Password
-                </label>
-                <div className="flex justify-center relative items-center w-full">
-                  <input
-                    value={password}
-                    ref={passwordRef}
-                    onChange={(e) => setPassword(e.target.value)}
-                    type={showPass ? "text" : "password"}
-                    id="password"
-                    onKeyDown={(e)=>{
-                      if(e.key==="Enter"){
-                        e.preventDefault();
-                        submitRef.current?.click();
-                      }
-                    }}
-                    className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-sm md:text-lg bg-white p-2.5 md:p-4 w-full"
-                  />
-                  <button
-                    onClick={() => setShowPass((e) => !e)}
-                    className="absolute cursor-pointer text-dark px-6 right-0"
+            <form onSubmit={(e)=>{
+              e.preventDefault()
+              handleSubmit()
+            }}>
+              <div className="flex flex-col gap-2">
+                <div className="w-full flex justify-center flex-col">
+                  <label
+                    htmlFor="email"
+                    className="font-medium md:text-xl text-dark"
                   >
-                    {showPass ? <EyeClosed className="w-6 h-6 " /> : <Eye className="w-6 h-6 " />}
-                  </button>
+                    Email Address
+                  </label>
+                  <div className="flex justify-center relative items-center w-full">
+                    <input
+                      value={email}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          passwordRef.current?.focus();
+                        }
+                      }}
+                      onChange={(e) => setEmail(e.target.value)}
+                      type="email"
+                      id="email"
+                      className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-sm md:text-lg bg-white p-2.5 md:p-4 w-full"
+                    />
+                  </div>
                 </div>
+                <div className="w-full flex justify-center flex-col">
+                  <label
+                    htmlFor="password"
+                    className="font-medium md:text-xl text-dark"
+                  >
+                    Password
+                  </label>
+                  <div className="flex justify-center relative items-center w-full">
+                    <input
+                      value={password}
+                      ref={passwordRef}
+                      onChange={(e) => setPassword(e.target.value)}
+                      type={showPass ? "text" : "password"}
+                      id="password"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          submitRef.current?.click();
+                        }
+                      }}
+                      className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md text-sm md:text-lg bg-white p-2.5 md:p-4 w-full"
+                    />
+                    <button
+                      onClick={() => setShowPass((e) => !e)}
+                      className="absolute cursor-pointer text-dark px-6 right-0"
+                    >
+                      {showPass ? (
+                        <EyeClosed className="w-6 h-6 " />
+                      ) : (
+                        <Eye className="w-6 h-6 " />
+                      )}
+                    </button>
+                  </div>
+                </div>
+                <div className="flex justify-between">
+                  <label className="inline-flex items-center mr-6">
+                    <input
+                      type="checkbox"
+                      className="form-checkbox text-highlight"
+                      name="rememberMe"
+                      value="yes"
+                      checked={rememberMe}
+                      onChange={() => setRememberMe((e) => !e)}
+                    />
+                    <span className="ml-2 text-dark">Remember Me</span>
+                  </label>
+                  <Link
+                    href={"/forgot-password"}
+                    className="text-dark underline hover:no-underline transition-all duration-300"
+                  >
+                    Forgot Password?
+                  </Link>
+                </div>
+                {!isLoading ? (
+                  <button
+                    type="submit"
+                    ref={submitRef}
+                    className="md:text-xl my-6 font-bold rounded-lg text-highlight bg-dark w-full py-4 hover:ring-1 ring-dark hover:bg-light transition-all duration-300 hover:text-dark"
+                  >
+                    Submit
+                  </button>
+                ) : (
+                  <button className="md:text-xl my-6 font-bold bg-muted flex justify-center items-center w-full py-4 ring-1 ring-dark transition-all duration-300 hover:text-dark">
+                    <Spinner light={false} />
+                  </button>
+                )}
               </div>
-              <div className="flex justify-between">
-                <label className="inline-flex items-center mr-6">
-                  <input
-                    type="checkbox"
-                    className="form-checkbox text-highlight"
-                    name="rememberMe"
-                    value="yes"
-                    checked={rememberMe}
-                    onChange={() => setRememberMe((e) => !e)}
-                  />
-                  <span className="ml-2 text-dark">Remember Me</span>
-                </label>
-                <Link
-                  href={"/forgot-password"}
-                  className="text-dark underline hover:no-underline transition-all duration-300"
-                >
-                  Forgot Password?
-                </Link>
-              </div>
-              {!isLoading ? (
-                <button
-                  onClick={handleSubmit}
-                  ref={submitRef}
-                  className="md:text-xl my-6 font-bold rounded-lg text-highlight bg-dark w-full py-4 hover:ring-1 ring-dark hover:bg-light transition-all duration-300 hover:text-dark"
-                >
-                  Submit
-                </button>
-              ) : (
-                <button className="md:text-xl my-6 font-bold bg-muted flex justify-center items-center w-full py-4 ring-1 ring-dark transition-all duration-300 hover:text-dark">
-                  <Spinner light={false} />
-                </button>
-              )}
-            </div>
+            </form>
             <div className="flex relative top-4 md:hidden justify-center items-center"></div>
           </>
         ) : (

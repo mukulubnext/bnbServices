@@ -305,268 +305,278 @@ function Register() {
           Become a part of BnB by entering the details below
         </p>
       </div>
-      <div className="w-full flex justify-center items-center flex-col gap-4">
-        <div className="w-full flex justify-center flex-col">
-          <label
-            htmlFor="email"
-            className="font-medium  text-sm md:text-lg text-dark"
-          >
-            Email Address
-          </label>
-          <div className="flex justify-center relative items-center w-full">
-            <input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && (!sentMailOTP || !sendingMailOTP)) {
-                  handleSendMailOTP();
-                }
-              }}
-              type="email"
-              id="email"
-              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-2.5 md:py-3.5 px-4 w-full"
-            />
-            {!sendingMailOTP && !confirmMailOTP ? (
-              !sentMailOTP && (
-                <button
-                  onClick={handleSendMailOTP}
-                  className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-sm md:text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
-                >
-                  Send OTP
-                </button>
-              )
-            ) : (
-              <button className="h-full cursor-not-allowed transition-all duration-300 rounded-md border border-dark absolute text-sm md:text-lg bg-white px-6 right-0 font-bold text-white">
-                <Spinner light={false} />
-              </button>
-            )}
-            {confirmMailOTP && (
-              <div className="p-2 text-white bg-dark/90 rounded-full absolute right-5">
-                <Check size={20} />
-              </div>
-            )}
-          </div>
-        </div>
-        {sentMailOTP && !confirmMailOTP && (
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit();
+        }}
+      >
+        <div className="w-full flex justify-center items-center flex-col gap-4">
           <div className="w-full flex justify-center flex-col">
             <label
               htmlFor="email"
               className="font-medium  text-sm md:text-lg text-dark"
             >
-              Email OTP
+              Email Address
             </label>
             <div className="flex justify-center relative items-center w-full">
               <input
-                value={emailOTP}
-                onChange={(e) => setEmailOTP(e.target.value)}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" && !confirmingMailOTP) {
-                    handleConfirmMailOTP();
+                  if (e.key === "Enter" && (!sentMailOTP || !sendingMailOTP)) {
+                    handleSendMailOTP();
                   }
                 }}
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]"
-                maxLength={6}
+                type="email"
+                id="email"
                 className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-2.5 md:py-3.5 px-4 w-full"
               />
-              {!confirmingMailOTP ? (
-                <button
-                  onClick={handleConfirmMailOTP}
-                  className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
-                >
-                  <Check />
-                </button>
-              ) : (
-                <button
-                  onClick={handleConfirmMailOTP}
-                  className="h-full cursor-pointer transition-all duration-300 rounded-md border border-dark absolute text-lg bg-white px-6 right-0 font-bold text-white"
-                >
-                  <Spinner light={false} />
-                </button>
-              )}
-            </div>
-            <div className="flex justify-end mt-2 text-sm">
-              {emailResendTimer > 0 ? (
-                <span className="text-dark/70">
-                  Resend OTP in {emailResendTimer}s
-                </span>
-              ) : (
-                <button
-                  onClick={handleSendMailOTP}
-                  className="text-dark font-semibold hover:underline"
-                >
-                  Resend OTP
-                </button>
-              )}
-            </div>
-          </div>
-        )}
-        <div className="w-full flex justify-center flex-col">
-          <label
-            htmlFor="phone"
-            className="font-medium  text-sm md:text-lg text-dark"
-          >
-            Phone Number
-          </label>
-          <div className="flex justify-center relative items-center w-full">
-            <input
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && (!sentPhoneOTP || !sendingPhoneOTP)) {
-                  handleSendPhoneOTP();
-                }
-              }}
-              type="tel"
-              id="phone"
-              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-2.5 md:py-3.5 px-4 w-full"
-            />
-            {!sentPhoneOTP &&
-              !confirmPhoneOTP &&
-              (!sendingPhoneOTP ? (
-                <button
-                  onClick={handleSendPhoneOTP}
-                  className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-sm md:text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
-                >
-                  Send OTP
-                </button>
+              {!sendingMailOTP && !confirmMailOTP ? (
+                !sentMailOTP && (
+                  <button
+                    onClick={handleSendMailOTP}
+                    className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-sm md:text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
+                  >
+                    Send OTP
+                  </button>
+                )
               ) : (
                 <button className="h-full cursor-not-allowed transition-all duration-300 rounded-md border border-dark absolute text-sm md:text-lg bg-white px-6 right-0 font-bold text-white">
                   <Spinner light={false} />
                 </button>
-              ))}
-            {confirmPhoneOTP && (
-              <div className="p-2 text-white bg-dark/90 rounded-full absolute right-5">
-                <Check size={20} />
-              </div>
-            )}
+              )}
+              {confirmMailOTP && (
+                <div className="p-2 text-white bg-dark/90 rounded-full absolute right-5">
+                  <Check size={20} />
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-        {sentPhoneOTP && !confirmPhoneOTP && (
+          {sentMailOTP && !confirmMailOTP && (
+            <div className="w-full flex justify-center flex-col">
+              <label
+                htmlFor="email"
+                className="font-medium  text-sm md:text-lg text-dark"
+              >
+                Email OTP
+              </label>
+              <div className="flex justify-center relative items-center w-full">
+                <input
+                  value={emailOTP}
+                  onChange={(e) => setEmailOTP(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !confirmingMailOTP) {
+                      handleConfirmMailOTP();
+                    }
+                  }}
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]"
+                  maxLength={6}
+                  className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-2.5 md:py-3.5 px-4 w-full"
+                />
+                {!confirmingMailOTP ? (
+                  <button
+                    onClick={handleConfirmMailOTP}
+                    className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
+                  >
+                    <Check />
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleConfirmMailOTP}
+                    className="h-full cursor-pointer transition-all duration-300 rounded-md border border-dark absolute text-lg bg-white px-6 right-0 font-bold text-white"
+                  >
+                    <Spinner light={false} />
+                  </button>
+                )}
+              </div>
+              <div className="flex justify-end mt-2 text-sm">
+                {emailResendTimer > 0 ? (
+                  <span className="text-dark/70">
+                    Resend OTP in {emailResendTimer}s
+                  </span>
+                ) : (
+                  <button
+                    onClick={handleSendMailOTP}
+                    className="text-dark font-semibold hover:underline"
+                  >
+                    Resend OTP
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
           <div className="w-full flex justify-center flex-col">
             <label
-              htmlFor="email"
+              htmlFor="phone"
               className="font-medium  text-sm md:text-lg text-dark"
             >
-              Phone OTP
+              Phone Number
             </label>
             <div className="flex justify-center relative items-center w-full">
               <input
-                value={phoneOTP}
-                onChange={(e) => setPhoneOTP(e.target.value)}
-                type="text"
-                maxLength={6}
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" && !confirmingPhoneOTP) {
-                    handleConfirmPhoneOTP();
+                  if (
+                    e.key === "Enter" &&
+                    (!sentPhoneOTP || !sendingPhoneOTP)
+                  ) {
+                    handleSendPhoneOTP();
                   }
                 }}
-                id="email"
+                type="tel"
+                id="phone"
                 className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-2.5 md:py-3.5 px-4 w-full"
               />
-              {!confirmingPhoneOTP ? (
-                <button
-                  onClick={handleConfirmPhoneOTP}
-                  className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
-                >
-                  <Check />
-                </button>
-              ) : (
-                <button className="h-full cursor-pointer transition-all duration-300 rounded-md border border-dark absolute text-lg bg-white px-6 right-0 font-bold text-white">
-                  <Spinner light={false} />
-                </button>
-              )}
-            </div>
-            <div className="flex justify-end mt-2 text-sm">
-              {phoneResendTimer > 0 ? (
-                <span className="text-dark/70">
-                  Resend OTP in {phoneResendTimer}s
-                </span>
-              ) : (
-                <button
-                  onClick={handleSendPhoneOTP}
-                  className="text-dark font-semibold hover:underline"
-                >
-                  Resend OTP
-                </button>
+              {!sentPhoneOTP &&
+                !confirmPhoneOTP &&
+                (!sendingPhoneOTP ? (
+                  <button
+                    onClick={handleSendPhoneOTP}
+                    className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-sm md:text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
+                  >
+                    Send OTP
+                  </button>
+                ) : (
+                  <button className="h-full cursor-not-allowed transition-all duration-300 rounded-md border border-dark absolute text-sm md:text-lg bg-white px-6 right-0 font-bold text-white">
+                    <Spinner light={false} />
+                  </button>
+                ))}
+              {confirmPhoneOTP && (
+                <div className="p-2 text-white bg-dark/90 rounded-full absolute right-5">
+                  <Check size={20} />
+                </div>
               )}
             </div>
           </div>
-        )}
-        <div className="w-full flex justify-center flex-col">
-          <label
-            htmlFor="confirm"
-            className="font-medium  text-sm md:text-lg text-dark"
-          >
-            Password
-          </label>
-          <div className="flex justify-center relative items-center w-full">
-            <input
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              type={showPass ? "text" : "password"}
-              id="confirm"
-              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-2.5 md:py-3.5 px-4 w-full"
-            />
-            <button
-              onClick={() => setShowPass((e) => !e)}
-              className="absolute cursor-pointer text-dark px-6 right-0"
+          {sentPhoneOTP && !confirmPhoneOTP && (
+            <div className="w-full flex justify-center flex-col">
+              <label
+                htmlFor="email"
+                className="font-medium  text-sm md:text-lg text-dark"
+              >
+                Phone OTP
+              </label>
+              <div className="flex justify-center relative items-center w-full">
+                <input
+                  value={phoneOTP}
+                  onChange={(e) => setPhoneOTP(e.target.value)}
+                  type="text"
+                  maxLength={6}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !confirmingPhoneOTP) {
+                      handleConfirmPhoneOTP();
+                    }
+                  }}
+                  id="email"
+                  className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-2.5 md:py-3.5 px-4 w-full"
+                />
+                {!confirmingPhoneOTP ? (
+                  <button
+                    onClick={handleConfirmPhoneOTP}
+                    className="h-full cursor-pointer hover:text-dark transition-all duration-300 rounded-md border border-dark absolute text-lg bg-dark px-6 right-0 hover:bg-transparent font-bold text-white"
+                  >
+                    <Check />
+                  </button>
+                ) : (
+                  <button className="h-full cursor-pointer transition-all duration-300 rounded-md border border-dark absolute text-lg bg-white px-6 right-0 font-bold text-white">
+                    <Spinner light={false} />
+                  </button>
+                )}
+              </div>
+              <div className="flex justify-end mt-2 text-sm">
+                {phoneResendTimer > 0 ? (
+                  <span className="text-dark/70">
+                    Resend OTP in {phoneResendTimer}s
+                  </span>
+                ) : (
+                  <button
+                    onClick={handleSendPhoneOTP}
+                    className="text-dark font-semibold hover:underline"
+                  >
+                    Resend OTP
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+          <div className="w-full flex justify-center flex-col">
+            <label
+              htmlFor="confirm"
+              className="font-medium  text-sm md:text-lg text-dark"
             >
-              {showPass ? <EyeClosed size={24} /> : <Eye size={24} />}
-            </button>
+              Password
+            </label>
+            <div className="flex justify-center relative items-center w-full">
+              <input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                type={showPass ? "text" : "password"}
+                id="confirm"
+                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-2.5 md:py-3.5 px-4 w-full"
+              />
+              <button
+                onClick={() => setShowPass((e) => !e)}
+                className="absolute cursor-pointer text-dark px-6 right-0"
+              >
+                {showPass ? <EyeClosed size={24} /> : <Eye size={24} />}
+              </button>
+            </div>
           </div>
-        </div>
-        <div className="w-full flex justify-center flex-col">
-          <label
-            htmlFor="password"
-            className="font-medium flex gap-2 items-center  text-sm md:text-lg text-dark"
-          >
-            Confirm Password{" "}
-            {password !== confirmPassword &&
-              confirmPassword !== "" &&
-              password !== "" && (
-                <p className="text-xs text-red-500">
-                  Doesnt match with password
-                </p>
-              )}
-          </label>
-          <div className="flex justify-center relative items-center w-full">
-            <input
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              type={showConfirm ? "text" : "password"}
-              id="password"
-              className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-2.5 md:py-3.5 px-4 w-full"
-            />
-            <button
-              onClick={() => setShowConfirm((e) => !e)}
-              className="absolute cursor-pointer text-dark px-6 right-0"
+          <div className="w-full flex justify-center flex-col">
+            <label
+              htmlFor="password"
+              className="font-medium flex gap-2 items-center  text-sm md:text-lg text-dark"
             >
-              {showConfirm ? <EyeClosed size={24} /> : <Eye size={24} />}
-            </button>
+              Confirm Password{" "}
+              {password !== confirmPassword &&
+                confirmPassword !== "" &&
+                password !== "" && (
+                  <p className="text-xs text-red-500">
+                    Doesnt match with password
+                  </p>
+                )}
+            </label>
+            <div className="flex justify-center relative items-center w-full">
+              <input
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                type={showConfirm ? "text" : "password"}
+                id="password"
+                className="border border-dark text-dark focus:outline-0 focus:ring-1 ring-dark rounded-md bg-white py-2.5 md:py-3.5 px-4 w-full"
+              />
+              <button
+                onClick={() => setShowConfirm((e) => !e)}
+                className="absolute cursor-pointer text-dark px-6 right-0"
+              >
+                {showConfirm ? <EyeClosed size={24} /> : <Eye size={24} />}
+              </button>
+            </div>
           </div>
-        </div>
-        <div id="recaptcha-container"></div>
-        {!isLoading ? (
-          <button
-            onClick={handleSubmit}
-            className=" text-sm md:text-lg my-6 font-bold text-highlight bg-dark w-full py-4 hover:ring-1 ring-dark hover:bg-light transition-all duration-300 hover:text-dark"
+          <div id="recaptcha-container"></div>
+          {!isLoading ? (
+            <button
+              type="submit"
+              className=" text-sm md:text-lg my-6 font-bold text-highlight bg-dark w-full py-4 hover:ring-1 ring-dark hover:bg-light transition-all duration-300 hover:text-dark"
+            >
+              Submit
+            </button>
+          ) : (
+            <button className=" text-sm md:text-lg my-6 font-bold bg-muted flex justify-center items-center w-full py-4 ring-1 ring-dark transition-all duration-300 hover:text-dark">
+              <Spinner light={false} />
+            </button>
+          )}
+          <Link
+            href={"/signin"}
+            className="text-dark underline hover:no-underline"
           >
-            Submit
-          </button>
-        ) : (
-          <button className=" text-sm md:text-lg my-6 font-bold bg-muted flex justify-center items-center w-full py-4 ring-1 ring-dark transition-all duration-300 hover:text-dark">
-            <Spinner light={false} />
-          </button>
-        )}
-        <Link
-          href={"/signin"}
-          className="text-dark underline hover:no-underline"
-        >
-          Already Registered?
-        </Link>
-      </div>
+            Already Registered?
+          </Link>
+        </div>
+      </form>
     </>
   );
 }
