@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
         isPhoneVerified,
         firebaseId: fireBaseId,
         isVerified: true,
-        credits: 100,
+        credits: role === "seller" ? 100 : 0,
       },
       select: {
         id: true,
