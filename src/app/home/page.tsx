@@ -708,7 +708,7 @@ function Seller({
               <p>Complete your profile to get verified</p>
               <Link
                 href="/profile/add-details"
-                className="text-white rounded my-2 hover:text-dark border hover:bg-white transition-all duration-300 bg-dark px-3 py-1 font-bold hover:no-underline"
+                className="text-white rounded my-2 hover:text-dark border hover:bg-white transition-all duration-300 bg-dark px-3 py-2 font-bold hover:no-underline"
               >
                 Complete Profile
               </Link>
