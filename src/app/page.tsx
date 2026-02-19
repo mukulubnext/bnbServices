@@ -2,16 +2,18 @@ import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import Image from "next/image";
 import Link from "next/link";
-import bg from "../../public/bg.png"
+import bg from "../../public/bg.png";
 import AuthCheck from "@/components/AuthCheck";
+import CategoryCard from "./categories/components/CategoryCard";
+import Categories from "@/components/Categories";
+import { ArrowRightIcon } from "lucide-react";
 
 export default async function Home() {
-  
   return (
     <>
       <AuthCheck />
       <Navbar />
-      <div className="bg-dark h-[90vh] flex relative justify-center items-center overflow-hidden">
+      <div className="bg-dark h-[90vh] flex flex-col relative justify-center items-center overflow-hidden">
         <div className="z-0 inset-0 absolute overflow-hidden opacity-40">
           <Image
             className="object-cover w-full h-full grayscale"
@@ -46,7 +48,21 @@ export default async function Home() {
           </div>
         </div>
       </div>
+      <div className="bg-dark py-4 flex justify-center items-center flex-col gap-2">
+        <h1 className="text-center font-bold text-light text-lg md:text-2xl">
+          Available Categories
+        </h1>
+        <Categories />
+        <div className="flex justify-center items-center">
+          <Link
+            href="/categories"
+            className="text-center flex items-center border hover:text-light transition-all duration-300 hover:bg-light/10 px-3 py-2 rounded font-bold text-sm w-fit bg-light text-dark"
+          >
+            All Categories <ArrowRightIcon className="w-4 h-4 ml-1" />
+          </Link>
+        </div>
+      </div>
       <Footer />
     </>
-  )
+  );
 }

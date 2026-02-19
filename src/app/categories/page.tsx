@@ -63,10 +63,10 @@ const Page: NextPage<Props> = ({}) => {
           </div>
         )}
         <div className="flex flex-col justify-center items-center gap-1 my-4 text-dark/80 text-sm">
-          <p>
+          <p className="text-center">
             Don't see your interested category? Don't worry! We are expanding
           </p>
-          <p>
+          <p className="text-center">
             Want to suggest more categories?{" "}
             <Link
               href="/contact"
