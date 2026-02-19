@@ -2,7 +2,7 @@ import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import Image from "next/image";
 import Link from "next/link";
-import bg from "../../public/Img3.webp"
+import bg from "../../public/bg.png"
 import AuthCheck from "@/components/AuthCheck";
 
 export default async function Home() {
