@@ -24,7 +24,7 @@ import {
   Users,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
+import axios, { AxiosDefaults, AxiosError } from "axios";
 import Spinner from "@/components/Spinner";
 import { toast, ToastContainer } from "react-toastify";
 import { useAuth } from "@/context/AuthContext";
@@ -42,6 +42,9 @@ const Page: NextPage<Props> = ({}) => {
   const [addCategory, setAddCategory] = useState(false);
 
   const [updatingCategories, setUpdatingCategories] = useState(false);
+  const [websiteEdit, setWebsiteEdit] = useState(false);
+  const [companyWebsite, setCompanyWebsite] = useState("");
+  const [updating, setUpdating] = useState(false);
 
   const router = useRouter();
   const { user, loading, refresh } = useAuth();
@@ -89,6 +92,23 @@ const Page: NextPage<Props> = ({}) => {
       setUpdatingCategories(false);
     }
   };
+  const handleWebsiteUpdate = async () => {
+    setUpdating(true);
+    try{
+      const res = await axios.post("/api/v2/profile/website", {website: companyWebsite})
+      if(res.data.status === "success"){
+        toast.success("Website updated successfully!")
+        setWebsiteEdit(false);
+      }
+    }
+    catch(err: any){
+      console.error(err)
+      toast.error(err.response.data.message)
+    }
+    finally{
+      setUpdating(false);
+    }
+  }
 
   useEffect(() => {
     if (!user && !loading) {
@@ -97,6 +117,7 @@ const Page: NextPage<Props> = ({}) => {
     }
 
     if (user) {
+      setCompanyWebsite(user.companyWebsite);
       const prepared = user.interestedCategories.map((cat: any) => ({
         ...cat,
         subCategories: user.interestedSubCategories.filter(
@@ -317,13 +338,35 @@ const Page: NextPage<Props> = ({}) => {
                         <p className="font-medium flex items-center gap-2 text-dark/70">
                           <LinkIcon /> Website:
                         </p>
-                        <div className="border cursor-not-allowed border-dark/20 rounded-md p-2 mt-1">
-                          {user.companyWebsite ?? (
-                            <span className="text-yellow-500 flex items-center gap-2">
-                              <TriangleAlert size={20} /> Update needed
-                            </span>
-                          )}
-                        </div>
+                        {!websiteEdit ? (
+                          <div className="border relative cursor-not-allowed border-dark/20 rounded-md p-2 mt-1">
+                            {companyWebsite ? (
+                              <div>
+                                <p>{companyWebsite}</p>
+                              </div>
+                            ) : (
+                              <span className="text-yellow-500 flex items-center gap-2">
+                                <TriangleAlert size={20} /> Update needed
+                              </span>
+                            )}
+                            <button onClick={() => setWebsiteEdit(true)} className="text-white h-full right-0 top-1/2 -translate-y-1/2 absolute bg-dark py-2 px-5 w-fit rounded font-medium border border-dark hover:text-dark hover:bg-white transition-all cursor-pointer"><Pencil className="w-4 h-4 md:w-5 md:h-5"/></button>
+                          </div>
+                        ) : (
+                          <div className="border relative text-black border-dark/50 rounded-md p-2 mt-1">
+                            <input value={companyWebsite ? companyWebsite : ""} onChange={(e)=>setCompanyWebsite(e.target.value)} type="text" className="w-full h-full outline-0" />
+                            {
+                              !updating ? (
+                                <button onClick={handleWebsiteUpdate} className="text-white h-full right-0 top-1/2 -translate-y-1/2 absolute bg-dark py-2 px-5 w-fit rounded font-medium border border-dark hover:text-dark hover:bg-white transition-all cursor-pointer">Submit</button>
+                              )
+                              :
+                              (
+                                <button className="h-full right-0 top-1/2 cursor-wait -translate-y-1/2 absolute py-2 px-5 w-fit rounded font-medium border border-dark text-dark bg-white transition-all">
+                                  <Spinner light={false} />
+                                </button>
+                              )
+                            }
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
