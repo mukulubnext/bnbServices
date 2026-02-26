@@ -24,15 +24,23 @@ const Page: NextPage<Props> = ({}) => {
             alt="Contact Background"
           />
         </div>
-        <div className="relative z-10 max-w-6xl flex flex-col justify-center items-center px-6 w-full">
-          <div className="text-center mb-8">
+        <div className="relative z-10 max-w-6xl flex flex-col justify-center px-6 w-full">
+          <div className="text-left mb-8">
             <h2 className="text-4xl md:text-5xl font-bold mb-4 text-light">
               Get in Touch
             </h2>
-            <p className="text-lg max-w-xl mx-auto text-muted">
+            <p className="text-lg max-w-175 text-muted">
               Whether you need technical support or have a business inquiry, our
               team is ready to assist you.
             </p>
+            <div className="flex gap-2 my-4 font-medium">
+              <div className="text-sm border-white/20 border text-white bg-white/10 px-3 py-0.5 rounded-full">
+                <p>Fast Response</p>
+              </div>
+              <div className="text-sm border-white/20 border text-white bg-white/10 px-3 py-0.5 rounded-full">
+                <p>Trusted Support</p>
+              </div>
+            </div>
           </div>
           <div className="grid md:grid-cols-2 gap-8">
             <div
@@ -112,6 +120,20 @@ const Page: NextPage<Props> = ({}) => {
                   </div>
                 </a>
               </div>
+            </div>
+          </div>
+          <div 
+          className="backdrop-blur-xl my-4 border flex justify-between p-4 sm:p-8 rounded-3xl transition-colors"
+          style={{
+            backgroundColor: "rgba(255,255,255,0.03)",
+            borderColor: "rgba(255,255,255,0.1)",
+          }}
+          >
+            <div className="flex flex-col justify-start items-center">
+              <h1 className="font-bold text-highlight">Send a Message</h1>
+            </div>
+            <div className="flex flex-col justify-start items-center">
+              <h1 className="font-bold text-highlight">Quick Info</h1>
             </div>
           </div>
         </div>

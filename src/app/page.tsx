@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import bg from "../../public/bg.png";
 import AuthCheck from "@/components/AuthCheck";
-import type { Metadata } from "next";
 
 export const metadata = {
   title: "Boxes n Bottles | Trusted Packaging Marketplace",
