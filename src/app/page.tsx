@@ -222,13 +222,13 @@ export default async function Home() {
             <div className="flex gap-4">
               <Link
                 href="/register"
-                className="px-6 py-3 rounded-full bg-highlight text-dark font-bold text-sm md:text-lg hover:scale-110 transition-all"
+                className="px-6 py-3 rounded-full bg-highlight text-dark font-bold text-xs md:text-lg text-nowrap flex justify-center items-center hover:scale-110 transition-all"
               >
                 Get Started
               </Link>
               <Link
                 href="/about"
-                className="px-6 py-3 rounded-full border border-white/20 text-light font-bold text-sm md:text-lg hover:bg-white/10 transition-all"
+                className="px-6 py-3 rounded-full border border-white/20 text-light font-bold text-xs text-nowrap flex justify-center items-center md:text-lg hover:bg-white/10 transition-all"
               >
                 Learn More
               </Link>
