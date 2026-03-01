@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import bg from "../../public/bg.png";
 import AuthCheck from "@/components/AuthCheck";
+import CountUp from "@/components/CountUp";
 
 export const metadata = {
   title: "Boxes n Bottles | Trusted Packaging Marketplace",
@@ -23,7 +24,7 @@ export const metadata = {
     images: ["/bg.png"],
     type: "website",
   },
-  metadataBase: new URL("https://www.boxesnbottles.com")
+  metadataBase: new URL("https://www.boxesnbottles.com"),
 };
 
 export default async function Home() {
@@ -114,7 +115,9 @@ export default async function Home() {
                 key={item.title}
                 className="bg-white/90 border-black/10 backdrop-blur p-6 rounded-xl border shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all"
               >
-                <h3 className="font-semibold text-dark text-lg mb-2">{item.title}</h3>
+                <h3 className="font-semibold text-dark text-lg mb-2">
+                  {item.title}
+                </h3>
                 <p className="text-sm text-dark/70 mb-4">{item.desc}</p>
                 <ul className="text-sm text-dark/70 space-y-1">
                   {item.points.map((p) => (
@@ -155,7 +158,9 @@ export default async function Home() {
                 key={item.title}
                 className="bg-white/95 p-6 rounded-xl shadow-md hover:shadow-xl transition-all"
               >
-                <h3 className="font-semibold text-dark text-lg mb-2">{item.title}</h3>
+                <h3 className="font-semibold text-dark text-lg mb-2">
+                  {item.title}
+                </h3>
                 <p className="text-sm text-dark/70">{item.desc}</p>
               </div>
             ))}
@@ -207,6 +212,34 @@ export default async function Home() {
           </div>
         </div>
       </section>
+      <section className="py-6 bg-light md:px-[15%]">
+        <div className="px-6">
+          <div
+            className="grid md:grid-cols-2 gap-12 items-center 
+                    rounded-3xl bg-white/60 backdrop-blur 
+                    p-10 shadow-sm border border-dark/10"
+          >
+            {/* Left */}
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold text-dark">
+                Trusted by buyers & sellers
+              </h2>
+              <p className="mt-3 text-dark/60 max-w-md">
+                Real users. Real transactions. A growing marketplace built on
+                trust.
+              </p>
+            </div>
+
+            {/* Right */}
+            <div className="flex items-end gap-3 md:justify-end">
+              <span className="text-6xl text-dark font-extrabold text-primary tracking-tight">
+                <CountUp from={0} to={400} duration={1.6} />+
+              </span>
+              <span className="mb-2 text-sm text-dark/60">active users</span>
+            </div>
+          </div>
+        </div>
+      </section>
       <section className="py-20 bg-light md:px-[15%]">
         <div className="px-6">
           <div className="rounded-2xl bg-linear-to-r from-dark via-dark/90 to-dark p-10 flex flex-col md:flex-row items-center justify-between gap-6">
@@ -218,7 +251,6 @@ export default async function Home() {
                 Join a trusted network of verified packaging businesses.
               </p>
             </div>
-
             <div className="flex gap-4">
               <Link
                 href="/register"
